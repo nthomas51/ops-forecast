@@ -1,45 +1,42 @@
 import React, { useState } from 'react';
 import { getSeed } from './lib/dataSource.js';
-import { DEFAULT_TIME_STANDARDS } from './lib/model.js';
-import OverviewTab from './components/OverviewTab.jsx';
-import OrdersTab from './components/OrdersTab.jsx';
-import OnFlexTab from './components/OnFlexTab.jsx';
-import StaffingTab from './components/StaffingTab.jsx';
+import { DEFAULT_STANDARDS } from './lib/model.js';
+import OrderMatrixTab from './components/OrderMatrixTab.jsx';
+import CoverageTab from './components/CoverageTab.jsx';
+import TransactionsTab from './components/TransactionsTab.jsx';
+import HeadcountTab from './components/HeadcountTab.jsx';
 import TimeStandardsTab from './components/TimeStandardsTab.jsx';
 
-const TABS = ['Overview', 'Orders', 'On-Flex', 'Staffing', 'Time Standards'];
+const TABS = ['Order matrix', 'Coverage', 'Transactions', 'Headcount', 'Time standards'];
 
 export default function App() {
   const seed = getSeed();
-  const [tab, setTab] = useState('Overview');
-  const [timeStandards, setTimeStandards] = useState(DEFAULT_TIME_STANDARDS);
+  const [tab, setTab] = useState('Order matrix');
+  const [standards, setStandards] = useState(DEFAULT_STANDARDS);
+  const [volumes, setVolumes] = useState({});
+  const [flpRole, setFlpRole] = useState('FOH');
 
   return (
     <div className="app">
       <header>
         <h1>Flexcar Ops Forecast</h1>
         <div className="meta">
-          Window {seed.meta.window.start} to {seed.meta.window.end} &middot; seed
-          generated {seed.meta.generated_at}
+          Window {seed.meta.window.start} to {seed.meta.window.end} - seed generated {seed.meta.generated_at}
         </div>
         <nav>
           {TABS.map((t) => (
-            <button
-              key={t}
-              className={t === tab ? 'tab active' : 'tab'}
-              onClick={() => setTab(t)}
-            >
-              {t}
-            </button>
+            <button key={t} className={t === tab ? 'tab active' : 'tab'} onClick={() => setTab(t)}>{t}</button>
           ))}
         </nav>
       </header>
-      {tab === 'Overview' && <OverviewTab seed={seed} ts={timeStandards} />}
-      {tab === 'Orders' && <OrdersTab seed={seed} />}
-      {tab === 'On-Flex' && <OnFlexTab seed={seed} />}
-      {tab === 'Staffing' && <StaffingTab seed={seed} />}
-      {tab === 'Time Standards' && (
-        <TimeStandardsTab ts={timeStandards} onChange={setTimeStandards} />
+      {tab === 'Order matrix' && <OrderMatrixTab seed={seed} standards={standards} />}
+      {tab === 'Coverage' && (
+        <CoverageTab seed={seed} standards={standards} volumes={volumes} flpRole={flpRole} setFlpRole={setFlpRole} />
+      )}
+      {tab === 'Transactions' && <TransactionsTab seed={seed} standards={standards} />}
+      {tab === 'Headcount' && <HeadcountTab seed={seed} standards={standards} volumes={volumes} flpRole={flpRole} />}
+      {tab === 'Time standards' && (
+        <TimeStandardsTab seed={seed} standards={standards} onChange={setStandards} volumes={volumes} onVolumes={setVolumes} />
       )}
     </div>
   );

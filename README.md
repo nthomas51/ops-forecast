@@ -22,6 +22,26 @@ a fresh `seed.json`, and commits it to this repo:
 Lovable syncs the commit; the published site reflects it on the next deploy.
 Intraday updates are done by re-running the seed job.
 
+## Tabs
+
+- Order matrix (default): days as rows, each site a colour-coded group of
+  P/R/S/D/OF columns matching the Orders-by-Day sheet palette, totals both
+  directions, model vs booked toggle (model = booked days 1-3, last week's
+  same-weekday actuals days 4-7 with a "wk" marker), by-type vs site-totals
+  toggle, Copy-for-Excel TSV button. Sites order New England first, then
+  busiest to quietest.
+- Coverage: utilization% and slack hours per site-day, coloured
+  green/amber/red (amber from 85%, red past 100% or any unmet hours). Days
+  4-7 render faded as the forecast window. Click a cell for the per-driver
+  breakdown. Toggles: pooled vs role-locked coverage, FLP house-group
+  assignment, Ops Spec prep timing (day-before vs same-day).
+- Transactions: raw streams per site (booked orders, last-week actuals,
+  on-flex visits, service hours, retention calls).
+- Headcount: Rippling CSV/TSV paste importer (authoritative HR roster),
+  roster-to-scheduled-to-required by house group, applicability matrix.
+- Time standards: minutes-per-transaction grid by role, on-flex visit and
+  retention call minutes, uplift fallback, infleet/repossession volume knobs.
+
 ## Model conventions
 
 - FOH (member-facing, MC/MEA bucket): demand comes from orders plus retention
@@ -38,9 +58,13 @@ Intraday updates are done by re-running the seed job.
   `other` bucket and are not counted as capacity. Every raw Assembled
   `type_name` is preserved under `staffing[site][day].byType` so buckets can
   be redefined without re-pulling data.
-- Time standards (minutes per pickup, swap, delivery, return, retention call)
-  are placeholders. Set real figures on the Time Standards tab or edit
-  `DEFAULT_TIME_STANDARDS` in `src/lib/model.js`.
+- Confirmed time standards: retention call 5 min; infleet Ops Spec 60 min
+  (telematics 25 + photos 15 + handling). The remaining minutes are
+  placeholders - set them on the Time standards tab or edit
+  `DEFAULT_STANDARDS` in `src/lib/model.js`.
+- Seed v2 items: last-week actuals for on-flex visits and service hours (so
+  forecast days stop falling back to booked for those streams), infleet
+  volumes from Redshift.
 
 ## Local development
 

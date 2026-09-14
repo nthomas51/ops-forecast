@@ -1,84 +1,198 @@
-// Capacity model.
+// Capacity model, ported from the original site-capacity-dashboard.jsx artifact.
 //
-// House groups follow the ops classification:
-//   FOH (member-facing)   = mcMea bucket. Demand: orders + retention calls.
-//   MOH (prep/QA/handoff) = opsSpec bucket. Supply shown; no modeled demand in seed v1.
-//   BOH (service)         = techB + techC. Demand: on-flex estimated minutes.
-//   Tech A                = visible, excluded from capacity math.
-//   FLP                   = visible, excluded from FOH capacity by default.
+// Internal roles: FOH = MC/MEA (member-facing), OpsSpec = MOH (prep/QA/handoff),
+// Tech = BOH (Tech B + C; Tech A visible but excluded). FLPs count toward the
+// role selected by the FLP toggle.
 //
-// TIME STANDARDS BELOW ARE PLACEHOLDERS. Set real figures on the Time
-// Standards tab (session-local) or edit the defaults here to bake them in.
-export const DEFAULT_TIME_STANDARDS = {
-  minsPerPickup: 45,
-  minsPerSwap: 45,
-  minsPerDelivery: 60,
-  minsPerReturn: 30,
-  minsPerRetentionCall: 10,
+// Demand streams per site-day:
+//   orders (P/R/S/D)          x minutes[type][role]
+//   on-flex visits            x svcVisitMin -> FOH; tech time arrives via service hours
+//   service hours (booked)    -> Tech 1:1 (from maintenance_bookings estimated minutes)
+//   retention calls           -> FOH x retentionMin (P/S/D 3 days earlier; first 3 days seeded)
+//   infleets / repossessions  x otherMinutes[event][role] (volumes are config knobs)
+//
+// Model view: booked counts on days 1-3 (FIRM_DAYS), last week's same-weekday
+// actuals on days 4-7. The seed currently carries last-week actuals for orders
+// only; on-flex visits and service hours fall back to booked on forecast days
+// (seed v2 item).
+
+export const ROLES = ["FOH", "OpsSpec", "Tech"];
+export const ROLE_LABELS = { FOH: "FOH (MC/MEA)", OpsSpec: "MOH (Ops Spec)", Tech: "BOH (Tech)" };
+export const TXN_TYPES = ["Pickup", "Return", "Swap", "Delivery"];
+export const OTHER_TYPES = ["Infleets", "Repossessions"];
+export const FIRM_DAYS = 3;
+
+// Excel palette carried over from the Orders-by-Day sheet (per-site column groups)
+export const MX_HEAD = ["#4472C4", "#ED7D31", "#70AD47", "#FFC000", "#7030A0", "#C00000", "#264478", "#9E480E", "#43682B", "#595959", "#7F6000"];
+export const MX_SUB  = ["#B4C7E7", "#F8CBAD", "#C6E0B4", "#FFE699", "#CCC0DA", "#F4B8B8", "#ACB9CA", "#DDC5AE", "#C6D5B4", "#D9D9D9", "#FFE699"];
+export const MX_BODY = ["#D9E1F2", "#FCE4D6", "#E2EFDA", "#FFF2CC", "#E4DFEC", "#FCE0E0", "#D6DCE4", "#EDE0D4", "#EAF0E2", "#F2F2F2", "#FFF2CC"];
+export const MX_TOTAL = "#DDEBF7";
+
+// Time standards. Values marked [placeholder] are not measured; the rest were
+// confirmed in the original artifact (retention 5 min; infleet Ops Spec 60 min
+// = telematics 25 + photos 15 + handling).
+export const DEFAULT_STANDARDS = {
+  minutes: {
+    Pickup:   { FOH: 45, OpsSpec: 30, Tech: 0 },   // FOH/OpsSpec [placeholder]; Tech 0 = only if booked into service (already in service hours)
+    Return:   { FOH: 30, OpsSpec: 30, Tech: 30 },  // [placeholder]
+    Swap:     { FOH: 45, OpsSpec: 30, Tech: 30 },  // [placeholder]; OpsSpec is day-before prep
+    Delivery: { FOH: 60, OpsSpec: 0,  Tech: 0 },   // FOH [placeholder]; Tech 0 = conditional via service hours
+  },
+  otherMinutes: {
+    Infleets:      { FOH: 0, OpsSpec: 60, Tech: 0 },  // OpsSpec confirmed 60
+    Repossessions: { FOH: 0, OpsSpec: 45, Tech: 0 },  // [placeholder]
+  },
+  svcVisitMin: 15,      // FOH minutes per on-flex visit [placeholder]
+  retentionMin: 5,      // confirmed
+  upliftPct: 0,         // fallback only, for sites with no last-week history
 };
 
-export const TIME_STANDARD_LABELS = {
-  minsPerPickup: 'Minutes per pickup',
-  minsPerSwap: 'Minutes per swap',
-  minsPerDelivery: 'Minutes per delivery',
-  minsPerReturn: 'Minutes per return',
-  minsPerRetentionCall: 'Minutes per retention call',
-};
+export const PREP_TXNS = ["Pickup", "Swap"]; // OpsSpec component lands the day before when prep timing = day-before
 
-// Retention calls landing on `day`:
-//  - days 1-3 of the window come pre-computed in the seed (from pre-horizon
-//    Pickup/Swap/Delivery, 3-day lag),
-//  - later days are derived from in-window orders 3 days earlier.
-export function retentionCalls(seed, site, day) {
+export function dayLabel(d) {
+  const dt = new Date(d + "T12:00:00Z");
+  return dt.toLocaleDateString("en-US", { weekday: "short", month: "numeric", day: "numeric", timeZone: "UTC" });
+}
+
+/* ---------------- stream accessors (seed-backed) ---------------- */
+
+// booked order count
+export function bookedOrders(seed, site, type, day) {
+  return seed.demand.orders[site][day][type] || 0;
+}
+
+// last week same-weekday actual (windows are aligned Tue-Mon, index i -> i)
+export function lastWeekOrders(seed, site, type, dayIdx) {
+  const lw = seed.demand.lastWeekActuals;
+  const d = lw.days[dayIdx];
+  const row = lw.orders[site] && lw.orders[site][d];
+  return row ? row[type] || 0 : null;
+}
+
+// model view: booked on firm days, last-week actuals on forecast days
+export function modelOrders(seed, site, type, dayIdx, standards) {
+  const day = seed.meta.window.days[dayIdx];
+  if (dayIdx < FIRM_DAYS) return bookedOrders(seed, site, type, day);
+  const lw = lastWeekOrders(seed, site, type, dayIdx);
+  if (lw !== null && lw !== undefined) return lw;
+  const uplift = 1 + (standards ? standards.upliftPct : 0) / 100;
+  return Math.round(bookedOrders(seed, site, type, day) * uplift);
+}
+
+export function onFlexVisits(seed, site, day) {
+  return seed.demand.onFlex[site][day].activeBookings || 0;
+}
+
+export function serviceHours(seed, site, day) {
+  return (seed.demand.onFlex[site][day].activeEstMin || 0) / 60;
+}
+
+export function retentionCalls(seed, site, dayIdx, standards, source) {
   const days = seed.meta.window.days;
-  const seeded = seed.demand.retentionSeed.bySite[site]?.impliedCalls?.[day] || 0;
-  const idx = days.indexOf(day);
+  const day = days[dayIdx];
+  const seeded = (seed.demand.retentionSeed.bySite[site] || {}).impliedCalls?.[day] || 0;
   const lag = seed.demand.retentionSeed.lagDays;
   let derived = 0;
-  if (idx >= lag) {
-    const src = seed.demand.orders[site][days[idx - lag]];
-    derived = (src.Pickup || 0) + (src.Swap || 0) + (src.Delivery || 0);
+  if (dayIdx >= lag) {
+    derived = ["Pickup", "Swap", "Delivery"].reduce(
+      (a, t) => a + (source === "model"
+        ? modelOrders(seed, site, t, dayIdx - lag, standards)
+        : bookedOrders(seed, site, t, days[dayIdx - lag])),
+      0
+    );
   }
   return seeded + derived;
 }
 
-export function fohDemandHours(seed, ts, site, day) {
-  const o = seed.demand.orders[site][day];
-  const calls = retentionCalls(seed, site, day);
-  const mins =
-    o.Pickup * ts.minsPerPickup +
-    o.Swap * ts.minsPerSwap +
-    o.Delivery * ts.minsPerDelivery +
-    o.Return * ts.minsPerReturn +
-    calls * ts.minsPerRetentionCall;
-  return mins / 60;
+/* ---------------- coverage math (ported) ---------------- */
+
+// Demand hours by role for one site-day, with per-driver breakdown rows.
+export function demandFor(seed, site, dayIdx, standards, volumes, source, prepTiming) {
+  const days = seed.meta.window.days;
+  const day = days[dayIdx];
+  const byRole = { FOH: 0, OpsSpec: 0, Tech: 0 };
+  const breakdown = [];
+  const add = (name, count, minsByRole, note) => {
+    const row = { name, count, note, total: 0 };
+    ROLES.forEach((r) => {
+      const hrs = (count * (minsByRole[r] || 0)) / 60;
+      byRole[r] += hrs;
+      row[r] = hrs;
+      row.total += hrs;
+    });
+    breakdown.push(row);
+  };
+
+  TXN_TYPES.forEach((t) => {
+    const n = source === "model" ? modelOrders(seed, site, t, dayIdx, standards) : bookedOrders(seed, site, t, day);
+    const mins = { ...standards.minutes[t] };
+    // day-before prep: OpsSpec portion of prep transactions moves to d-1
+    if (prepTiming === "day-before" && PREP_TXNS.includes(t)) {
+      const nNext = dayIdx + 1 < days.length
+        ? (source === "model" ? modelOrders(seed, site, t, dayIdx + 1, standards) : bookedOrders(seed, site, t, days[dayIdx + 1]))
+        : 0;
+      const prepMins = mins.OpsSpec || 0;
+      mins.OpsSpec = 0;
+      add(t, n, mins, dayIdx >= FIRM_DAYS && source === "model" ? "last wk actual" : undefined);
+      add(t + " prep (for tomorrow)", nNext, { OpsSpec: prepMins }, undefined);
+      return;
+    }
+    add(t, n, mins, dayIdx >= FIRM_DAYS && source === "model" ? "last wk actual" : undefined);
+  });
+
+  add("On-flex visit", onFlexVisits(seed, site, day), { FOH: standards.svcVisitMin }, "tech time arrives as service hours");
+  const svcHrs = serviceHours(seed, site, day);
+  byRole.Tech += svcHrs;
+  breakdown.push({ name: "Service booking", count: seed.demand.onFlex[site][day].activeBookings, note: "booked hours land on Tech 1:1", FOH: 0, OpsSpec: 0, Tech: svcHrs, total: svcHrs });
+  add("Retention calls", retentionCalls(seed, site, dayIdx, standards, source), { FOH: standards.retentionMin }, "P/S/D 3 days earlier");
+  OTHER_TYPES.forEach((k) => add(k, (volumes[site] && volumes[site][k]) || 0, standards.otherMinutes[k], "config volume"));
+
+  return { byRole, breakdown };
 }
 
-export function bohDemandHours(seed, site, day) {
-  return (seed.demand.onFlex[site][day].activeEstMin || 0) / 60;
-}
-
-export function fohSupplyHours(seed, site, day) {
-  return seed.staffing[site][day].byBucket.mcMea || 0;
-}
-
-export function bohSupplyHours(seed, site, day) {
+// Staffed hours by role from the seed's scheduled buckets. Tech A excluded.
+export function supplyFor(seed, site, day, flpRole) {
   const b = seed.staffing[site][day].byBucket;
-  return (b.techB || 0) + (b.techC || 0);
+  const byRole = {
+    FOH: b.mcMea || 0,
+    OpsSpec: b.opsSpec || 0,
+    Tech: (b.techB || 0) + (b.techC || 0),
+  };
+  if (flpRole !== "excluded") byRole[flpRole] += b.flp || 0;
+  return byRole;
 }
 
-export function utilization(demand, supply) {
-  if (!supply) return demand > 0 ? Infinity : 0;
-  return demand / supply;
+export function evaluateCell(demand, supply, mode) {
+  const dTot = ROLES.reduce((s, r) => s + demand[r], 0);
+  const sTot = ROLES.reduce((s, r) => s + supply[r], 0);
+  let unmet = 0;
+  if (mode === "pooled") {
+    unmet = Math.max(0, dTot - sTot);
+  } else {
+    ROLES.forEach((r) => { unmet += Math.max(0, demand[r] - supply[r]); });
+  }
+  const util = sTot > 0 ? (dTot / sTot) * 100 : dTot > 0 ? Infinity : 0;
+  let status = "green";
+  if (unmet > 0.05 || util > 100) status = "red";
+  else if (util >= 85) status = "amber";
+  return { util, unmet, dTot, sTot, slack: sTot - dTot, status };
 }
 
-export function utilClass(u) {
-  if (u === 0) return 'util-idle';
-  if (u > 1) return 'util-over';
-  if (u > 0.85) return 'util-tight';
-  return 'util-ok';
+export const STATUS_STYLES = {
+  green: { bg: "#EDF7F0", text: "#166534", bar: "#15803D" },
+  amber: { bg: "#FCF4E6", text: "#92400E", bar: "#B45309" },
+  red:   { bg: "#FBEDEC", text: "#991B1B", bar: "#B91C1C" },
+};
+
+// Sites ordered New England first, then busiest to quietest by booked week orders
+export function orderedSites(seed) {
+  const days = seed.meta.window.days;
+  const load = (s) => days.reduce((a, d) => a + TXN_TYPES.reduce((x, t) => x + bookedOrders(seed, s, t, d), 0), 0);
+  const rest = seed.meta.dashboard_sites.filter((s) => s !== "New England").sort((a, b) => load(b) - load(a));
+  return ["New England", ...rest];
 }
 
 export function fmt(n, dp = 1) {
+  if (n === Infinity) return "inf";
   return Number(n).toFixed(dp);
 }
