@@ -1,5 +1,6 @@
 import React from 'react';
-import { ROLES, ROLE_LABELS, TXN_TYPES, OTHER_TYPES, orderedSites } from '../lib/model.js';
+import React2 from 'react';
+import { ROLES, ROLE_LABELS, TXN_TYPES, OTHER_TYPES, orderedSites, SEED_FORECAST, allocateForecast } from '../lib/model.js';
 
 export default function TimeStandardsTab({ seed, standards, onChange, volumes, onVolumes }) {
   const set = (patch) => onChange({ ...standards, ...patch });
@@ -61,6 +62,8 @@ export default function TimeStandardsTab({ seed, standards, onChange, volumes, o
         <div className="row"><label>Forecast uplift fallback % (sites with no last-week history)</label>
           <input type="number" value={standards.upliftPct} onChange={(e) => set({ upliftPct: Number(e.target.value) })} /></div>
       </div>
+      <h3 className="subhead">Infleet forecast to daily volumes</h3>
+      <ForecastAllocator volumes={volumes} onVolumes={onVolumes} />
       <h3 className="subhead">Daily volumes - infleets and repossessions (config, per site per day)</h3>
       <div className="scroll" style={{ maxWidth: 520 }}>
         <table>
@@ -81,7 +84,59 @@ export default function TimeStandardsTab({ seed, standards, onChange, volumes, o
           </tbody>
         </table>
       </div>
-      <p className="footnote">Repossessions run on a monthly cadence and are deliberately not in the daily seed; enter working volumes here.</p>
+      <p className="footnote">
+        Repossessions: measured per-site dailies come from recovery_cases (trailing 90 days) - a monthly
+        seed-job refresh item; enter or adjust working volumes here meanwhile. Infleets: use the allocator
+        above, then hand-tune per site.
+      </p>
+    </div>
+  );
+}
+
+function ForecastAllocator({ volumes, onVolumes }) {
+  const [fcast, setFcast] = React2.useState(SEED_FORECAST);
+  const [msg, setMsg] = React2.useState('');
+  const setMonthly = (i, v) => setFcast((p) => {
+    const n = JSON.parse(JSON.stringify(p)); n.markets[i].monthly = v; return n;
+  });
+  const setSplit = (i, j, v) => setFcast((p) => {
+    const n = JSON.parse(JSON.stringify(p)); n.markets[i].splits[j][1] = v; return n;
+  });
+  const apply = () => {
+    onVolumes(allocateForecast(fcast, volumes));
+    setMsg('Applied - Infleets/day rewritten below (monthly / ' + fcast.days + ' days).');
+  };
+  return (
+    <div className="panel" style={{ maxWidth: 720 }}>
+      <p className="footnote" style={{ marginTop: 0 }}>
+        Monthly targets by market from the Target Forecast tab of the Flex Transfer Tracker. ATL sends 70%
+        to Stone Mountain per your rule (15/15 Morrow-Marietta is an assumption); SJC 80/20 San Jose-Richmond.
+        LA (El Monte) and IAH have no dashboard allocation yet. The ATL 450-vs-750 question is still open.
+      </p>
+      <table>
+        <thead>
+          <tr><th className="site">Market</th><th>Monthly</th><th colSpan={3}>Site splits %</th></tr>
+        </thead>
+        <tbody>
+          {fcast.markets.map((mk, i) => (
+            <tr key={mk.m}>
+              <td className="site">{mk.m}</td>
+              <td><input type="number" min="0" value={mk.monthly} onChange={(e) => setMonthly(i, Number(e.target.value))} style={{ width: 70 }} /></td>
+              {mk.splits.map(([site, pct], j) => (
+                <td key={site} style={{ textAlign: 'left' }}>
+                  {site} <input type="number" min="0" max="100" value={pct} onChange={(e) => setSplit(i, j, Number(e.target.value))} style={{ width: 55 }} />
+                </td>
+              ))}
+              {Array.from({ length: 3 - mk.splits.length }).map((_, k) => <td key={'e' + k} />)}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <div className="controls" style={{ marginTop: 10, marginBottom: 0 }}>
+        <label>Days in month: <input type="number" min="1" value={fcast.days} onChange={(e) => setFcast({ ...fcast, days: Number(e.target.value) })} style={{ width: 60 }} /></label>
+        <button className="btn" onClick={apply}>Apply to volumes</button>
+        <span>{msg}</span>
+      </div>
     </div>
   );
 }

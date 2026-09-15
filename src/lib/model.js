@@ -47,6 +47,37 @@ export const DEFAULT_STANDARDS = {
   upliftPct: 0,         // fallback only, for sites with no last-week history
 };
 
+// Infleet forecast allocator: monthly infleets by market (Target Forecast tab,
+// Flex Transfer Tracker) -> site splits -> daily volumes. August figures; the
+// ATL 450-vs-750 question is still open. LA (El Monte) and IAH have no
+// allocation yet. Morrow/Marietta 15/15 was an assumption, not a rule.
+export const SEED_FORECAST = {
+  days: 31,
+  markets: [
+    { m: "ATL", monthly: 450, splits: [["Stone Mountain", 70], ["Morrow", 15], ["Marietta", 15]] },
+    { m: "BOS", monthly: 350, splits: [["New England", 100]] },
+    { m: "NY",  monthly: 180, splits: [["Larchmont", 100]] },
+    { m: "BNA", monthly: 30,  splits: [["West Nashville", 100]] },
+    { m: "CLT", monthly: 100, splits: [["South Charlotte", 100]] },
+    { m: "SJC", monthly: 520, splits: [["San Jose", 80], ["Richmond", 20]] },
+    { m: "DFW", monthly: 150, splits: [["Dallas", 100]] },
+  ],
+};
+
+export function allocateForecast(fcast, volumes) {
+  const add = {};
+  fcast.markets.forEach((mk) => {
+    mk.splits.forEach(([site, pct]) => {
+      add[site] = (add[site] || 0) + (mk.monthly * pct) / 100 / (fcast.days || 31);
+    });
+  });
+  const next = JSON.parse(JSON.stringify(volumes));
+  Object.keys(add).forEach((s) => {
+    next[s] = { ...(next[s] || {}), Infleets: Math.round(add[s] * 10) / 10 };
+  });
+  return next;
+}
+
 export const PREP_TXNS = ["Pickup", "Swap"]; // OpsSpec component lands the day before when prep timing = day-before
 
 export function dayLabel(d) {
