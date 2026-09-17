@@ -1,6 +1,6 @@
 import React from 'react';
 import React2 from 'react';
-import { ROLES, ROLE_LABELS, TXN_TYPES, OTHER_TYPES, orderedSites, SEED_FORECAST, allocateForecast } from '../lib/model.js';
+import { ROLES, ROLE_LABELS, TXN_TYPES, OTHER_TYPES, orderedSites, forecastFromSeed, allocateForecast } from '../lib/model.js';
 
 export default function TimeStandardsTab({ seed, standards, onChange, volumes, onVolumes }) {
   const set = (patch) => onChange({ ...standards, ...patch });
@@ -63,7 +63,7 @@ export default function TimeStandardsTab({ seed, standards, onChange, volumes, o
           <input type="number" value={standards.upliftPct} onChange={(e) => set({ upliftPct: Number(e.target.value) })} /></div>
       </div>
       <h3 className="subhead">Infleet forecast to daily volumes</h3>
-      <ForecastAllocator volumes={volumes} onVolumes={onVolumes} />
+      <ForecastAllocator seed={seed} volumes={volumes} onVolumes={onVolumes} />
       <h3 className="subhead">Daily volumes - infleets and repossessions (config, per site per day)</h3>
       <div className="scroll" style={{ maxWidth: 520 }}>
         <table>
@@ -93,8 +93,8 @@ export default function TimeStandardsTab({ seed, standards, onChange, volumes, o
   );
 }
 
-function ForecastAllocator({ volumes, onVolumes }) {
-  const [fcast, setFcast] = React2.useState(SEED_FORECAST);
+function ForecastAllocator({ seed, volumes, onVolumes }) {
+  const [fcast, setFcast] = React2.useState(() => forecastFromSeed(seed));
   const [msg, setMsg] = React2.useState('');
   const setMonthly = (i, v) => setFcast((p) => {
     const n = JSON.parse(JSON.stringify(p)); n.markets[i].monthly = v; return n;
@@ -109,9 +109,12 @@ function ForecastAllocator({ volumes, onVolumes }) {
   return (
     <div className="panel" style={{ maxWidth: 720 }}>
       <p className="footnote" style={{ marginTop: 0 }}>
-        Monthly targets by market from the Target Forecast tab of the Flex Transfer Tracker. ATL sends 70%
-        to Stone Mountain per your rule (15/15 Morrow-Marietta is an assumption); SJC 80/20 San Jose-Richmond.
-        LA (El Monte) and IAH have no dashboard allocation yet. The ATL 450-vs-750 question is still open.
+        {fcast.fromSeed
+          ? 'Monthly targets for ' + fcast.targets_month + ', read from the Target Forecast tab of the Flex Transfer Tracker by the daily seed job.'
+          : 'This seed predates config.infleets, so the built-in September 2026 targets are shown. The next seed will carry its own.'}
+        {' '}ATL sends 70% to Stone Mountain per your rule (15/15 Morrow-Marietta is an assumption); SJC 80/20
+        San Jose-Richmond. IAH has a target in the tracker but no site here, so it is excluded. The ATL
+        450-vs-750 question is still open. Edits here are session-local and do not change the tracker.
       </p>
       <table>
         <thead>

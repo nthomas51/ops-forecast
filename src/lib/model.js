@@ -51,18 +51,72 @@ export const DEFAULT_STANDARDS = {
 // Flex Transfer Tracker) -> site splits -> daily volumes. August figures; the
 // ATL 450-vs-750 question is still open. LA (El Monte) and IAH have no
 // allocation yet. Morrow/Marietta 15/15 was an assumption, not a rule.
-export const SEED_FORECAST = {
-  days: 31,
+// Infleet forecast allocator.
+//
+// The seed is the source of truth: the daily job reads the Target Forecast tab
+// of the Flex Transfer Tracker whenever the month turns and ships the result as
+// config.infleets. FALLBACK_FORECAST is only used for seeds written before that
+// block existed, so the tab still renders rather than going blank.
+export const FALLBACK_FORECAST = {
+  targets_month: "2026-09",
+  days: 30,
   markets: [
     { m: "ATL", monthly: 450, splits: [["Stone Mountain", 70], ["Morrow", 15], ["Marietta", 15]] },
     { m: "BOS", monthly: 350, splits: [["New England", 100]] },
-    { m: "NY",  monthly: 180, splits: [["Larchmont", 100]] },
+    { m: "NY",  monthly: 200, splits: [["Larchmont", 100]] },
     { m: "BNA", monthly: 30,  splits: [["West Nashville", 100]] },
     { m: "CLT", monthly: 100, splits: [["South Charlotte", 100]] },
-    { m: "SJC", monthly: 520, splits: [["San Jose", 80], ["Richmond", 20]] },
-    { m: "DFW", monthly: 150, splits: [["Dallas", 100]] },
+    { m: "SJC", monthly: 550, splits: [["San Jose", 80], ["Richmond", 20]] },
+    { m: "DFW", monthly: 200, splits: [["Dallas", 100]] },
+    { m: "LA",  monthly: 200, splits: [["El Monte", 100]] },
   ],
 };
+
+// IAH carries a monthly target in the tracker but has no site in this
+// dashboard, so the job excludes it by design rather than dropping it quietly.
+
+export function daysInMonth(ym) {
+  if (!ym) return 30;
+  const [y, m] = ym.split("-").map(Number);
+  return new Date(y, m, 0).getDate();
+}
+
+// Pull the allocator out of the seed, falling back to the constants above.
+export function forecastFromSeed(seed) {
+  const cfg = seed && seed.config && seed.config.infleets;
+  if (!cfg || !Array.isArray(cfg.markets) || !cfg.markets.length) {
+    return { ...FALLBACK_FORECAST, fromSeed: false };
+  }
+  return {
+    targets_month: cfg.targets_month,
+    days: cfg.days || daysInMonth(cfg.targets_month),
+    markets: cfg.markets,
+    fromSeed: true,
+  };
+}
+
+// Starting volumes for a session: measured repossession dailies and allocated
+// infleets straight from the seed, so Coverage counts them without anyone
+// clicking Apply. Anything the user edits on the Time standards tab overrides
+// these for the session only.
+export function seedVolumes(seed) {
+  const out = {};
+  const repos = (seed && seed.config && seed.config.repossessions) || {};
+  Object.keys(repos).forEach((s) => {
+    out[s] = { ...(out[s] || {}), Repossessions: Math.round(repos[s] * 10) / 10 };
+  });
+  const f = forecastFromSeed(seed);
+  const perDay = {};
+  f.markets.forEach((mk) => {
+    mk.splits.forEach(([site, pct]) => {
+      perDay[site] = (perDay[site] || 0) + (mk.monthly * pct) / 100 / (f.days || 30);
+    });
+  });
+  Object.keys(perDay).forEach((s) => {
+    out[s] = { ...(out[s] || {}), Infleets: Math.round(perDay[s] * 10) / 10 };
+  });
+  return out;
+}
 
 export function allocateForecast(fcast, volumes) {
   const add = {};

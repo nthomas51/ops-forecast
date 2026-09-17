@@ -62,9 +62,17 @@ Intraday updates are done by re-running the seed job.
   (telematics 25 + photos 15 + handling). The remaining minutes are
   placeholders - set them on the Time standards tab or edit
   `DEFAULT_STANDARDS` in `src/lib/model.js`.
-- Seed v2 items: last-week actuals for on-flex visits and service hours (so
-  forecast days stop falling back to booked for those streams), infleet
-  volumes from Redshift.
+- Infleets and repossessions come from the seed's `config` block, not from
+  constants in the app. The daily job measures repossessions from
+  `recovery_cases` (trailing 90 days, attributed through the originating
+  order's lot) and refreshes infleet market targets from the Target Forecast
+  tab of the Flex Transfer Tracker whenever the month turns. Both pre-fill the
+  volumes on the Time standards tab, so Coverage counts them without anyone
+  pressing Apply; edits there are session-local and never write back to the
+  tracker. A seed written before `config` existed falls back to the built-in
+  September 2026 targets, and the tab says so.
+- Seed v2 items: last-week actuals for on-flex visits and service hours, so
+  forecast days stop falling back to booked for those streams.
 
 ## Local development
 

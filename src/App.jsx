@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { getSeed } from './lib/dataSource.js';
-import { DEFAULT_STANDARDS } from './lib/model.js';
+import { DEFAULT_STANDARDS, seedVolumes } from './lib/model.js';
 import OrderMatrixTab from './components/OrderMatrixTab.jsx';
 import CoverageTab from './components/CoverageTab.jsx';
 import TransactionsTab from './components/TransactionsTab.jsx';
@@ -13,7 +13,7 @@ export default function App() {
   const seed = getSeed();
   const [tab, setTab] = useState('Order matrix');
   const [standards, setStandards] = useState(DEFAULT_STANDARDS);
-  const [volumes, setVolumes] = useState({});
+  const [volumes, setVolumes] = useState(() => seedVolumes(seed));
   const [flpRole, setFlpRole] = useState('FOH');
 
   return (
