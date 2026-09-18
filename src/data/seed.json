@@ -1,6 +1,6 @@
 {
  "meta": {
-  "generated_at": "2026-09-18T16:03:05+00:00",
+  "generated_at": "2026-09-18T12:06:03.887433-04:00",
   "window": {
    "start": "2026-09-19",
    "end": "2026-09-25",
@@ -63,16 +63,7 @@
    "West Nashville"
   ],
   "bucket_mapping": {
-   "buckets": [
-    "opsSpec",
-    "mcMea",
-    "flp",
-    "techA",
-    "techB",
-    "techC",
-    "other"
-   ],
-   "byTypeName": {
+   "buckets": {
     "Ops Specialist": "opsSpec",
     "Member Experience": "mcMea",
     "MEA Case Management": "mcMea",
@@ -83,7 +74,7 @@
     "Ops Tech B": "techB",
     "Ops Tech C": "techC"
    },
-   "other_coverage": [
+   "otherCoverage": [
     "BOH Coordinator",
     "BOH Manager",
     "FOH Coordinator",
@@ -93,7 +84,7 @@
     "Parts and Service",
     "Site Lead"
    ],
-   "time_off": [
+   "timeOff": [
     "Floating Holiday",
     "Leave [Unpaid]",
     "Personal Day",
@@ -102,7 +93,7 @@
     "Voluntary Time Off",
     "Voluntary [Unpaid]"
    ],
-   "non_task": [
+   "nonTask": [
     "Meeting",
     "Training"
    ]
@@ -114,20 +105,18 @@
   ],
   "sources": {
    "supply": "Assembled get_schedule (master schedule), 12 sites",
-   "orders": "flexcar.orders x flexcar.lots",
-   "onFlex": "flexcar.maintenance_bookings x flexcar.lots",
-   "repossessions": "flexcar.recovery_cases x cases x orders x lots, trailing 90d",
-   "infleets": "Flex Transfer Tracker - Target Forecast tab (config baseline)"
+   "orders": "Redshift flexcar.orders",
+   "onFlex": "Redshift flexcar.maintenance_bookings",
+   "repossessions": "Redshift flexcar.recovery_cases (trailing 90d)",
+   "infleets": "Flex Transfer Tracker \u2014 Target Forecast tab (config)"
   },
   "warnings": [
-   "supply: multi-day time-off blocks counted entirely into their start day (per spec, bucket by start time): [{\"site\": \"Auburn\", \"type\": \"Floating Holiday\", \"start\": \"2026-09-21T00:00:00-04:00\", \"hours\": 96.0}, {\"site\": \"San Jose\", \"type\": \"Vacation\", \"start\": \"2026-09-24T00:00:00-07:00\", \"hours\": 144.0}]",
-   "data-quality: type_name values with stray whitespace: 'Parts and Service '",
-   "demand: unmapped order site codes skipped: [{\"su\": \"OTHER\", \"day\": \"2026-09-17\", \"di\": 5, \"orders\": {\"Pickup\": 0, \"Swap\": 0, \"Delivery\": 0, \"Return\": 1}, \"n\": 1}]",
-   "repossessions: skipped cases (no dashboard market): [{\"lot\": \"OTHER:no-lot\", \"n\": 2}, {\"lot\": \"OTHER:ABG Fort Lauderdale 1\", \"n\": 1}]",
-   "infleets: targets_month 2026-09 matches anchor month; baseline config used, tracker not refetched",
-   "infleets: IAH monthly target 200 excluded by design - no dashboard site",
-   "infleets: OPEN - ATL 450 vs 750 unresolved (sheet row 16 carries the higher scenario)",
-   "infleets: OPEN - Morrow/Marietta 15/15 split is an assumption, not a stated rule"
+   "Whitespace variants in type_name (trimmed before matching): 'Parts and Service '",
+   "Unmapped order site codes skipped: OTHER 1 order(s) on 2026-09-17",
+   "Repossession cases skipped (no modelled market): no-lot (2); ABG Fort Lauderdale 1 (1) \u2014 3 case(s) total",
+   "IAH market target (200/mo) excluded by design: no dashboard site.",
+   "Open item: ATL monthly target 450 vs 750 unresolved (sheet row 16 carries the higher scenario).",
+   "Open item: Morrow/Marietta 15/15 ATL split is an assumption, not a stated rule."
   ]
  },
  "staffing": {
@@ -2006,7 +1995,7 @@
      "Return": 0
     },
     "2026-09-25": {
-     "Pickup": 2,
+     "Pickup": 1,
      "Swap": 0,
      "Delivery": 0,
      "Return": 1
@@ -2979,10 +2968,10 @@
      }
     },
     "2026-09-21": {
-     "activeBookings": 11,
-     "activeEstMin": 948,
+     "activeBookings": 10,
+     "activeEstMin": 798,
      "byStatus": {
-      "active": 11,
+      "active": 10,
       "cancelled": 1
      }
     },
@@ -3161,10 +3150,10 @@
      }
     },
     "2026-09-22": {
-     "activeBookings": 2,
-     "activeEstMin": 66,
+     "activeBookings": 1,
+     "activeEstMin": 36,
      "byStatus": {
-      "active": 2,
+      "active": 1,
       "cancelled": 1
      }
     },
@@ -3617,84 +3606,74 @@
   },
   "infleets": {
    "targets_month": "2026-09",
-   "refreshed_this_run": false,
-   "markets": [
-    {
-     "code": "ATL",
-     "monthly_target": 450,
-     "split": {
+   "markets": {
+    "ATL": {
+     "target": 450,
+     "splits": {
       "Stone Mountain": 0.7,
       "Morrow": 0.15,
       "Marietta": 0.15
      }
     },
-    {
-     "code": "BOS",
-     "monthly_target": 350,
-     "split": {
+    "BOS": {
+     "target": 350,
+     "splits": {
       "New England": 1.0
      }
     },
-    {
-     "code": "NY",
-     "monthly_target": 200,
-     "split": {
+    "NY": {
+     "target": 200,
+     "splits": {
       "Larchmont": 1.0
      }
     },
-    {
-     "code": "BNA",
-     "monthly_target": 30,
-     "split": {
+    "BNA": {
+     "target": 30,
+     "splits": {
       "West Nashville": 1.0
      }
     },
-    {
-     "code": "CLT",
-     "monthly_target": 100,
-     "split": {
+    "CLT": {
+     "target": 100,
+     "splits": {
       "South Charlotte": 1.0
      }
     },
-    {
-     "code": "SJC",
-     "monthly_target": 550,
-     "split": {
+    "SJC": {
+     "target": 550,
+     "splits": {
       "San Jose": 0.8,
       "Richmond": 0.2
      }
     },
-    {
-     "code": "DFW",
-     "monthly_target": 200,
-     "split": {
+    "DFW": {
+     "target": 200,
+     "splits": {
       "Dallas": 1.0
      }
     },
-    {
-     "code": "LA",
-     "monthly_target": 200,
-     "split": {
+    "LA": {
+     "target": 200,
+     "splits": {
       "El Monte": 1.0
      }
     },
-    {
-     "code": "IAH",
-     "monthly_target": 200,
-     "split": {}
+    "IAH": {
+     "target": 200,
+     "splits": {}
     }
-   ],
+   },
    "perSite": {
-    "Dallas": 6.6667,
-    "El Monte": 6.6667,
-    "Larchmont": 6.6667,
-    "Marietta": 2.25,
-    "Morrow": 2.25,
     "New England": 11.6667,
-    "Richmond": 3.6667,
+    "Stone Mountain": 10.5,
+    "Marietta": 2.25,
+    "Larchmont": 6.6667,
+    "Morrow": 2.25,
     "San Jose": 14.6667,
     "South Charlotte": 3.3333,
-    "Stone Mountain": 10.5,
+    "El Monte": 6.6667,
+    "Dallas": 6.6667,
+    "Richmond": 3.6667,
     "West Nashville": 1.0
    }
   }
