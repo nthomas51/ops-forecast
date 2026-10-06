@@ -1,6 +1,6 @@
 {
  "meta": {
-  "generated_at": "2026-10-06T22:23:54.500807+00:00",
+  "generated_at": "2026-10-06T23:01:42.822095+00:00",
   "window": {
    "start": "2026-10-07",
    "end": "2026-10-13",
@@ -120,7 +120,12 @@
    "Infleet targets refreshed from Target Forecast tab for 2026-10 - changed: BOS: 350 -> 210; SJC: 550 -> 362; DFW: 200 -> 250; LA: 200 -> 250",
    "Infleet: BNA October cell reads 'new' (non-numeric); previous target 30 carried forward, not guessed",
    "Infleet: IAH target 200 excluded by design - no dashboard site",
-   "Infleet open items: ATL 450-vs-750 unresolved (sheet row 16 carries the higher scenario); Morrow/Marietta 15/15 split is an assumption, not a stated rule"
+   "Infleet open items: ATL 450-vs-750 unresolved (sheet row 16 carries the higher scenario); Morrow/Marietta 15/15 split is an assumption, not a stated rule",
+   "Order capacity: El Monte.delivery is not configured on any of its lots (El Monte - 11705 Valley Blvd.) - null, not zero",
+   "Order capacity: El Monte.service is not configured on any of its lots (El Monte - 11705 Valley Blvd.) - null, not zero",
+   "Order capacity: New England.delivery sums only the lots that set it; unset at Chestnut Hill - 199 Boylston St",
+   "Order capacity: New England.service sums only the lots that set it; unset at Chestnut Hill - 199 Boylston St",
+   "Order capacity: San Jose.delivery is not configured on any of its lots (San Jose - 2198 Tully Road) - null, not zero"
   ]
  },
  "staffing": {
@@ -4367,6 +4372,187 @@
     "West Nashville": 0.968,
     "El Monte": 8.065,
     "Dallas": 8.065
+   }
+  },
+  "orderCapacity": {
+   "source": "flexcar.lots (daily_order_capacity, daily_delivery_capacity, max_service_capacity_per_day)",
+   "note": "Static per-lot admin settings, not a per-day series: the same ceiling applies to every day of the window until someone edits the lot. daily_order_capacity is the admin UI's 'Daily Pickup & Swap Capacity'. null means not configured, which is not the same as a ceiling of 0.",
+   "bySite": {
+    "New England": {
+     "pickupSwap": 91,
+     "delivery": 5,
+     "service": 18,
+     "lots": [
+      "Auburn - 525 Washington St",
+      "Chestnut Hill - 199 Boylston St"
+     ]
+    },
+    "Stone Mountain": {
+     "pickupSwap": 57,
+     "delivery": 15,
+     "service": 100,
+     "lots": [
+      "Stone Mountain - 4400 Stone Mountain Hwy."
+     ]
+    },
+    "Marietta": {
+     "pickupSwap": 49,
+     "delivery": 2,
+     "service": 20,
+     "lots": [
+      "Marietta - 1431 Cobb Pkwy SE"
+     ]
+    },
+    "Larchmont": {
+     "pickupSwap": 61,
+     "delivery": 2,
+     "service": 2,
+     "lots": [
+      "Larchmont - 2500 Boston Post Road"
+     ]
+    },
+    "San Jose": {
+     "pickupSwap": 40,
+     "delivery": null,
+     "service": 5,
+     "lots": [
+      "San Jose - 2198 Tully Road"
+     ]
+    },
+    "South Charlotte": {
+     "pickupSwap": 37,
+     "delivery": 15,
+     "service": 11,
+     "lots": [
+      "South Charlotte - 8525 South Blvd."
+     ]
+    },
+    "Morrow": {
+     "pickupSwap": 44,
+     "delivery": 1,
+     "service": 18,
+     "lots": [
+      "Morrow - 1425 Southlake Pkwy"
+     ]
+    },
+    "Richmond": {
+     "pickupSwap": 19,
+     "delivery": 2,
+     "service": 5,
+     "lots": [
+      "Richmond - 3230 Auto Plaza Suite A"
+     ]
+    },
+    "West Nashville": {
+     "pickupSwap": 13,
+     "delivery": 14,
+     "service": 7,
+     "lots": [
+      "West Nashville - 7008 Westbelt Dr"
+     ]
+    },
+    "El Monte": {
+     "pickupSwap": 13,
+     "delivery": null,
+     "service": null,
+     "lots": [
+      "El Monte - 11705 Valley Blvd."
+     ]
+    },
+    "Dallas": {
+     "pickupSwap": 22,
+     "delivery": 0,
+     "service": 3,
+     "lots": [
+      "Dallas - 39550 Lyndon B Johnson Fwy"
+     ]
+    }
+   },
+   "byLot": {
+    "El Monte - 11705 Valley Blvd.": {
+     "su": "062f4d3f",
+     "site": "El Monte",
+     "pickupSwap": 13,
+     "delivery": null,
+     "service": null
+    },
+    "Morrow - 1425 Southlake Pkwy": {
+     "su": "08415866",
+     "site": "Morrow",
+     "pickupSwap": 44,
+     "delivery": 1,
+     "service": 18
+    },
+    "Dallas - 39550 Lyndon B Johnson Fwy": {
+     "su": "1906cb28",
+     "site": "Dallas",
+     "pickupSwap": 22,
+     "delivery": 0,
+     "service": 3
+    },
+    "Richmond - 3230 Auto Plaza Suite A": {
+     "su": "4c3f7650",
+     "site": "Richmond",
+     "pickupSwap": 19,
+     "delivery": 2,
+     "service": 5
+    },
+    "South Charlotte - 8525 South Blvd.": {
+     "su": "4da47890",
+     "site": "South Charlotte",
+     "pickupSwap": 37,
+     "delivery": 15,
+     "service": 11
+    },
+    "West Nashville - 7008 Westbelt Dr": {
+     "su": "520a1018",
+     "site": "West Nashville",
+     "pickupSwap": 13,
+     "delivery": 14,
+     "service": 7
+    },
+    "Marietta - 1431 Cobb Pkwy SE": {
+     "su": "546915e7",
+     "site": "Marietta",
+     "pickupSwap": 49,
+     "delivery": 2,
+     "service": 20
+    },
+    "San Jose - 2198 Tully Road": {
+     "su": "55f4dfea",
+     "site": "San Jose",
+     "pickupSwap": 40,
+     "delivery": null,
+     "service": 5
+    },
+    "Stone Mountain - 4400 Stone Mountain Hwy.": {
+     "su": "92ea74b9",
+     "site": "Stone Mountain",
+     "pickupSwap": 57,
+     "delivery": 15,
+     "service": 100
+    },
+    "Auburn - 525 Washington St": {
+     "su": "93dd7580",
+     "site": "New England",
+     "pickupSwap": 52,
+     "delivery": 5,
+     "service": 18
+    },
+    "Chestnut Hill - 199 Boylston St": {
+     "su": "b3b6e1f9",
+     "site": "New England",
+     "pickupSwap": 39,
+     "delivery": null,
+     "service": null
+    },
+    "Larchmont - 2500 Boston Post Road": {
+     "su": "d45eea60",
+     "site": "Larchmont",
+     "pickupSwap": 61,
+     "delivery": 2,
+     "service": 2
+    }
    }
   }
  }
