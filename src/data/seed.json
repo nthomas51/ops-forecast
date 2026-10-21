@@ -1,6 +1,6 @@
 {
  "meta": {
-  "generated_at": "2026-10-21T13:28:45.405772-04:00",
+  "generated_at": "2026-10-21T17:28:43.776444+00:00",
   "window": {
    "start": "2026-10-22",
    "end": "2026-10-28",
@@ -16,17 +16,16 @@
   },
   "anchor_date": "2026-10-21",
   "site_timezones": {
-   "Auburn": "America/New_York",
-   "Chestnut Hill": "America/New_York",
+   "New England": "America/New_York",
    "Stone Mountain": "America/New_York",
    "Marietta": "America/New_York",
    "Morrow": "America/New_York",
    "Larchmont": "America/New_York",
-   "Charlotte": "America/New_York",
-   "Nashville": "America/Chicago",
-   "Dallas": "America/Chicago",
    "San Jose": "America/Los_Angeles",
    "Richmond": "America/Los_Angeles",
+   "Dallas": "America/Chicago",
+   "South Charlotte": "America/New_York",
+   "West Nashville": "America/Chicago",
    "El Monte": "America/Los_Angeles"
   },
   "assembled_site_ids": {
@@ -63,40 +62,23 @@
    "Dallas"
   ],
   "bucket_mapping": {
-   "buckets": {
-    "Ops Specialist": "opsSpec",
-    "Member Experience": "mcMea",
-    "MEA Case Management": "mcMea",
-    "Member Concierge Off-site Hub 1": "mcMea",
-    "Overtime FOH": "mcMea",
-    "FLP": "flp",
-    "Ops Tech A": "techA",
-    "Ops Tech B": "techB",
-    "Ops Tech C": "techC"
-   },
-   "otherCoverage": [
-    "BOH Coordinator",
-    "BOH Manager",
-    "FOH Coordinator",
-    "FOH Manager",
-    "Fulfillment/Delivery",
-    "On Flex Coordinator",
-    "Parts and Service",
-    "Site Lead"
-   ],
-   "timeOff": [
-    "Floating Holiday",
-    "Leave [Unpaid]",
-    "Personal Day",
-    "Sick",
-    "Vacation",
-    "Voluntary Time Off",
-    "Voluntary [Unpaid]"
-   ],
-   "nonTask": [
-    "Meeting",
-    "Training"
-   ]
+   "Ops Specialist": "opsSpec",
+   "Member Experience": "mcMea",
+   "MEA Case Management": "mcMea",
+   "Member Concierge Off-site Hub 1": "mcMea",
+   "Overtime FOH": "mcMea",
+   "FLP": "flp",
+   "Ops Tech A": "techA",
+   "Ops Tech B": "techB",
+   "Ops Tech C": "techC",
+   "BOH Coordinator": "other",
+   "BOH Manager": "other",
+   "FOH Coordinator": "other",
+   "FOH Manager": "other",
+   "Fulfillment/Delivery": "other",
+   "On Flex Coordinator": "other",
+   "Parts and Service": "other",
+   "Site Lead": "other"
   },
   "excluded_from_supply": [
    "Break (Ops)",
@@ -110,27 +92,34 @@
    "unassignedService": "flexcar.unassigned_services",
    "assignedService": "flexcar.capacity_bookings (source_type='Order')",
    "repossessions": "flexcar.recovery_cases x cases x orders x lots, trailing 90d",
-   "orderCapacity": "flexcar.lots",
-   "infleets": "Flex Transfer Tracker, Target Forecast tab"
+   "infleets": "Flex Transfer Tracker, Target Forecast tab",
+   "orderCapacity": "flexcar.lots"
   },
   "warnings": [
-   "supply: type_name values with stray whitespace: 'Parts and Service '",
-   "supply: unrecognised type_name -> bucket 'other': Bereavement (31.5h), Leave [Paid] (36.2h), NCNS (47.5h), Outage PTO (26.5h), R&P Outbound (75.0h), Service Manager (42.5h)",
-   "supply: coverage segments starting before 05:00 local or longer than 14h: Marietta/Member Experience 2026-10-25T00:00:00-04:00 12.0h; Marietta/NCNS 2026-10-22T08:30:00-04:00 23.5h; Marietta/NCNS 2026-10-23T08:00:00-04:00 24.0h",
-   "supply: activity hours dropped outside window: Marietta 24.0h",
-   "demand.orders: unmapped su codes skipped: OTHER@di1=12",
-   "repossessions: skipped lots (no modelled market): no-lot=2, ABG Fort Lauderdale 1=1, 0 Crossings Blvd=1 (total 4)",
-   "orderCapacity: El Monte.delivery null at every contributing lot; emitted null",
-   "orderCapacity: El Monte.service null at every contributing lot; emitted null",
-   "orderCapacity: New England.delivery partial \u2014 1 of 2 lots null",
-   "orderCapacity: New England.service partial \u2014 1 of 2 lots null",
-   "orderCapacity: San Jose.delivery null at every contributing lot; emitted null",
-   "verification: anchor D=2026-10-21; Redshift CURRENT_DATE=2026-10-21 (match, not in the UTC boundary window)",
-   "verification: seed totals match the warehouse exactly - orders 689, on-flex 443/25851min, unassigned 239/10704min, assigned 123/8185min; repossessions 1507 of 1511 (4 skipped)",
-   "canary: capacity_bookings mirror short 10 of 443 on-flex bookings network-wide (2.26%, above the 2% threshold); Larchmont short 3 of 13 - flagged. on-flex is read from maintenance_bookings and is unaffected.",
-   "unassigned service: 239 jobs / 10704 min in-window is far above the usual single-digit-per-week network volume. Auburn 170 jobs (7158 min) and Stone Mountain 65 jobs (3450 min) carry nearly all of it, with Auburn at 42 jobs on day 1 and 33 on day 7. Surfaced rather than adjusted.",
-   "unassigned service: infleetJobs is zero everywhere, so no overlap with config.infleets this run",
-   "infleets: D month 2026-10 matches targets_month 2026-10, so the October tracker targets were reused unchanged; the Target Forecast tab was not re-fetched this run"
+   "data quality: type_name values with stray whitespace: 'Parts and Service '",
+   "unrecognised type_name 'Bereavement' (31.5h) bucketed to other",
+   "unrecognised type_name 'Leave [Paid]' (36.2h) bucketed to other",
+   "unrecognised type_name 'NCNS' (47.5h) bucketed to other",
+   "unrecognised type_name 'Outage PTO' (26.5h) bucketed to other",
+   "unrecognised type_name 'R&P Outbound' (75.0h) bucketed to other",
+   "unrecognised type_name 'Service Manager' (42.5h) bucketed to other",
+   "supply: dropped 24.0h at Marietta falling outside 2026-10-22..2026-10-28",
+   "orders: unmapped su 'OTHER' skipped, 12 order(s) in day bucket 2026-10-16",
+   "repossessions: skipped 2 case(s) at unmapped lot 'no-lot'",
+   "repossessions: skipped 1 case(s) at unmapped lot 'ABG Fort Lauderdale 1'",
+   "repossessions: skipped 1 case(s) at unmapped lot '0 Crossings Blvd'",
+   "infleets: D's month matches config targets_month 2026-10; tracker not re-fetched this run",
+   "infleets: IAH target 200 excluded by design - no dashboard site",
+   "infleets: ATL 450-vs-750 scenario unresolved; Morrow/Marietta 15/15 split is an assumption",
+   "orderCapacity: New England delivery total is partial - 1 of 2 lot(s) null",
+   "orderCapacity: New England service total is partial - 1 of 2 lot(s) null",
+   "orderCapacity: San Jose has no configured delivery across its lot(s); emitted null",
+   "orderCapacity: El Monte has no configured delivery across its lot(s); emitted null",
+   "orderCapacity: El Monte has no configured service across its lot(s); emitted null",
+   "anchor: Redshift CURRENT_DATE (2026-10-21) matched anchor D - run was clear of the UTC boundary window",
+   "canary: capacity_bookings Maintenance::Booking mirror short 10 of 443 on-flex bookings network-wide (2.3%, over the 2% threshold); Larchmont short by 3 of 13. on-flex is read from maintenance_bookings, so demand.onFlex is unaffected. Other sites short by 0-2.",
+   "unassignedService: 239 jobs / 10,704 min network-wide this window, far above the usual single-digit weekly volume - New England 170 jobs (119.3h), Stone Mountain 65 (57.5h). infleetJobs is 0 everywhere, so no overlap with config.infleets.",
+   "classification: Bereavement, Leave [Paid], NCNS and Outage PTO are absence-like but are not on the time-off list, so they land in staffing.byBucket.other as coverage (141.7h total). R&P Outbound (75.0h) and Service Manager (42.5h) are also unmapped. Needs a bucket decision."
   ]
  },
  "staffing": {
@@ -147,13 +136,13 @@
     },
     "byType": {
      "BOH Coordinator": 8.5,
-     "FOH Coordinator": 8.0,
-     "Member Experience": 48.0,
      "Ops Specialist": 72.0,
-     "Ops Tech A": 24.0,
+     "Parts and Service": 24.0,
      "Ops Tech B": 56.0,
+     "Ops Tech A": 24.0,
      "Ops Tech C": 32.0,
-     "Parts and Service": 24.0
+     "Member Experience": 48.0,
+     "FOH Coordinator": 8.0
     }
    },
    "2026-10-23": {
@@ -168,14 +157,14 @@
     },
     "byType": {
      "BOH Coordinator": 8.5,
-     "FOH Coordinator": 8.0,
-     "MEA Case Management": 8.0,
-     "Member Experience": 48.5,
      "Ops Specialist": 72.0,
-     "Ops Tech A": 16.0,
+     "Parts and Service": 16.0,
      "Ops Tech B": 40.0,
      "Ops Tech C": 24.0,
-     "Parts and Service": 16.0
+     "Ops Tech A": 16.0,
+     "Member Experience": 48.5,
+     "MEA Case Management": 8.0,
+     "FOH Coordinator": 8.0
     }
    },
    "2026-10-24": {
@@ -190,13 +179,13 @@
     },
     "byType": {
      "BOH Coordinator": 17.0,
-     "FOH Coordinator": 8.0,
-     "Member Experience": 66.5,
      "Ops Specialist": 56.0,
-     "Ops Tech A": 8.0,
+     "Parts and Service": 8.0,
      "Ops Tech B": 32.0,
      "Ops Tech C": 24.0,
-     "Parts and Service": 8.0
+     "Ops Tech A": 8.0,
+     "Member Experience": 66.5,
+     "FOH Coordinator": 8.0
     }
    },
    "2026-10-25": {
@@ -211,14 +200,14 @@
     },
     "byType": {
      "BOH Coordinator": 17.0,
-     "FOH Coordinator": 8.0,
-     "MEA Case Management": 7.0,
-     "Member Experience": 58.5,
      "Ops Specialist": 56.0,
-     "Ops Tech A": 8.0,
+     "Parts and Service": 8.0,
      "Ops Tech B": 24.0,
+     "Ops Tech A": 8.0,
      "Ops Tech C": 24.0,
-     "Parts and Service": 8.0
+     "Member Experience": 58.5,
+     "MEA Case Management": 7.0,
+     "FOH Coordinator": 8.0
     }
    },
    "2026-10-26": {
@@ -233,14 +222,14 @@
     },
     "byType": {
      "BOH Coordinator": 8.5,
-     "FOH Coordinator": 8.0,
-     "MEA Case Management": 7.5,
-     "Member Experience": 48.0,
      "Ops Specialist": 80.0,
-     "Ops Tech A": 16.0,
+     "Parts and Service": 16.0,
      "Ops Tech B": 32.0,
+     "Ops Tech A": 16.0,
      "Ops Tech C": 30.0,
-     "Parts and Service": 16.0
+     "Member Experience": 48.0,
+     "MEA Case Management": 7.5,
+     "FOH Coordinator": 8.0
     }
    },
    "2026-10-27": {
@@ -255,14 +244,14 @@
     },
     "byType": {
      "BOH Coordinator": 8.5,
-     "FOH Coordinator": 8.0,
-     "MEA Case Management": 7.5,
-     "Member Experience": 56.0,
      "Ops Specialist": 64.0,
-     "Ops Tech A": 16.0,
+     "Parts and Service": 24.0,
      "Ops Tech B": 48.0,
+     "Ops Tech A": 16.0,
      "Ops Tech C": 32.0,
-     "Parts and Service": 24.0
+     "Member Experience": 56.0,
+     "MEA Case Management": 7.5,
+     "FOH Coordinator": 8.0
     }
    },
    "2026-10-28": {
@@ -277,13 +266,13 @@
     },
     "byType": {
      "BOH Coordinator": 17.0,
-     "MEA Case Management": 7.5,
-     "Member Experience": 56.0,
      "Ops Specialist": 56.0,
-     "Ops Tech A": 24.0,
+     "Parts and Service": 24.0,
      "Ops Tech B": 48.0,
+     "Ops Tech A": 24.0,
      "Ops Tech C": 30.0,
-     "Parts and Service": 24.0
+     "Member Experience": 56.0,
+     "MEA Case Management": 7.5
     }
    }
   },
@@ -300,17 +289,17 @@
     },
     "byType": {
      "BOH Coordinator": 8.0,
-     "BOH Manager": 9.0,
-     "FLP": 16.5,
-     "MEA Case Management": 8.0,
-     "Member Experience": 42.75,
-     "On Flex Coordinator": 7.5,
+     "Parts and Service": 16.0,
      "Ops Specialist": 120.0,
-     "Ops Tech A": 10.5,
-     "Ops Tech B": 24.0,
+     "BOH Manager": 9.0,
      "Ops Tech C": 48.0,
+     "Ops Tech B": 24.0,
      "Outage PTO": 8.5,
-     "Parts and Service": 16.0
+     "Ops Tech A": 10.5,
+     "FLP": 16.5,
+     "Member Experience": 42.75,
+     "MEA Case Management": 8.0,
+     "On Flex Coordinator": 7.5
     }
    },
    "2026-10-23": {
@@ -325,17 +314,17 @@
     },
     "byType": {
      "BOH Coordinator": 8.0,
-     "BOH Manager": 9.0,
-     "FLP": 8.25,
-     "FOH Manager": 8.5,
-     "MEA Case Management": 8.0,
-     "Member Experience": 43.5,
+     "Parts and Service": 8.0,
      "Ops Specialist": 64.0,
-     "Ops Tech A": 14.0,
      "Ops Tech B": 24.0,
      "Ops Tech C": 88.0,
+     "BOH Manager": 9.0,
      "Outage PTO": 9.0,
-     "Parts and Service": 8.0
+     "Ops Tech A": 14.0,
+     "FLP": 8.25,
+     "Member Experience": 43.5,
+     "MEA Case Management": 8.0,
+     "FOH Manager": 8.5
     }
    },
    "2026-10-24": {
@@ -349,16 +338,16 @@
      "other": 35.0
     },
     "byType": {
-     "FLP": 8.25,
-     "FOH Manager": 9.0,
-     "Leave [Paid]": 9.0,
-     "MEA Case Management": 8.0,
-     "Member Experience": 34.75,
+     "Parts and Service": 8.0,
      "Ops Specialist": 64.0,
      "Ops Tech B": 24.0,
      "Ops Tech C": 72.0,
      "Outage PTO": 9.0,
-     "Parts and Service": 8.0
+     "FLP": 8.25,
+     "Member Experience": 34.75,
+     "Leave [Paid]": 9.0,
+     "MEA Case Management": 8.0,
+     "FOH Manager": 9.0
     }
    },
    "2026-10-25": {
@@ -372,14 +361,14 @@
      "other": 24.5
     },
     "byType": {
-     "FLP": 9.25,
-     "Leave [Paid]": 9.0,
-     "Member Experience": 36.75,
-     "On Flex Coordinator": 7.5,
      "Ops Specialist": 56.0,
+     "Parts and Service": 8.0,
      "Ops Tech B": 16.0,
      "Ops Tech C": 40.0,
-     "Parts and Service": 8.0
+     "FLP": 9.25,
+     "Member Experience": 36.75,
+     "Leave [Paid]": 9.0,
+     "On Flex Coordinator": 7.5
     }
    },
    "2026-10-26": {
@@ -394,18 +383,18 @@
     },
     "byType": {
      "BOH Coordinator": 8.0,
-     "BOH Manager": 9.0,
-     "Bereavement": 4.5,
-     "FLP": 8.25,
-     "FOH Manager": 8.0,
-     "Leave [Paid]": 9.0,
-     "Member Experience": 44.25,
-     "On Flex Coordinator": 7.5,
      "Ops Specialist": 56.0,
-     "Ops Tech A": 10.5,
+     "Parts and Service": 8.0,
      "Ops Tech B": 32.0,
      "Ops Tech C": 88.0,
-     "Parts and Service": 8.0
+     "BOH Manager": 9.0,
+     "Bereavement": 4.5,
+     "Ops Tech A": 10.5,
+     "FLP": 8.25,
+     "Member Experience": 44.25,
+     "Leave [Paid]": 9.0,
+     "FOH Manager": 8.0,
+     "On Flex Coordinator": 7.5
     }
    },
    "2026-10-27": {
@@ -420,19 +409,19 @@
     },
     "byType": {
      "BOH Coordinator": 8.0,
+     "Parts and Service": 16.0,
+     "Ops Specialist": 120.0,
+     "Ops Tech B": 40.0,
      "BOH Manager": 9.0,
+     "Ops Tech C": 80.0,
      "Bereavement": 13.5,
+     "Ops Tech A": 10.5,
      "FLP": 16.5,
-     "FOH Manager": 8.0,
+     "Member Experience": 51.75,
      "Leave [Paid]": 9.25,
      "MEA Case Management": 8.0,
-     "Member Experience": 51.75,
-     "On Flex Coordinator": 9.0,
-     "Ops Specialist": 120.0,
-     "Ops Tech A": 10.5,
-     "Ops Tech B": 40.0,
-     "Ops Tech C": 80.0,
-     "Parts and Service": 16.0
+     "FOH Manager": 8.0,
+     "On Flex Coordinator": 9.0
     }
    },
    "2026-10-28": {
@@ -447,18 +436,18 @@
     },
     "byType": {
      "BOH Coordinator": 8.0,
-     "BOH Manager": 9.0,
-     "Bereavement": 13.5,
-     "FLP": 16.5,
-     "FOH Manager": 7.25,
-     "MEA Case Management": 8.0,
-     "Member Experience": 43.75,
-     "On Flex Coordinator": 7.5,
+     "Parts and Service": 16.0,
      "Ops Specialist": 120.0,
-     "Ops Tech A": 10.5,
      "Ops Tech B": 40.0,
      "Ops Tech C": 64.0,
-     "Parts and Service": 16.0
+     "BOH Manager": 9.0,
+     "Bereavement": 13.5,
+     "Ops Tech A": 10.5,
+     "FLP": 16.5,
+     "Member Experience": 43.75,
+     "MEA Case Management": 8.0,
+     "FOH Manager": 7.25,
+     "On Flex Coordinator": 7.5
     }
    }
   },
@@ -475,13 +464,13 @@
     },
     "byType": {
      "BOH Coordinator": 17.5,
-     "MEA Case Management": 2.0,
-     "Member Experience": 14.0,
      "Ops Specialist": 33.5,
+     "Parts and Service": 8.0,
      "Ops Tech A": 9.5,
-     "Ops Tech B": 8.5,
      "Ops Tech C": 17.0,
-     "Parts and Service": 8.0
+     "Ops Tech B": 8.5,
+     "Member Experience": 14.0,
+     "MEA Case Management": 2.0
     }
    },
    "2026-10-23": {
@@ -495,14 +484,14 @@
      "other": 16.5
     },
     "byType": {
-     "BOH Coordinator": 8.5,
-     "MEA Case Management": 3.0,
-     "Member Experience": 21.0,
      "Ops Specialist": 25.0,
+     "Parts and Service": 8.0,
      "Ops Tech A": 9.5,
-     "Ops Tech B": 8.5,
      "Ops Tech C": 8.5,
-     "Parts and Service": 8.0
+     "Ops Tech B": 8.5,
+     "Member Experience": 21.0,
+     "MEA Case Management": 3.0,
+     "BOH Coordinator": 8.5
     }
    },
    "2026-10-24": {
@@ -516,11 +505,11 @@
      "other": 7.0
     },
     "byType": {
-     "MEA Case Management": 2.0,
-     "Member Experience": 21.5,
      "Ops Specialist": 24.0,
+     "Parts and Service": 7.0,
      "Ops Tech C": 7.5,
-     "Parts and Service": 7.0
+     "Member Experience": 21.5,
+     "MEA Case Management": 2.0
     }
    },
    "2026-10-25": {
@@ -535,11 +524,11 @@
     },
     "byType": {
      "BOH Coordinator": 8.0,
-     "MEA Case Management": 2.0,
-     "Member Experience": 21.5,
      "Ops Specialist": 15.5,
+     "Parts and Service": 7.0,
      "Ops Tech C": 7.5,
-     "Parts and Service": 7.0
+     "Member Experience": 21.5,
+     "MEA Case Management": 2.0
     }
    },
    "2026-10-26": {
@@ -554,13 +543,13 @@
     },
     "byType": {
      "BOH Coordinator": 17.5,
-     "MEA Case Management": 1.0,
-     "Member Experience": 14.5,
      "Ops Specialist": 41.0,
+     "Parts and Service": 7.0,
      "Ops Tech A": 9.5,
-     "Ops Tech B": 8.5,
      "Ops Tech C": 8.5,
-     "Parts and Service": 7.0
+     "Ops Tech B": 8.5,
+     "Member Experience": 14.5,
+     "MEA Case Management": 1.0
     }
    },
    "2026-10-27": {
@@ -575,12 +564,12 @@
     },
     "byType": {
      "BOH Coordinator": 17.5,
-     "MEA Case Management": 2.0,
-     "Member Experience": 21.5,
      "Ops Specialist": 33.0,
      "Ops Tech A": 9.5,
+     "Ops Tech C": 17.0,
      "Ops Tech B": 8.5,
-     "Ops Tech C": 17.0
+     "Member Experience": 21.5,
+     "MEA Case Management": 2.0
     }
    },
    "2026-10-28": {
@@ -595,12 +584,12 @@
     },
     "byType": {
      "BOH Coordinator": 17.5,
-     "MEA Case Management": 3.0,
-     "Member Experience": 28.5,
      "Ops Specialist": 34.0,
      "Ops Tech A": 9.5,
+     "Ops Tech C": 17.0,
      "Ops Tech B": 8.5,
-     "Ops Tech C": 17.0
+     "Member Experience": 28.5,
+     "MEA Case Management": 3.0
     }
    }
   },
@@ -617,13 +606,13 @@
     },
     "byType": {
      "BOH Coordinator": 25.5,
-     "MEA Case Management": 7.0,
-     "Member Experience": 17.0,
-     "NCNS": 23.5,
      "Ops Specialist": 40.0,
-     "Ops Tech A": 16.0,
      "Ops Tech B": 16.0,
-     "Ops Tech C": 16.5
+     "NCNS": 23.5,
+     "Ops Tech A": 16.0,
+     "Ops Tech C": 16.5,
+     "Member Experience": 17.0,
+     "MEA Case Management": 7.0
     }
    },
    "2026-10-23": {
@@ -638,13 +627,13 @@
     },
     "byType": {
      "BOH Coordinator": 25.5,
-     "MEA Case Management": 4.0,
-     "Member Experience": 21.5,
-     "NCNS": 24.0,
      "Ops Specialist": 40.0,
-     "Ops Tech A": 8.0,
      "Ops Tech B": 16.0,
-     "Ops Tech C": 8.5
+     "NCNS": 24.0,
+     "Ops Tech A": 8.0,
+     "Ops Tech C": 8.5,
+     "Member Experience": 21.5,
+     "MEA Case Management": 4.0
     }
    },
    "2026-10-24": {
@@ -658,12 +647,12 @@
      "other": 8.5
     },
     "byType": {
-     "BOH Coordinator": 8.5,
-     "MEA Case Management": 4.0,
-     "Member Experience": 21.5,
      "Ops Specialist": 48.0,
      "Ops Tech A": 8.0,
-     "Ops Tech C": 8.5
+     "Ops Tech C": 8.5,
+     "Member Experience": 21.5,
+     "MEA Case Management": 4.0,
+     "BOH Coordinator": 8.5
     }
    },
    "2026-10-25": {
@@ -677,12 +666,12 @@
      "other": 0.0
     },
     "byType": {
-     "MEA Case Management": 3.0,
-     "Member Experience": 29.5,
      "Ops Specialist": 32.0,
      "Ops Tech A": 8.0,
+     "Ops Tech C": 8.0,
      "Ops Tech B": 8.5,
-     "Ops Tech C": 8.0
+     "Member Experience": 29.5,
+     "MEA Case Management": 3.0
     }
    },
    "2026-10-26": {
@@ -697,12 +686,12 @@
     },
     "byType": {
      "BOH Coordinator": 17.0,
-     "MEA Case Management": 3.0,
-     "Member Experience": 22.0,
      "Ops Specialist": 32.0,
-     "Ops Tech A": 8.0,
      "Ops Tech B": 8.5,
-     "Ops Tech C": 8.0
+     "Ops Tech A": 8.0,
+     "Ops Tech C": 8.0,
+     "Member Experience": 22.0,
+     "MEA Case Management": 3.0
     }
    },
    "2026-10-27": {
@@ -717,12 +706,12 @@
     },
     "byType": {
      "BOH Coordinator": 25.5,
-     "MEA Case Management": 7.0,
-     "Member Experience": 17.5,
      "Ops Specialist": 48.0,
-     "Ops Tech A": 16.0,
      "Ops Tech B": 8.5,
-     "Ops Tech C": 16.0
+     "Ops Tech C": 16.0,
+     "Ops Tech A": 16.0,
+     "Member Experience": 17.5,
+     "MEA Case Management": 7.0
     }
    },
    "2026-10-28": {
@@ -737,12 +726,12 @@
     },
     "byType": {
      "BOH Coordinator": 25.5,
-     "MEA Case Management": 7.0,
-     "Member Experience": 8.5,
      "Ops Specialist": 40.0,
-     "Ops Tech A": 16.0,
      "Ops Tech B": 15.5,
-     "Ops Tech C": 16.0
+     "Ops Tech C": 16.0,
+     "Ops Tech A": 16.0,
+     "Member Experience": 8.5,
+     "MEA Case Management": 7.0
     }
    }
   },
@@ -759,11 +748,11 @@
     },
     "byType": {
      "BOH Coordinator": 8.0,
-     "Member Experience": 16.0,
      "Ops Specialist": 15.0,
-     "Ops Tech B": 15.0,
+     "Parts and Service": 7.5,
      "Ops Tech C": 7.5,
-     "Parts and Service": 7.5
+     "Ops Tech B": 15.0,
+     "Member Experience": 16.0
     }
    },
    "2026-10-23": {
@@ -778,11 +767,11 @@
     },
     "byType": {
      "BOH Coordinator": 8.0,
-     "Member Experience": 7.5,
      "Ops Specialist": 15.0,
-     "Ops Tech B": 15.0,
+     "Parts and Service": 7.5,
      "Ops Tech C": 7.5,
-     "Parts and Service": 7.5
+     "Ops Tech B": 15.0,
+     "Member Experience": 7.5
     }
    },
    "2026-10-24": {
@@ -797,11 +786,11 @@
     },
     "byType": {
      "BOH Coordinator": 8.0,
-     "Member Experience": 15.0,
      "Ops Specialist": 15.0,
-     "Ops Tech B": 7.5,
+     "Parts and Service": 7.5,
      "Ops Tech C": 7.5,
-     "Parts and Service": 7.5
+     "Ops Tech B": 7.5,
+     "Member Experience": 15.0
     }
    },
    "2026-10-25": {
@@ -815,10 +804,10 @@
      "other": 0.0
     },
     "byType": {
-     "Member Experience": 22.5,
      "Ops Specialist": 15.0,
+     "Ops Tech C": 7.5,
      "Ops Tech B": 7.5,
-     "Ops Tech C": 7.5
+     "Member Experience": 22.5
     }
    },
    "2026-10-26": {
@@ -832,8 +821,8 @@
      "other": 0.0
     },
     "byType": {
-     "Member Experience": 21.0,
-     "Ops Specialist": 15.0
+     "Ops Specialist": 15.0,
+     "Member Experience": 21.0
     }
    },
    "2026-10-27": {
@@ -848,10 +837,10 @@
     },
     "byType": {
      "BOH Coordinator": 8.0,
-     "Member Experience": 15.0,
      "Ops Specialist": 22.5,
+     "Parts and Service": 7.5,
      "Ops Tech B": 7.5,
-     "Parts and Service": 7.5
+     "Member Experience": 15.0
     }
    },
    "2026-10-28": {
@@ -866,10 +855,10 @@
     },
     "byType": {
      "BOH Coordinator": 8.0,
-     "Member Experience": 7.5,
      "Ops Specialist": 15.0,
+     "Parts and Service": 7.5,
      "Ops Tech B": 15.0,
-     "Parts and Service": 7.5
+     "Member Experience": 7.5
     }
    }
   },
@@ -885,14 +874,14 @@
      "other": 16.0
     },
     "byType": {
-     "FLP": 8.0,
-     "FOH Manager": 8.0,
-     "Member Experience": 32.0,
-     "Ops Specialist": 26.0,
-     "Ops Tech A": 8.0,
-     "Ops Tech B": 8.0,
      "Ops Tech C": 32.0,
-     "Parts and Service": 8.0
+     "Ops Specialist": 26.0,
+     "Parts and Service": 8.0,
+     "Ops Tech B": 8.0,
+     "Ops Tech A": 8.0,
+     "FLP": 8.0,
+     "Member Experience": 32.0,
+     "FOH Manager": 8.0
     }
    },
    "2026-10-23": {
@@ -906,12 +895,12 @@
      "other": 16.0
     },
     "byType": {
-     "FOH Manager": 8.0,
-     "Member Experience": 16.0,
-     "Ops Specialist": 8.0,
-     "Ops Tech B": 8.0,
      "Ops Tech C": 16.0,
-     "Parts and Service": 8.0
+     "Ops Specialist": 8.0,
+     "Parts and Service": 8.0,
+     "Ops Tech B": 8.0,
+     "Member Experience": 16.0,
+     "FOH Manager": 8.0
     }
    },
    "2026-10-24": {
@@ -925,12 +914,12 @@
      "other": 16.0
     },
     "byType": {
-     "FOH Manager": 8.0,
-     "Member Experience": 16.0,
-     "Ops Specialist": 8.0,
-     "Ops Tech B": 8.0,
      "Ops Tech C": 16.0,
-     "Parts and Service": 8.0
+     "Ops Specialist": 8.0,
+     "Parts and Service": 8.0,
+     "Ops Tech B": 8.0,
+     "Member Experience": 16.0,
+     "FOH Manager": 8.0
     }
    },
    "2026-10-25": {
@@ -944,10 +933,10 @@
      "other": 0.0
     },
     "byType": {
-     "Member Experience": 24.0,
      "Ops Specialist": 9.0,
+     "Ops Tech C": 16.0,
      "Ops Tech A": 8.0,
-     "Ops Tech C": 16.0
+     "Member Experience": 24.0
     }
    },
    "2026-10-26": {
@@ -961,11 +950,11 @@
      "other": 0.0
     },
     "byType": {
-     "FLP": 8.0,
-     "Member Experience": 16.0,
      "Ops Specialist": 9.0,
+     "Ops Tech C": 16.0,
      "Ops Tech A": 8.0,
-     "Ops Tech C": 16.0
+     "FLP": 8.0,
+     "Member Experience": 16.0
     }
    },
    "2026-10-27": {
@@ -979,14 +968,14 @@
      "other": 16.0
     },
     "byType": {
-     "FLP": 8.0,
-     "FOH Manager": 8.0,
-     "Member Experience": 32.0,
-     "Ops Specialist": 26.0,
-     "Ops Tech A": 8.0,
-     "Ops Tech B": 8.0,
      "Ops Tech C": 32.0,
-     "Parts and Service": 8.0
+     "Ops Specialist": 26.0,
+     "Parts and Service": 8.0,
+     "Ops Tech B": 8.0,
+     "Ops Tech A": 8.0,
+     "FLP": 8.0,
+     "Member Experience": 32.0,
+     "FOH Manager": 8.0
     }
    },
    "2026-10-28": {
@@ -1000,14 +989,14 @@
      "other": 16.0
     },
     "byType": {
-     "FLP": 8.0,
-     "FOH Manager": 8.0,
-     "Member Experience": 32.0,
-     "Ops Specialist": 26.0,
-     "Ops Tech A": 8.0,
-     "Ops Tech B": 8.0,
      "Ops Tech C": 32.0,
-     "Parts and Service": 8.0
+     "Ops Specialist": 26.0,
+     "Parts and Service": 8.0,
+     "Ops Tech B": 8.0,
+     "Ops Tech A": 8.0,
+     "FLP": 8.0,
+     "Member Experience": 32.0,
+     "FOH Manager": 8.0
     }
    }
   },
@@ -1023,15 +1012,15 @@
      "other": 24.0
     },
     "byType": {
+     "Ops Specialist": 48.0,
+     "Parts and Service": 8.0,
+     "Ops Tech A": 8.0,
+     "Ops Tech C": 16.0,
+     "Ops Tech B": 8.0,
      "FLP": 24.0,
      "Member Experience": 8.0,
-     "Ops Specialist": 48.0,
-     "Ops Tech A": 8.0,
-     "Ops Tech B": 8.0,
-     "Ops Tech C": 16.0,
-     "Parts and Service": 8.0,
-     "R&P Outbound": 7.5,
-     "Service Manager": 8.5
+     "Service Manager": 8.5,
+     "R&P Outbound": 7.5
     }
    },
    "2026-10-23": {
@@ -1045,13 +1034,13 @@
      "other": 23.5
     },
     "byType": {
-     "FLP": 8.0,
-     "Member Experience": 8.0,
      "Ops Specialist": 48.0,
      "Ops Tech A": 8.0,
      "Ops Tech C": 24.0,
-     "R&P Outbound": 15.0,
-     "Service Manager": 8.5
+     "FLP": 8.0,
+     "Member Experience": 8.0,
+     "Service Manager": 8.5,
+     "R&P Outbound": 15.0
     }
    },
    "2026-10-24": {
@@ -1065,13 +1054,13 @@
      "other": 16.0
     },
     "byType": {
-     "FLP": 8.0,
-     "Member Experience": 16.0,
      "Ops Specialist": 56.0,
      "Ops Tech A": 8.0,
      "Ops Tech C": 32.0,
-     "R&P Outbound": 7.5,
-     "Service Manager": 8.5
+     "FLP": 8.0,
+     "Member Experience": 16.0,
+     "Service Manager": 8.5,
+     "R&P Outbound": 7.5
     }
    },
    "2026-10-25": {
@@ -1085,12 +1074,12 @@
      "other": 15.5
     },
     "byType": {
+     "Ops Specialist": 48.0,
+     "Parts and Service": 8.0,
+     "Ops Tech C": 24.0,
+     "Ops Tech B": 8.0,
      "FLP": 16.0,
      "Member Experience": 16.0,
-     "Ops Specialist": 48.0,
-     "Ops Tech B": 8.0,
-     "Ops Tech C": 24.0,
-     "Parts and Service": 8.0,
      "R&P Outbound": 7.5
     }
    },
@@ -1105,12 +1094,12 @@
      "other": 23.0
     },
     "byType": {
+     "Ops Specialist": 40.0,
+     "Parts and Service": 8.0,
+     "Ops Tech C": 24.0,
+     "Ops Tech B": 8.0,
      "FLP": 16.0,
      "Member Experience": 16.0,
-     "Ops Specialist": 40.0,
-     "Ops Tech B": 8.0,
-     "Ops Tech C": 24.0,
-     "Parts and Service": 8.0,
      "R&P Outbound": 15.0
     }
    },
@@ -1125,15 +1114,15 @@
      "other": 24.0
     },
     "byType": {
+     "Ops Specialist": 48.0,
+     "Parts and Service": 8.0,
+     "Ops Tech A": 8.0,
+     "Ops Tech C": 24.0,
+     "Ops Tech B": 8.0,
      "FLP": 16.0,
      "Member Experience": 8.0,
-     "Ops Specialist": 48.0,
-     "Ops Tech A": 8.0,
-     "Ops Tech B": 8.0,
-     "Ops Tech C": 24.0,
-     "Parts and Service": 8.0,
-     "R&P Outbound": 7.5,
-     "Service Manager": 8.5
+     "Service Manager": 8.5,
+     "R&P Outbound": 7.5
     }
    },
    "2026-10-28": {
@@ -1147,15 +1136,15 @@
      "other": 31.5
     },
     "byType": {
+     "Ops Specialist": 40.0,
+     "Parts and Service": 8.0,
+     "Ops Tech A": 8.0,
+     "Ops Tech C": 16.0,
+     "Ops Tech B": 8.0,
      "FLP": 24.5,
      "Member Experience": 8.0,
-     "Ops Specialist": 40.0,
-     "Ops Tech A": 8.0,
-     "Ops Tech B": 8.0,
-     "Ops Tech C": 16.0,
-     "Parts and Service": 8.0,
-     "R&P Outbound": 15.0,
-     "Service Manager": 8.5
+     "Service Manager": 8.5,
+     "R&P Outbound": 15.0
     }
    }
   },
@@ -1171,13 +1160,13 @@
      "other": 24.5
     },
     "byType": {
-     "BOH Coordinator": 8.5,
-     "BOH Manager": 8.0,
-     "FOH Manager": 8.0,
-     "Member Experience": 24.0,
      "Ops Specialist": 40.0,
+     "BOH Manager": 8.0,
+     "Ops Tech C": 17.0,
      "Ops Tech A": 8.0,
-     "Ops Tech C": 17.0
+     "Member Experience": 24.0,
+     "FOH Manager": 8.0,
+     "BOH Coordinator": 8.5
     }
    },
    "2026-10-23": {
@@ -1191,13 +1180,13 @@
      "other": 24.5
     },
     "byType": {
-     "BOH Coordinator": 8.5,
-     "BOH Manager": 8.0,
-     "FOH Manager": 8.0,
-     "Member Experience": 16.0,
      "Ops Specialist": 24.0,
+     "BOH Manager": 8.0,
      "Ops Tech A": 8.0,
-     "Ops Tech C": 8.5
+     "Ops Tech C": 8.5,
+     "Member Experience": 16.0,
+     "FOH Manager": 8.0,
+     "BOH Coordinator": 8.5
     }
    },
    "2026-10-24": {
@@ -1211,12 +1200,12 @@
      "other": 24.0
     },
     "byType": {
-     "BOH Coordinator": 8.5,
-     "FOH Manager": 8.0,
-     "Member Experience": 17.0,
      "Ops Specialist": 24.0,
+     "Parts and Service": 7.5,
      "Ops Tech C": 8.0,
-     "Parts and Service": 7.5
+     "Member Experience": 17.0,
+     "FOH Manager": 8.0,
+     "BOH Coordinator": 8.5
     }
    },
    "2026-10-25": {
@@ -1230,11 +1219,11 @@
      "other": 16.0
     },
     "byType": {
-     "BOH Coordinator": 8.5,
-     "Member Experience": 16.75,
      "Ops Specialist": 16.0,
+     "Parts and Service": 7.5,
      "Ops Tech C": 8.0,
-     "Parts and Service": 7.5
+     "Member Experience": 16.75,
+     "BOH Coordinator": 8.5
     }
    },
    "2026-10-26": {
@@ -1248,12 +1237,12 @@
      "other": 15.5
     },
     "byType": {
-     "BOH Manager": 8.0,
-     "Member Experience": 16.0,
      "Ops Specialist": 16.0,
-     "Ops Tech A": 8.0,
+     "Parts and Service": 7.5,
+     "BOH Manager": 8.0,
      "Ops Tech C": 8.5,
-     "Parts and Service": 7.5
+     "Ops Tech A": 8.0,
+     "Member Experience": 16.0
     }
    },
    "2026-10-27": {
@@ -1268,13 +1257,13 @@
     },
     "byType": {
      "BOH Coordinator": 8.0,
-     "BOH Manager": 8.0,
-     "FOH Manager": 8.0,
-     "Member Experience": 15.5,
      "Ops Specialist": 32.0,
-     "Ops Tech A": 8.0,
+     "Parts and Service": 7.5,
+     "BOH Manager": 8.0,
      "Ops Tech C": 17.0,
-     "Parts and Service": 7.5
+     "Ops Tech A": 8.0,
+     "Member Experience": 15.5,
+     "FOH Manager": 8.0
     }
    },
    "2026-10-28": {
@@ -1288,14 +1277,14 @@
      "other": 32.0
     },
     "byType": {
-     "BOH Coordinator": 8.5,
-     "BOH Manager": 8.0,
-     "FOH Manager": 8.0,
-     "Member Experience": 16.0,
      "Ops Specialist": 40.0,
-     "Ops Tech A": 8.0,
+     "Parts and Service": 7.5,
+     "BOH Manager": 8.0,
      "Ops Tech C": 17.0,
-     "Parts and Service": 7.5
+     "Ops Tech A": 8.0,
+     "Member Experience": 16.0,
+     "FOH Manager": 8.0,
+     "BOH Coordinator": 8.5
     }
    }
   },
@@ -1312,9 +1301,9 @@
     },
     "byType": {
      "BOH Coordinator": 8.0,
-     "Member Experience": 8.0,
      "Ops Specialist": 16.0,
-     "Ops Tech B": 8.0
+     "Ops Tech B": 8.0,
+     "Member Experience": 8.0
     }
    },
    "2026-10-23": {
@@ -1357,9 +1346,9 @@
     },
     "byType": {
      "BOH Coordinator": 8.0,
-     "Member Experience": 8.0,
      "Ops Specialist": 8.0,
-     "Ops Tech B": 8.0
+     "Ops Tech B": 8.0,
+     "Member Experience": 8.0
     }
    },
    "2026-10-26": {
@@ -1374,9 +1363,9 @@
     },
     "byType": {
      "BOH Coordinator": 8.0,
-     "Member Experience": 8.0,
      "Ops Specialist": 8.0,
-     "Ops Tech B": 8.0
+     "Ops Tech B": 8.0,
+     "Member Experience": 8.0
     }
    },
    "2026-10-27": {
@@ -1391,9 +1380,9 @@
     },
     "byType": {
      "BOH Coordinator": 8.0,
-     "Member Experience": 8.0,
      "Ops Specialist": 16.0,
-     "Ops Tech B": 8.0
+     "Ops Tech B": 8.0,
+     "Member Experience": 8.0
     }
    },
    "2026-10-28": {
@@ -1408,9 +1397,9 @@
     },
     "byType": {
      "BOH Coordinator": 8.0,
-     "Member Experience": 8.0,
      "Ops Specialist": 16.0,
-     "Ops Tech B": 8.0
+     "Ops Tech B": 8.0,
+     "Member Experience": 8.0
     }
    }
   },
@@ -1426,11 +1415,11 @@
      "other": 8.0
     },
     "byType": {
-     "FOH Manager": 8.0,
-     "Member Experience": 15.0,
      "Ops Specialist": 30.0,
+     "Ops Tech C": 15.0,
      "Ops Tech A": 7.5,
-     "Ops Tech C": 15.0
+     "Member Experience": 15.0,
+     "FOH Manager": 8.0
     }
    },
    "2026-10-23": {
@@ -1444,10 +1433,10 @@
      "other": 8.0
     },
     "byType": {
-     "FOH Manager": 8.0,
-     "Member Experience": 22.5,
      "Ops Specialist": 30.0,
-     "Ops Tech A": 7.5
+     "Ops Tech A": 7.5,
+     "Member Experience": 22.5,
+     "FOH Manager": 8.0
     }
    },
    "2026-10-24": {
@@ -1461,9 +1450,9 @@
      "other": 8.0
     },
     "byType": {
-     "FOH Manager": 8.0,
+     "Ops Specialist": 45.0,
      "Member Experience": 30.0,
-     "Ops Specialist": 45.0
+     "FOH Manager": 8.0
     }
    },
    "2026-10-25": {
@@ -1477,10 +1466,10 @@
      "other": 8.0
     },
     "byType": {
-     "FOH Manager": 8.0,
-     "Member Experience": 30.0,
      "Ops Specialist": 30.0,
-     "Ops Tech C": 7.5
+     "Ops Tech C": 7.5,
+     "Member Experience": 30.0,
+     "FOH Manager": 8.0
     }
    },
    "2026-10-26": {
@@ -1494,11 +1483,11 @@
      "other": 8.0
     },
     "byType": {
-     "FOH Manager": 8.0,
-     "Member Experience": 22.5,
      "Ops Specialist": 22.5,
+     "Ops Tech C": 7.5,
      "Ops Tech A": 7.5,
-     "Ops Tech C": 7.5
+     "Member Experience": 22.5,
+     "FOH Manager": 8.0
     }
    },
    "2026-10-27": {
@@ -1512,10 +1501,10 @@
      "other": 0.0
     },
     "byType": {
-     "Member Experience": 15.0,
      "Ops Specialist": 30.0,
+     "Ops Tech C": 15.0,
      "Ops Tech A": 7.5,
-     "Ops Tech C": 15.0
+     "Member Experience": 15.0
     }
    },
    "2026-10-28": {
@@ -1529,10 +1518,10 @@
      "other": 0.0
     },
     "byType": {
-     "Member Experience": 15.0,
      "Ops Specialist": 37.5,
+     "Ops Tech C": 15.0,
      "Ops Tech A": 7.5,
-     "Ops Tech C": 15.0
+     "Member Experience": 15.0
     }
    }
   },
@@ -1548,11 +1537,11 @@
      "other": 8.0
     },
     "byType": {
-     "FOH Manager": 8.0,
-     "Member Experience": 16.0,
      "Ops Specialist": 24.0,
+     "Ops Tech C": 16.0,
      "Ops Tech A": 8.0,
-     "Ops Tech C": 16.0
+     "Member Experience": 16.0,
+     "FOH Manager": 8.0
     }
    },
    "2026-10-23": {
@@ -1566,10 +1555,10 @@
      "other": 0.0
     },
     "byType": {
-     "Member Experience": 16.0,
      "Ops Specialist": 16.0,
+     "Ops Tech C": 8.0,
      "Ops Tech A": 8.0,
-     "Ops Tech C": 8.0
+     "Member Experience": 16.0
     }
    },
    "2026-10-24": {
@@ -1583,9 +1572,9 @@
      "other": 0.0
     },
     "byType": {
-     "Member Experience": 16.0,
      "Ops Specialist": 16.0,
-     "Ops Tech C": 8.0
+     "Ops Tech C": 8.0,
+     "Member Experience": 16.0
     }
    },
    "2026-10-25": {
@@ -1599,10 +1588,10 @@
      "other": 8.0
     },
     "byType": {
-     "FOH Manager": 8.0,
-     "Member Experience": 8.0,
      "Ops Specialist": 16.0,
-     "Ops Tech C": 8.0
+     "Ops Tech C": 8.0,
+     "Member Experience": 8.0,
+     "FOH Manager": 8.0
     }
    },
    "2026-10-26": {
@@ -1616,11 +1605,11 @@
      "other": 8.0
     },
     "byType": {
-     "FOH Manager": 8.0,
-     "Member Experience": 8.0,
      "Ops Specialist": 24.0,
+     "Ops Tech C": 8.0,
      "Ops Tech A": 8.0,
-     "Ops Tech C": 8.0
+     "Member Experience": 8.0,
+     "FOH Manager": 8.0
     }
    },
    "2026-10-27": {
@@ -1634,11 +1623,11 @@
      "other": 8.0
     },
     "byType": {
-     "FOH Manager": 8.0,
-     "Member Experience": 8.0,
      "Ops Specialist": 32.0,
+     "Ops Tech C": 16.0,
      "Ops Tech A": 8.0,
-     "Ops Tech C": 16.0
+     "Member Experience": 8.0,
+     "FOH Manager": 8.0
     }
    },
    "2026-10-28": {
@@ -1652,11 +1641,11 @@
      "other": 8.0
     },
     "byType": {
-     "FOH Manager": 8.0,
-     "Member Experience": 8.0,
      "Ops Specialist": 32.0,
+     "Ops Tech C": 16.0,
      "Ops Tech A": 8.0,
-     "Ops Tech C": 16.0
+     "Member Experience": 8.0,
+     "FOH Manager": 8.0
     }
    }
   }
@@ -5066,17 +5055,17 @@
  },
  "config": {
   "repossessions": {
-   "New England": 3.533,
-   "Stone Mountain": 4.71,
-   "Larchmont": 0.778,
-   "Marietta": 2.095,
+   "New England": 3.5333,
+   "Stone Mountain": 4.7099,
+   "Larchmont": 0.7778,
+   "Marietta": 2.0945,
    "South Charlotte": 1.5,
-   "Morrow": 1.551,
-   "San Jose": 0.567,
-   "Richmond": 0.389,
-   "West Nashville": 1.044,
-   "El Monte": 0.133,
-   "Dallas": 0.444
+   "Morrow": 1.5511,
+   "San Jose": 0.5667,
+   "Richmond": 0.3889,
+   "West Nashville": 1.0444,
+   "El Monte": 0.1333,
+   "Dallas": 0.4444
   },
   "infleets": {
    "targets_month": "2026-10",
@@ -5084,188 +5073,175 @@
     {
      "market": "ATL",
      "target": 450,
-     "splits": {
+     "split": {
       "Stone Mountain": 0.7,
       "Morrow": 0.15,
       "Marietta": 0.15
-     },
-     "excluded": false
+     }
     },
     {
      "market": "BOS",
      "target": 210,
-     "splits": {
+     "split": {
       "New England": 1.0
-     },
-     "excluded": false
+     }
     },
     {
      "market": "NY",
      "target": 200,
-     "splits": {
+     "split": {
       "Larchmont": 1.0
-     },
-     "excluded": false
+     }
     },
     {
      "market": "BNA",
      "target": 30,
-     "splits": {
+     "split": {
       "West Nashville": 1.0
-     },
-     "excluded": false
+     }
     },
     {
      "market": "CLT",
      "target": 100,
-     "splits": {
+     "split": {
       "South Charlotte": 1.0
-     },
-     "excluded": false
+     }
     },
     {
      "market": "SJC",
      "target": 362,
-     "splits": {
+     "split": {
       "San Jose": 0.8,
       "Richmond": 0.2
-     },
-     "excluded": false
+     }
     },
     {
      "market": "DFW",
      "target": 250,
-     "splits": {
+     "split": {
       "Dallas": 1.0
-     },
-     "excluded": false
+     }
     },
     {
      "market": "LA",
      "target": 250,
-     "splits": {
+     "split": {
       "El Monte": 1.0
-     },
-     "excluded": false
+     }
     },
     {
      "market": "IAH",
      "target": 200,
-     "splits": {},
-     "excluded": true
+     "split": {},
+     "excluded": "no dashboard site"
     }
    ],
    "perSite": {
-    "Dallas": 8.065,
-    "El Monte": 8.065,
-    "Larchmont": 6.452,
-    "Marietta": 2.177,
-    "Morrow": 2.177,
-    "New England": 6.774,
-    "Richmond": 2.335,
-    "San Jose": 9.342,
-    "South Charlotte": 3.226,
-    "Stone Mountain": 10.161,
-    "West Nashville": 0.968
-   },
-   "notes": [
-    "IAH (200/mo) has no dashboard site and is excluded by design.",
-    "ATL 450 vs 750 unresolved (row 16 of the tracker carries the higher scenario).",
-    "Morrow/Marietta 15/15 split is an assumption, not a stated rule."
-   ]
+    "New England": 6.7742,
+    "Stone Mountain": 10.1613,
+    "Larchmont": 6.4516,
+    "Marietta": 2.1774,
+    "South Charlotte": 3.2258,
+    "Morrow": 2.1774,
+    "San Jose": 9.3419,
+    "Richmond": 2.3355,
+    "West Nashville": 0.9677,
+    "El Monte": 8.0645,
+    "Dallas": 8.0645
+   }
   },
   "orderCapacity": {
    "source": "flexcar.lots (daily_order_capacity, daily_delivery_capacity, max_service_capacity_per_day)",
-   "note": "Static per-lot admin settings, not a per-day series: the same ceiling applies to every day of the window. daily_order_capacity is the admin UI's 'Daily Pickup & Swap Capacity', not an all-order ceiling. null means not configured, which is not the same as a ceiling of 0.",
+   "note": "Static per-lot admin settings, not a per-day series - the same ceiling applies to every day of the window; daily_order_capacity is the admin UI's \"Daily Pickup & Swap Capacity\"; null means not configured, not a ceiling of 0.",
    "bySite": {
     "New England": {
-     "pickupSwap": 91,
-     "delivery": 5,
-     "service": 20,
      "lots": [
       "Auburn - 525 Washington St",
       "Chestnut Hill - 199 Boylston St"
-     ]
+     ],
+     "pickupSwap": 91,
+     "delivery": 5,
+     "service": 20
     },
     "Stone Mountain": {
-     "pickupSwap": 57,
-     "delivery": 15,
-     "service": 100,
      "lots": [
       "Stone Mountain - 4400 Stone Mountain Hwy."
-     ]
+     ],
+     "pickupSwap": 57,
+     "delivery": 15,
+     "service": 100
     },
     "Larchmont": {
-     "pickupSwap": 61,
-     "delivery": 2,
-     "service": 2,
      "lots": [
       "Larchmont - 2500 Boston Post Road"
-     ]
+     ],
+     "pickupSwap": 61,
+     "delivery": 2,
+     "service": 2
     },
     "Marietta": {
-     "pickupSwap": 49,
-     "delivery": 2,
-     "service": 25,
      "lots": [
       "Marietta - 1431 Cobb Pkwy SE"
-     ]
+     ],
+     "pickupSwap": 49,
+     "delivery": 2,
+     "service": 25
     },
     "South Charlotte": {
-     "pickupSwap": 37,
-     "delivery": 15,
-     "service": 11,
      "lots": [
       "South Charlotte - 8525 South Blvd."
-     ]
+     ],
+     "pickupSwap": 37,
+     "delivery": 15,
+     "service": 11
     },
     "Morrow": {
-     "pickupSwap": 44,
-     "delivery": 1,
-     "service": 18,
      "lots": [
       "Morrow - 1425 Southlake Pkwy"
-     ]
+     ],
+     "pickupSwap": 44,
+     "delivery": 1,
+     "service": 18
     },
     "San Jose": {
-     "pickupSwap": 40,
-     "delivery": null,
-     "service": 5,
      "lots": [
       "San Jose - 2198 Tully Road"
-     ]
+     ],
+     "pickupSwap": 40,
+     "delivery": null,
+     "service": 5
     },
     "Richmond": {
-     "pickupSwap": 19,
-     "delivery": 2,
-     "service": 5,
      "lots": [
       "Richmond - 3230 Auto Plaza Suite A"
-     ]
+     ],
+     "pickupSwap": 19,
+     "delivery": 2,
+     "service": 5
     },
     "West Nashville": {
-     "pickupSwap": 13,
-     "delivery": 14,
-     "service": 7,
      "lots": [
       "West Nashville - 7008 Westbelt Dr"
-     ]
+     ],
+     "pickupSwap": 13,
+     "delivery": 14,
+     "service": 7
     },
     "El Monte": {
-     "pickupSwap": 20,
-     "delivery": null,
-     "service": null,
      "lots": [
       "El Monte - 11705 Valley Blvd."
-     ]
+     ],
+     "pickupSwap": 20,
+     "delivery": null,
+     "service": null
     },
     "Dallas": {
-     "pickupSwap": 22,
-     "delivery": 0,
-     "service": 3,
      "lots": [
       "Dallas - 39550 Lyndon B Johnson Fwy"
-     ]
+     ],
+     "pickupSwap": 22,
+     "delivery": 0,
+     "service": 3
     }
    },
    "byLot": {
@@ -5352,107 +5328,6 @@
      "pickupSwap": 61,
      "delivery": 2,
      "service": 2
-    }
-   },
-   "utilisation": {
-    "New England": {
-     "peak": 34,
-     "peakDay": "2026-10-23",
-     "ceiling": 91,
-     "peakPct": 37.4,
-     "firmPeak": 34,
-     "firmDay": "2026-10-23",
-     "firmPct": 37.4
-    },
-    "Stone Mountain": {
-     "peak": 34,
-     "peakDay": "2026-10-24",
-     "ceiling": 57,
-     "peakPct": 59.6,
-     "firmPeak": 34,
-     "firmDay": "2026-10-24",
-     "firmPct": 59.6
-    },
-    "Larchmont": {
-     "peak": 25,
-     "peakDay": "2026-10-24",
-     "ceiling": 61,
-     "peakPct": 41.0,
-     "firmPeak": 25,
-     "firmDay": "2026-10-24",
-     "firmPct": 41.0
-    },
-    "Marietta": {
-     "peak": 19,
-     "peakDay": "2026-10-22",
-     "ceiling": 49,
-     "peakPct": 38.8,
-     "firmPeak": 19,
-     "firmDay": "2026-10-22",
-     "firmPct": 38.8
-    },
-    "South Charlotte": {
-     "peak": 11,
-     "peakDay": "2026-10-24",
-     "ceiling": 37,
-     "peakPct": 29.7,
-     "firmPeak": 11,
-     "firmDay": "2026-10-24",
-     "firmPct": 29.7
-    },
-    "Morrow": {
-     "peak": 8,
-     "peakDay": "2026-10-25",
-     "ceiling": 44,
-     "peakPct": 18.2,
-     "firmPeak": 8,
-     "firmDay": "2026-10-24",
-     "firmPct": 18.2
-    },
-    "San Jose": {
-     "peak": 13,
-     "peakDay": "2026-10-23",
-     "ceiling": 40,
-     "peakPct": 32.5,
-     "firmPeak": 13,
-     "firmDay": "2026-10-23",
-     "firmPct": 32.5
-    },
-    "Richmond": {
-     "peak": 8,
-     "peakDay": "2026-10-25",
-     "ceiling": 19,
-     "peakPct": 42.1,
-     "firmPeak": 8,
-     "firmDay": "2026-10-22",
-     "firmPct": 42.1
-    },
-    "West Nashville": {
-     "peak": 8,
-     "peakDay": "2026-10-24",
-     "ceiling": 13,
-     "peakPct": 61.5,
-     "firmPeak": 8,
-     "firmDay": "2026-10-24",
-     "firmPct": 61.5
-    },
-    "El Monte": {
-     "peak": 6,
-     "peakDay": "2026-10-24",
-     "ceiling": 20,
-     "peakPct": 30.0,
-     "firmPeak": 6,
-     "firmDay": "2026-10-24",
-     "firmPct": 30.0
-    },
-    "Dallas": {
-     "peak": 8,
-     "peakDay": "2026-10-24",
-     "ceiling": 22,
-     "peakPct": 36.4,
-     "firmPeak": 8,
-     "firmDay": "2026-10-24",
-     "firmPct": 36.4
     }
    }
   }
