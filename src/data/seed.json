@@ -1,6 +1,6 @@
 {
  "meta": {
-  "generated_at": "2026-11-13T17:52:04.499050+00:00",
+  "generated_at": "2026-11-13T20:35:53.146572+00:00",
   "window": {
    "start": "2026-11-14",
    "end": "2026-11-20",
@@ -15,7 +15,6 @@
    ]
   },
   "anchor_date": "2026-11-13",
-  "redshift_current_date": "2026-11-13",
   "site_timezones": {
    "Auburn": "America/New_York",
    "Chestnut Hill": "America/New_York",
@@ -59,33 +58,23 @@
    "San Jose",
    "Morrow",
    "El Monte",
-   "Dallas",
    "Richmond",
+   "Dallas",
    "West Nashville"
   ],
   "bucket_mapping": {
-   "opsSpec": [
-    "Ops Specialist"
-   ],
-   "mcMea": [
-    "Member Experience",
-    "MEA Case Management",
-    "Member Concierge Off-site Hub 1",
-    "Overtime FOH"
-   ],
-   "flp": [
-    "FLP"
-   ],
-   "techA": [
-    "Ops Tech A"
-   ],
-   "techB": [
-    "Ops Tech B"
-   ],
-   "techC": [
-    "Ops Tech C"
-   ],
-   "other": [
+   "buckets": {
+    "Ops Specialist": "opsSpec",
+    "Member Experience": "mcMea",
+    "MEA Case Management": "mcMea",
+    "Member Concierge Off-site Hub 1": "mcMea",
+    "Overtime FOH": "mcMea",
+    "FLP": "flp",
+    "Ops Tech A": "techA",
+    "Ops Tech B": "techB",
+    "Ops Tech C": "techC"
+   },
+   "otherCoverage": [
     "BOH Coordinator",
     "BOH Manager",
     "FOH Coordinator",
@@ -93,8 +82,20 @@
     "Fulfillment/Delivery",
     "On Flex Coordinator",
     "Parts and Service",
-    "Site Lead",
-    "any unrecognised type_name"
+    "Site Lead"
+   ],
+   "timeOff": [
+    "Floating Holiday",
+    "Leave [Unpaid]",
+    "Personal Day",
+    "Sick",
+    "Vacation",
+    "Voluntary Time Off",
+    "Voluntary [Unpaid]"
+   ],
+   "nonTask": [
+    "Meeting",
+    "Training"
    ]
   },
   "excluded_from_supply": [
@@ -102,2158 +103,2280 @@
    "Lunch (MC)",
    "Lunch (Ops)"
   ],
-  "time_off_types": [
-   "Floating Holiday",
-   "Leave [Unpaid]",
-   "Personal Day",
-   "Sick",
-   "Vacation",
-   "Voluntary Time Off",
-   "Voluntary [Unpaid]"
-  ],
-  "non_task_types": [
-   "Meeting",
-   "Training"
-  ],
   "sources": {
-   "supply": "Assembled get_schedule, master schedule, 12 site UUIDs",
-   "orders": "flexcar.orders + flexcar.lots",
+   "supply": "Assembled get_schedule (master schedule), 12 sites",
+   "orders": "flexcar.orders",
    "onFlex": "flexcar.maintenance_bookings",
-   "unassignedService": "flexcar.unassigned_services (status='active' only)",
+   "unassignedService": "flexcar.unassigned_services (status='active' is forward load)",
    "assignedService": "flexcar.capacity_bookings source_type='Order', status='active'",
    "serviceCapacity": "flexcar.service_capacities",
-   "repossessions": "flexcar.recovery_cases, trailing 90 days",
-   "infleets": "Flex Transfer Tracker, Target Forecast tab (CSV export)",
-   "orderCapacity": "flexcar.lots"
+   "orderCapacity": "flexcar.lots",
+   "repossessions": "flexcar.recovery_cases + cases + orders + lots",
+   "infleets": "Flex Transfer Tracker, Target Forecast tab (CSV export)"
   },
   "warnings": [
-   "supply: activity type names arrived with stray whitespace: 'Parts and Service '",
-   "supply: unrecognised type_name 'Vehicle Cleaner' (50 segments, 200.0h) bucketed as 'other'",
-   "supply: unrecognised type_name 'Service Manager' (50 segments, 117.5h) bucketed as 'other'",
-   "supply: unrecognised type_name 'R&P Outbound' (20 segments, 37.5h) bucketed as 'other'",
-   "supply: unrecognised type_name 'Training (Ops)' (5 segments, 43.8h) bucketed as 'other'",
-   "supply: unrecognised type_name 'Coaching (Ops)' (5 segments, 2.5h) bucketed as 'other'",
-   "supply: unrecognised type_name 'Leave [Paid]' (2 segments, 33.0h) bucketed as 'other' - looks like time off, so it inflates coverage hours until the lists are updated",
-   "supply: unrecognised type_name 'Overtime BOH' (2 segments, 8.0h) bucketed as 'other'",
-   "demand: unmapped site code, skipped - 2a su=OTHER di=5 (4 records)",
-   "serviceCapacity: no flexcar.service_capacities rows for El Monte across the whole window; emitted as null (no row), not zero capacity",
-   "serviceCapacity: Chestnut Hill has never had a flexcar.service_capacities row, so New England's allocation is Auburn-only",
-   "repossessions: 6 case(s) skipped, lot not matchable to a modelled market - no-lot (3); ABG Fort Lauderdale 1 (1); 0 Crossings Blvd (1); Seaport - 525 E St (1)",
-   "infleets: targets refreshed from the Flex Transfer Tracker CSV for 2026-11; changed - BOS: 210 -> 235; NY: 200 -> 450; SJC: 362 -> 600; DFW: 250 -> 300; IAH: 200 -> 250",
-   "infleets: BNA's November cell reads 'new' (text, not a number); carried the previous month's figure of 30 forward rather than guessing",
-   "infleets: IAH (target 250) has no dashboard site and is excluded by design",
-   "infleets: open item - the ATL 450-vs-750 question is unresolved (the sheet's superseded 'kz 4.10.26' scenario row carries 800 for November); the Morrow/Marietta 15/15 split is an assumption rather than a stated rule",
-   "orderCapacity: El Monte delivery is null - not configured on any contributing lot (null means not configured, not a ceiling of 0)",
-   "orderCapacity: El Monte service is null - not configured on any contributing lot (null means not configured, not a ceiling of 0)",
-   "orderCapacity: San Jose delivery is null - not configured on any contributing lot (null means not configured, not a ceiling of 0)",
-   "orderCapacity: New England delivery total is partial - no value configured for Chestnut Hill - 199 Boylston St",
-   "orderCapacity: New England service total is partial - no value configured for Chestnut Hill - 199 Boylston St"
+   "unrecognised type_name 'Vehicle Cleaner' -> bucketed 'other', 200.0 h",
+   "unrecognised type_name 'Service Manager' -> bucketed 'other', 117.5 h",
+   "unrecognised type_name 'Training (Ops)' -> bucketed 'other', 43.8 h",
+   "unrecognised type_name 'Leave [Paid]' (looks like time off) -> bucketed 'other', 42.0 h",
+   "unrecognised type_name 'R&P Outbound' -> bucketed 'other', 37.5 h",
+   "unrecognised type_name 'Overtime BOH' -> bucketed 'other', 8.0 h",
+   "unrecognised type_name 'Coaching (Ops)' -> bucketed 'other', 2.5 h",
+   "type_name with stray whitespace: 'Parts and Service ' (trimmed before matching)",
+   "no flexcar.service_capacities rows for the whole window at: El Monte - emitted null, not zero (Chestnut Hill has never had rows, so New England's allocation is Auburn-only)",
+   "orderCapacity.delivery is null at El Monte (no contributing lot sets it)",
+   "orderCapacity.service is null at El Monte (no contributing lot sets it)",
+   "orderCapacity.delivery at New England is a partial total: 1 of 2 lots set it",
+   "orderCapacity.service at New England is a partial total: 1 of 2 lots set it",
+   "orderCapacity.delivery is null at San Jose (no contributing lot sets it)",
+   "repossessions: 6 case(s) at unmapped lots counted as skipped: no-lot (3); ABG Fort Lauderdale 1 (1); 0 Crossings Blvd (1); Seaport - 525 E St (1)",
+   "infleet tracker: BNA November cell reads 'new' (non-numeric) - carried October's 30 forward, not guessed",
+   "infleet target refreshed from tracker CSV: BOS 210 -> 235 (Oct -> Nov)",
+   "infleet target refreshed from tracker CSV: DFW 250 -> 300 (Oct -> Nov)",
+   "infleet target refreshed from tracker CSV: IAH 200 -> 250 (Oct -> Nov)",
+   "infleet target refreshed from tracker CSV: NY 200 -> 450 (Oct -> Nov)",
+   "infleet target refreshed from tracker CSV: SJC 362 -> 600 (Oct -> Nov)",
+   "infleet targets_month re-stamped 2026-10 -> 2026-11 from the Target Forecast CSV export",
+   "infleet IAH target 250 excluded by design: no dashboard site for Houston",
+   "infleet open items unchanged: ATL 450-vs-750 unresolved (row 16 carries the higher scenario); Morrow/Marietta 15/15 split is an assumption, not a stated rule",
+   "2a orders: unmapped site code OTHER su=OTHER day=2026-11-12 -> skipped (4)"
   ]
  },
  "staffing": {
-  "New England": [
-   {
-    "opsSpec": 64.0,
-    "mcMea": 74.5,
-    "flp": 0.0,
-    "techA": 0.0,
-    "techB": 16.0,
-    "techC": 32.0,
-    "other": 41.5
+  "New England": {
+   "2026-11-14": {
+    "byBucket": {
+     "opsSpec": 64.0,
+     "mcMea": 74.5,
+     "flp": 0.0,
+     "techA": 0.0,
+     "techB": 16.0,
+     "techC": 32.0,
+     "other": 41.5
+    },
+    "byType": {
+     "BOH Coordinator": 25.5,
+     "Ops Specialist": 64.0,
+     "Parts and Service": 8.0,
+     "Ops Tech C": 32.0,
+     "Ops Tech B": 16.0,
+     "Member Experience": 74.5,
+     "FOH Coordinator": 8.0
+    }
    },
-   {
-    "opsSpec": 48.0,
-    "mcMea": 71.0,
-    "flp": 0.0,
-    "techA": 8.0,
-    "techB": 24.0,
-    "techC": 40.0,
-    "other": 33.0
+   "2026-11-15": {
+    "byBucket": {
+     "opsSpec": 48.0,
+     "mcMea": 71.0,
+     "flp": 0.0,
+     "techA": 8.0,
+     "techB": 24.0,
+     "techC": 40.0,
+     "other": 33.0
+    },
+    "byType": {
+     "MEA Case Management": 7.0,
+     "BOH Coordinator": 17.0,
+     "Ops Specialist": 48.0,
+     "Parts and Service": 8.0,
+     "Ops Tech B": 24.0,
+     "Ops Tech A": 8.0,
+     "Ops Tech C": 40.0,
+     "Member Experience": 58.0,
+     "Overtime FOH": 6.0,
+     "FOH Coordinator": 8.0
+    }
    },
-   {
-    "opsSpec": 72.0,
-    "mcMea": 49.5,
-    "flp": 0.0,
-    "techA": 16.0,
-    "techB": 32.0,
-    "techC": 46.0,
-    "other": 41.0
+   "2026-11-16": {
+    "byBucket": {
+     "opsSpec": 72.0,
+     "mcMea": 49.5,
+     "flp": 0.0,
+     "techA": 16.0,
+     "techB": 32.0,
+     "techC": 46.0,
+     "other": 41.0
+    },
+    "byType": {
+     "MEA Case Management": 7.5,
+     "BOH Coordinator": 17.0,
+     "Ops Specialist": 72.0,
+     "Parts and Service": 16.0,
+     "Ops Tech B": 32.0,
+     "Ops Tech A": 16.0,
+     "Ops Tech C": 46.0,
+     "Overtime FOH": 2.0,
+     "Member Experience": 40.0,
+     "FOH Coordinator": 8.0
+    }
    },
-   {
-    "opsSpec": 64.0,
-    "mcMea": 65.0,
-    "flp": 0.0,
-    "techA": 24.0,
-    "techB": 40.0,
-    "techC": 32.0,
-    "other": 49.0
+   "2026-11-17": {
+    "byBucket": {
+     "opsSpec": 64.0,
+     "mcMea": 65.0,
+     "flp": 0.0,
+     "techA": 24.0,
+     "techB": 40.0,
+     "techC": 32.0,
+     "other": 49.0
+    },
+    "byType": {
+     "MEA Case Management": 7.5,
+     "Ops Specialist": 64.0,
+     "BOH Coordinator": 17.0,
+     "Parts and Service": 24.0,
+     "Ops Tech B": 40.0,
+     "Ops Tech A": 24.0,
+     "Ops Tech C": 32.0,
+     "Member Experience": 48.0,
+     "Overtime FOH": 9.5,
+     "FOH Coordinator": 8.0
+    }
    },
-   {
-    "opsSpec": 64.0,
-    "mcMea": 57.0,
-    "flp": 0.0,
-    "techA": 24.0,
-    "techB": 40.0,
-    "techC": 30.0,
-    "other": 41.0
+   "2026-11-18": {
+    "byBucket": {
+     "opsSpec": 64.0,
+     "mcMea": 57.0,
+     "flp": 0.0,
+     "techA": 24.0,
+     "techB": 40.0,
+     "techC": 30.0,
+     "other": 41.0
+    },
+    "byType": {
+     "BOH Coordinator": 17.0,
+     "Ops Specialist": 64.0,
+     "Parts and Service": 24.0,
+     "Ops Tech B": 40.0,
+     "Ops Tech A": 24.0,
+     "Ops Tech C": 30.0,
+     "Member Experience": 48.0,
+     "Overtime FOH": 9.0
+    }
    },
-   {
-    "opsSpec": 88.0,
-    "mcMea": 63.5,
-    "flp": 0.0,
-    "techA": 24.0,
-    "techB": 40.0,
-    "techC": 40.0,
-    "other": 58.0
+   "2026-11-19": {
+    "byBucket": {
+     "opsSpec": 88.0,
+     "mcMea": 63.5,
+     "flp": 0.0,
+     "techA": 24.0,
+     "techB": 40.0,
+     "techC": 40.0,
+     "other": 58.0
+    },
+    "byType": {
+     "MEA Case Management": 7.5,
+     "BOH Coordinator": 34.0,
+     "Ops Specialist": 88.0,
+     "Parts and Service": 24.0,
+     "Ops Tech B": 40.0,
+     "Ops Tech A": 24.0,
+     "Ops Tech C": 40.0,
+     "Member Experience": 56.0
+    }
    },
-   {
-    "opsSpec": 72.0,
-    "mcMea": 56.5,
-    "flp": 0.0,
-    "techA": 16.0,
-    "techB": 24.0,
-    "techC": 32.0,
-    "other": 58.0
+   "2026-11-20": {
+    "byBucket": {
+     "opsSpec": 72.0,
+     "mcMea": 56.5,
+     "flp": 0.0,
+     "techA": 16.0,
+     "techB": 24.0,
+     "techC": 32.0,
+     "other": 58.0
+    },
+    "byType": {
+     "MEA Case Management": 8.0,
+     "BOH Coordinator": 34.0,
+     "Ops Specialist": 72.0,
+     "Parts and Service": 16.0,
+     "Ops Tech C": 32.0,
+     "Ops Tech B": 24.0,
+     "Ops Tech A": 16.0,
+     "Member Experience": 48.5,
+     "FOH Coordinator": 8.0
+    }
    }
-  ],
-  "Stone Mountain": [
-   {
-    "opsSpec": 56.0,
-    "mcMea": 42.75,
-    "flp": 8.25,
-    "techA": 0.0,
-    "techB": 24.0,
-    "techC": 88.0,
-    "other": 74.25
+  },
+  "Stone Mountain": {
+   "2026-11-14": {
+    "byBucket": {
+     "opsSpec": 56.0,
+     "mcMea": 42.75,
+     "flp": 8.25,
+     "techA": 0.0,
+     "techB": 24.0,
+     "techC": 88.0,
+     "other": 74.25
+    },
+    "byType": {
+     "BOH Coordinator": 8.5,
+     "Ops Specialist": 56.0,
+     "Training (Ops)": 8.75,
+     "Parts and Service": 8.0,
+     "Ops Tech B": 24.0,
+     "Ops Tech C": 88.0,
+     "Vehicle Cleaner": 32.0,
+     "FLP": 8.25,
+     "Member Experience": 34.75,
+     "Leave [Paid]": 9.0,
+     "MEA Case Management": 8.0,
+     "FOH Manager": 8.0
+    }
    },
-   {
-    "opsSpec": 56.0,
-    "mcMea": 45.25,
-    "flp": 8.25,
-    "techA": 0.0,
-    "techB": 16.0,
-    "techC": 48.0,
-    "other": 56.0
+   "2026-11-15": {
+    "byBucket": {
+     "opsSpec": 56.0,
+     "mcMea": 45.25,
+     "flp": 8.25,
+     "techA": 0.0,
+     "techB": 16.0,
+     "techC": 48.0,
+     "other": 56.0
+    },
+    "byType": {
+     "On Flex Coordinator": 7.5,
+     "BOH Coordinator": 8.5,
+     "Ops Specialist": 56.0,
+     "Parts and Service": 8.0,
+     "Ops Tech B": 16.0,
+     "Ops Tech C": 48.0,
+     "Vehicle Cleaner": 32.0,
+     "FLP": 8.25,
+     "Member Experience": 45.25
+    }
    },
-   {
-    "opsSpec": 56.0,
-    "mcMea": 44.0,
-    "flp": 0.0,
-    "techA": 32.0,
-    "techB": 32.0,
-    "techC": 104.0,
-    "other": 72.75
+   "2026-11-16": {
+    "byBucket": {
+     "opsSpec": 56.0,
+     "mcMea": 44.0,
+     "flp": 0.0,
+     "techA": 32.0,
+     "techB": 32.0,
+     "techC": 104.0,
+     "other": 72.75
+    },
+    "byType": {
+     "BOH Coordinator": 16.25,
+     "On Flex Coordinator": 7.5,
+     "Ops Specialist": 56.0,
+     "Parts and Service": 8.0,
+     "Ops Tech B": 32.0,
+     "Ops Tech C": 104.0,
+     "BOH Manager": 9.0,
+     "Ops Tech A": 32.0,
+     "Vehicle Cleaner": 24.0,
+     "Member Experience": 44.0,
+     "FOH Manager": 8.0
+    }
    },
-   {
-    "opsSpec": 112.0,
-    "mcMea": 68.0,
-    "flp": 0.0,
-    "techA": 32.0,
-    "techB": 40.0,
-    "techC": 88.0,
-    "other": 99.25
+   "2026-11-17": {
+    "byBucket": {
+     "opsSpec": 112.0,
+     "mcMea": 68.0,
+     "flp": 0.0,
+     "techA": 32.0,
+     "techB": 40.0,
+     "techC": 88.0,
+     "other": 99.25
+    },
+    "byType": {
+     "BOH Coordinator": 24.5,
+     "On Flex Coordinator": 9.0,
+     "Ops Specialist": 112.0,
+     "Training (Ops)": 8.75,
+     "Parts and Service": 16.0,
+     "Ops Tech B": 40.0,
+     "BOH Manager": 9.0,
+     "Ops Tech C": 88.0,
+     "Ops Tech A": 32.0,
+     "Vehicle Cleaner": 24.0,
+     "Member Experience": 60.0,
+     "MEA Case Management": 8.0,
+     "FOH Manager": 8.0
+    }
    },
-   {
-    "opsSpec": 112.0,
-    "mcMea": 59.75,
-    "flp": 0.0,
-    "techA": 32.0,
-    "techB": 40.0,
-    "techC": 88.0,
-    "other": 97.0
+   "2026-11-18": {
+    "byBucket": {
+     "opsSpec": 112.0,
+     "mcMea": 51.25,
+     "flp": 0.0,
+     "techA": 32.0,
+     "techB": 40.0,
+     "techC": 88.0,
+     "other": 106.0
+    },
+    "byType": {
+     "BOH Coordinator": 24.5,
+     "On Flex Coordinator": 7.5,
+     "Ops Specialist": 112.0,
+     "Training (Ops)": 8.75,
+     "Parts and Service": 16.0,
+     "Ops Tech B": 40.0,
+     "Ops Tech C": 88.0,
+     "BOH Manager": 9.0,
+     "Ops Tech A": 32.0,
+     "Vehicle Cleaner": 24.0,
+     "Member Experience": 43.25,
+     "Leave [Paid]": 9.0,
+     "MEA Case Management": 8.0,
+     "FOH Manager": 7.25
+    }
    },
-   {
-    "opsSpec": 112.0,
-    "mcMea": 50.75,
-    "flp": 0.0,
-    "techA": 32.0,
-    "techB": 24.0,
-    "techC": 64.0,
-    "other": 97.75
+   "2026-11-19": {
+    "byBucket": {
+     "opsSpec": 112.0,
+     "mcMea": 50.75,
+     "flp": 0.0,
+     "techA": 32.0,
+     "techB": 24.0,
+     "techC": 64.0,
+     "other": 97.75
+    },
+    "byType": {
+     "BOH Coordinator": 24.5,
+     "On Flex Coordinator": 7.5,
+     "Ops Specialist": 112.0,
+     "Training (Ops)": 8.75,
+     "Parts and Service": 16.0,
+     "BOH Manager": 9.0,
+     "Ops Tech C": 64.0,
+     "Ops Tech B": 24.0,
+     "Ops Tech A": 32.0,
+     "Vehicle Cleaner": 32.0,
+     "Member Experience": 42.75,
+     "MEA Case Management": 8.0
+    }
    },
-   {
-    "opsSpec": 56.0,
-    "mcMea": 51.5,
-    "flp": 0.0,
-    "techA": 32.0,
-    "techB": 24.0,
-    "techC": 112.0,
-    "other": 82.0
+   "2026-11-20": {
+    "byBucket": {
+     "opsSpec": 56.0,
+     "mcMea": 51.5,
+     "flp": 0.0,
+     "techA": 32.0,
+     "techB": 24.0,
+     "techC": 112.0,
+     "other": 82.0
+    },
+    "byType": {
+     "BOH Coordinator": 16.25,
+     "Ops Specialist": 56.0,
+     "Training (Ops)": 8.75,
+     "Parts and Service": 8.0,
+     "Ops Tech B": 24.0,
+     "Ops Tech C": 112.0,
+     "BOH Manager": 9.0,
+     "Ops Tech A": 32.0,
+     "Vehicle Cleaner": 32.0,
+     "Member Experience": 43.5,
+     "MEA Case Management": 8.0,
+     "FOH Manager": 8.0
+    }
    }
-  ],
-  "Larchmont": [
-   {
-    "opsSpec": 24.0,
-    "mcMea": 36.0,
-    "flp": 0.0,
-    "techA": 0.0,
-    "techB": 0.0,
-    "techC": 7.5,
-    "other": 16.5
+  },
+  "Larchmont": {
+   "2026-11-14": {
+    "byBucket": {
+     "opsSpec": 24.0,
+     "mcMea": 36.0,
+     "flp": 0.0,
+     "techA": 0.0,
+     "techB": 0.0,
+     "techC": 7.5,
+     "other": 16.5
+    },
+    "byType": {
+     "Ops Specialist": 24.0,
+     "Parts and Service": 7.0,
+     "Ops Tech C": 7.5,
+     "Member Experience": 35.0,
+     "MEA Case Management": 1.0,
+     "FOH Manager": 9.5
+    }
    },
-   {
-    "opsSpec": 15.5,
-    "mcMea": 29.0,
-    "flp": 0.0,
-    "techA": 0.0,
-    "techB": 0.0,
-    "techC": 0.0,
-    "other": 15.0
+   "2026-11-15": {
+    "byBucket": {
+     "opsSpec": 15.5,
+     "mcMea": 29.0,
+     "flp": 0.0,
+     "techA": 0.0,
+     "techB": 0.0,
+     "techC": 0.0,
+     "other": 15.0
+    },
+    "byType": {
+     "BOH Coordinator": 8.0,
+     "Ops Specialist": 15.5,
+     "Parts and Service": 7.0,
+     "Member Experience": 28.0,
+     "MEA Case Management": 1.0
+    }
    },
-   {
-    "opsSpec": 41.0,
-    "mcMea": 28.5,
-    "flp": 0.0,
-    "techA": 9.5,
-    "techB": 8.5,
-    "techC": 8.5,
-    "other": 24.5
+   "2026-11-16": {
+    "byBucket": {
+     "opsSpec": 41.0,
+     "mcMea": 28.5,
+     "flp": 0.0,
+     "techA": 9.5,
+     "techB": 8.5,
+     "techC": 8.5,
+     "other": 24.5
+    },
+    "byType": {
+     "On Flex Coordinator": 8.5,
+     "BOH Coordinator": 9.0,
+     "Ops Specialist": 41.0,
+     "Parts and Service": 7.0,
+     "Ops Tech A": 9.5,
+     "Ops Tech C": 8.5,
+     "Ops Tech B": 8.5,
+     "Member Experience": 28.5
+    }
    },
-   {
-    "opsSpec": 33.0,
-    "mcMea": 28.5,
-    "flp": 0.0,
-    "techA": 9.5,
-    "techB": 8.5,
-    "techC": 17.0,
-    "other": 27.0
+   "2026-11-17": {
+    "byBucket": {
+     "opsSpec": 33.0,
+     "mcMea": 28.5,
+     "flp": 0.0,
+     "techA": 9.5,
+     "techB": 8.5,
+     "techC": 17.0,
+     "other": 27.0
+    },
+    "byType": {
+     "On Flex Coordinator": 8.5,
+     "BOH Coordinator": 9.0,
+     "Ops Specialist": 33.0,
+     "Ops Tech A": 9.5,
+     "Ops Tech C": 17.0,
+     "Ops Tech B": 8.5,
+     "Member Experience": 28.5,
+     "FOH Manager": 9.5
+    }
    },
-   {
-    "opsSpec": 34.0,
-    "mcMea": 29.5,
-    "flp": 0.0,
-    "techA": 9.5,
-    "techB": 8.5,
-    "techC": 17.0,
-    "other": 27.0
+   "2026-11-18": {
+    "byBucket": {
+     "opsSpec": 34.0,
+     "mcMea": 29.5,
+     "flp": 0.0,
+     "techA": 9.5,
+     "techB": 8.5,
+     "techC": 17.0,
+     "other": 27.0
+    },
+    "byType": {
+     "On Flex Coordinator": 8.5,
+     "BOH Coordinator": 9.0,
+     "Ops Specialist": 34.0,
+     "Ops Tech A": 9.5,
+     "Ops Tech C": 17.0,
+     "Ops Tech B": 8.5,
+     "Member Experience": 28.5,
+     "MEA Case Management": 1.0,
+     "FOH Manager": 9.5
+    }
    },
-   {
-    "opsSpec": 33.5,
-    "mcMea": 29.5,
-    "flp": 0.0,
-    "techA": 9.5,
-    "techB": 8.5,
-    "techC": 17.0,
-    "other": 35.0
+   "2026-11-19": {
+    "byBucket": {
+     "opsSpec": 33.5,
+     "mcMea": 29.5,
+     "flp": 0.0,
+     "techA": 9.5,
+     "techB": 8.5,
+     "techC": 17.0,
+     "other": 35.0
+    },
+    "byType": {
+     "On Flex Coordinator": 8.5,
+     "BOH Coordinator": 9.0,
+     "Ops Specialist": 33.5,
+     "Parts and Service": 8.0,
+     "Ops Tech A": 9.5,
+     "Ops Tech C": 17.0,
+     "Ops Tech B": 8.5,
+     "Member Experience": 28.5,
+     "MEA Case Management": 1.0,
+     "FOH Manager": 9.5
+    }
    },
-   {
-    "opsSpec": 25.0,
-    "mcMea": 36.5,
-    "flp": 0.0,
-    "techA": 9.5,
-    "techB": 8.5,
-    "techC": 16.0,
-    "other": 26.0
+   "2026-11-20": {
+    "byBucket": {
+     "opsSpec": 25.0,
+     "mcMea": 36.5,
+     "flp": 0.0,
+     "techA": 9.5,
+     "techB": 8.5,
+     "techC": 16.0,
+     "other": 26.0
+    },
+    "byType": {
+     "On Flex Coordinator": 8.5,
+     "Ops Specialist": 25.0,
+     "Parts and Service": 8.0,
+     "Ops Tech A": 9.5,
+     "Ops Tech C": 16.0,
+     "Ops Tech B": 8.5,
+     "Member Experience": 35.5,
+     "MEA Case Management": 1.0,
+     "FOH Manager": 9.5
+    }
    }
-  ],
-  "South Charlotte": [
-   {
-    "opsSpec": 22.5,
-    "mcMea": 22.5,
-    "flp": 0.0,
-    "techA": 0.0,
-    "techB": 15.0,
-    "techC": 7.5,
-    "other": 31.0
+  },
+  "South Charlotte": {
+   "2026-11-14": {
+    "byBucket": {
+     "opsSpec": 22.5,
+     "mcMea": 22.5,
+     "flp": 0.0,
+     "techA": 0.0,
+     "techB": 15.0,
+     "techC": 7.5,
+     "other": 31.0
+    },
+    "byType": {
+     "BOH Coordinator": 8.0,
+     "Ops Specialist": 22.5,
+     "Parts and Service": 7.5,
+     "Service Manager": 8.0,
+     "Ops Tech B": 15.0,
+     "Ops Tech C": 7.5,
+     "Member Experience": 22.5,
+     "FOH Coordinator": 7.5
+    }
    },
-   {
-    "opsSpec": 22.5,
-    "mcMea": 22.5,
-    "flp": 0.0,
-    "techA": 7.5,
-    "techB": 7.5,
-    "techC": 7.5,
-    "other": 15.5
+   "2026-11-15": {
+    "byBucket": {
+     "opsSpec": 22.5,
+     "mcMea": 22.5,
+     "flp": 0.0,
+     "techA": 7.5,
+     "techB": 7.5,
+     "techC": 7.5,
+     "other": 15.5
+    },
+    "byType": {
+     "Ops Specialist": 22.5,
+     "Service Manager": 8.0,
+     "Ops Tech B": 7.5,
+     "Ops Tech A": 7.5,
+     "Ops Tech C": 7.5,
+     "Member Experience": 22.5,
+     "FOH Coordinator": 7.5
+    }
    },
-   {
-    "opsSpec": 22.5,
-    "mcMea": 21.0,
-    "flp": 0.0,
-    "techA": 7.5,
-    "techB": 7.5,
-    "techC": 7.5,
-    "other": 8.0
+   "2026-11-16": {
+    "byBucket": {
+     "opsSpec": 22.5,
+     "mcMea": 21.0,
+     "flp": 0.0,
+     "techA": 7.5,
+     "techB": 7.5,
+     "techC": 7.5,
+     "other": 8.0
+    },
+    "byType": {
+     "Ops Specialist": 22.5,
+     "Service Manager": 8.0,
+     "Ops Tech B": 7.5,
+     "Ops Tech A": 7.5,
+     "Ops Tech C": 7.5,
+     "Member Experience": 21.0
+    }
    },
-   {
-    "opsSpec": 22.5,
-    "mcMea": 22.5,
-    "flp": 0.0,
-    "techA": 6.5,
-    "techB": 7.5,
-    "techC": 7.5,
-    "other": 15.5
+   "2026-11-17": {
+    "byBucket": {
+     "opsSpec": 22.5,
+     "mcMea": 22.5,
+     "flp": 0.0,
+     "techA": 6.5,
+     "techB": 7.5,
+     "techC": 7.5,
+     "other": 15.5
+    },
+    "byType": {
+     "BOH Coordinator": 8.0,
+     "Ops Specialist": 22.5,
+     "Parts and Service": 7.5,
+     "Ops Tech A": 6.5,
+     "Ops Tech C": 7.5,
+     "Ops Tech B": 7.5,
+     "Member Experience": 22.5
+    }
    },
-   {
-    "opsSpec": 15.0,
-    "mcMea": 22.5,
-    "flp": 0.0,
-    "techA": 7.5,
-    "techB": 7.5,
-    "techC": 7.5,
-    "other": 23.0
+   "2026-11-18": {
+    "byBucket": {
+     "opsSpec": 15.0,
+     "mcMea": 22.5,
+     "flp": 0.0,
+     "techA": 7.5,
+     "techB": 7.5,
+     "techC": 7.5,
+     "other": 23.0
+    },
+    "byType": {
+     "BOH Coordinator": 8.0,
+     "Ops Specialist": 15.0,
+     "Parts and Service": 7.5,
+     "Ops Tech A": 7.5,
+     "Ops Tech C": 7.5,
+     "Ops Tech B": 7.5,
+     "Member Experience": 22.5,
+     "FOH Coordinator": 7.5
+    }
    },
-   {
-    "opsSpec": 22.5,
-    "mcMea": 23.5,
-    "flp": 0.0,
-    "techA": 7.5,
-    "techB": 15.0,
-    "techC": 0.0,
-    "other": 31.0
+   "2026-11-19": {
+    "byBucket": {
+     "opsSpec": 22.5,
+     "mcMea": 23.5,
+     "flp": 0.0,
+     "techA": 7.5,
+     "techB": 15.0,
+     "techC": 0.0,
+     "other": 31.0
+    },
+    "byType": {
+     "BOH Coordinator": 8.0,
+     "Ops Specialist": 22.5,
+     "Parts and Service": 7.5,
+     "Service Manager": 8.0,
+     "Ops Tech B": 15.0,
+     "Ops Tech A": 7.5,
+     "Member Experience": 23.5,
+     "FOH Coordinator": 7.5
+    }
    },
-   {
-    "opsSpec": 22.5,
-    "mcMea": 15.0,
-    "flp": 0.0,
-    "techA": 0.0,
-    "techB": 15.0,
-    "techC": 0.0,
-    "other": 31.0
+   "2026-11-20": {
+    "byBucket": {
+     "opsSpec": 22.5,
+     "mcMea": 15.0,
+     "flp": 0.0,
+     "techA": 0.0,
+     "techB": 15.0,
+     "techC": 0.0,
+     "other": 31.0
+    },
+    "byType": {
+     "BOH Coordinator": 8.0,
+     "Ops Specialist": 22.5,
+     "Parts and Service": 7.5,
+     "Service Manager": 8.0,
+     "Ops Tech B": 15.0,
+     "Member Experience": 15.0,
+     "FOH Coordinator": 7.5
+    }
    }
-  ],
-  "Marietta": [
-   {
-    "opsSpec": 24.0,
-    "mcMea": 18.5,
-    "flp": 0.0,
-    "techA": 9.0,
-    "techB": 0.0,
-    "techC": 17.0,
-    "other": 16.5
+  },
+  "Marietta": {
+   "2026-11-14": {
+    "byBucket": {
+     "opsSpec": 24.0,
+     "mcMea": 18.5,
+     "flp": 0.0,
+     "techA": 9.0,
+     "techB": 0.0,
+     "techC": 17.0,
+     "other": 16.5
+    },
+    "byType": {
+     "BOH Coordinator": 8.5,
+     "Ops Specialist": 24.0,
+     "Parts and Service": 8.0,
+     "Ops Tech A": 9.0,
+     "Ops Tech C": 17.0,
+     "Member Experience": 15.5,
+     "MEA Case Management": 3.0
+    }
    },
-   {
-    "opsSpec": 16.0,
-    "mcMea": 18.5,
-    "flp": 0.0,
-    "techA": 8.0,
-    "techB": 0.0,
-    "techC": 33.5,
-    "other": 0.0
+   "2026-11-15": {
+    "byBucket": {
+     "opsSpec": 16.0,
+     "mcMea": 18.5,
+     "flp": 0.0,
+     "techA": 8.0,
+     "techB": 0.0,
+     "techC": 33.5,
+     "other": 0.0
+    },
+    "byType": {
+     "Ops Specialist": 16.0,
+     "Ops Tech C": 33.5,
+     "Ops Tech A": 8.0,
+     "Member Experience": 15.5,
+     "MEA Case Management": 3.0
+    }
    },
-   {
-    "opsSpec": 16.0,
-    "mcMea": 18.5,
-    "flp": 0.0,
-    "techA": 8.0,
-    "techB": 8.0,
-    "techC": 25.0,
-    "other": 25.0
+   "2026-11-16": {
+    "byBucket": {
+     "opsSpec": 16.0,
+     "mcMea": 18.5,
+     "flp": 0.0,
+     "techA": 8.0,
+     "techB": 8.0,
+     "techC": 25.0,
+     "other": 25.0
+    },
+    "byType": {
+     "BOH Coordinator": 25.0,
+     "Ops Specialist": 16.0,
+     "Ops Tech C": 25.0,
+     "Ops Tech A": 8.0,
+     "Ops Tech B": 8.0,
+     "Member Experience": 15.5,
+     "MEA Case Management": 3.0
+    }
    },
-   {
-    "opsSpec": 40.0,
-    "mcMea": 17.5,
-    "flp": 0.0,
-    "techA": 16.0,
-    "techB": 8.0,
-    "techC": 33.5,
-    "other": 41.5
+   "2026-11-17": {
+    "byBucket": {
+     "opsSpec": 40.0,
+     "mcMea": 17.5,
+     "flp": 0.0,
+     "techA": 16.0,
+     "techB": 8.0,
+     "techC": 33.5,
+     "other": 41.5
+    },
+    "byType": {
+     "BOH Coordinator": 33.5,
+     "Ops Specialist": 40.0,
+     "Ops Tech C": 33.5,
+     "Parts and Service": 8.0,
+     "Ops Tech A": 16.0,
+     "Ops Tech B": 8.0,
+     "Member Experience": 10.5,
+     "MEA Case Management": 7.0
+    }
    },
-   {
-    "opsSpec": 40.0,
-    "mcMea": 17.5,
-    "flp": 0.0,
-    "techA": 16.0,
-    "techB": 16.0,
-    "techC": 16.5,
-    "other": 41.5
+   "2026-11-18": {
+    "byBucket": {
+     "opsSpec": 40.0,
+     "mcMea": 17.5,
+     "flp": 0.0,
+     "techA": 16.0,
+     "techB": 16.0,
+     "techC": 16.5,
+     "other": 41.5
+    },
+    "byType": {
+     "BOH Coordinator": 33.5,
+     "Ops Specialist": 40.0,
+     "Ops Tech C": 16.5,
+     "Parts and Service": 8.0,
+     "Ops Tech B": 16.0,
+     "Ops Tech A": 16.0,
+     "Member Experience": 10.5,
+     "MEA Case Management": 7.0
+    }
    },
-   {
-    "opsSpec": 39.5,
-    "mcMea": 27.5,
-    "flp": 0.0,
-    "techA": 16.0,
-    "techB": 15.5,
-    "techC": 25.0,
-    "other": 41.5
+   "2026-11-19": {
+    "byBucket": {
+     "opsSpec": 39.5,
+     "mcMea": 27.5,
+     "flp": 0.0,
+     "techA": 16.0,
+     "techB": 15.5,
+     "techC": 25.0,
+     "other": 41.5
+    },
+    "byType": {
+     "BOH Coordinator": 33.5,
+     "Ops Specialist": 39.5,
+     "Ops Tech C": 25.0,
+     "Parts and Service": 8.0,
+     "Ops Tech B": 15.5,
+     "Ops Tech A": 16.0,
+     "Member Experience": 20.5,
+     "MEA Case Management": 7.0
+    }
    },
-   {
-    "opsSpec": 24.0,
-    "mcMea": 18.5,
-    "flp": 0.0,
-    "techA": 8.0,
-    "techB": 15.5,
-    "techC": 17.0,
-    "other": 41.5
+   "2026-11-20": {
+    "byBucket": {
+     "opsSpec": 24.0,
+     "mcMea": 18.5,
+     "flp": 0.0,
+     "techA": 8.0,
+     "techB": 15.5,
+     "techC": 17.0,
+     "other": 41.5
+    },
+    "byType": {
+     "BOH Coordinator": 33.5,
+     "Ops Specialist": 24.0,
+     "Parts and Service": 8.0,
+     "Ops Tech B": 15.5,
+     "Ops Tech A": 8.0,
+     "Ops Tech C": 17.0,
+     "Member Experience": 15.5,
+     "MEA Case Management": 3.0
+    }
    }
-  ],
-  "San Jose": [
-   {
-    "opsSpec": 52.5,
-    "mcMea": 30.0,
-    "flp": 0.0,
-    "techA": 0.0,
-    "techB": 0.0,
-    "techC": 15.0,
-    "other": 23.0
+  },
+  "San Jose": {
+   "2026-11-14": {
+    "byBucket": {
+     "opsSpec": 52.5,
+     "mcMea": 30.0,
+     "flp": 0.0,
+     "techA": 0.0,
+     "techB": 0.0,
+     "techC": 15.0,
+     "other": 23.0
+    },
+    "byType": {
+     "Ops Specialist": 52.5,
+     "Service Manager": 7.5,
+     "Ops Tech C": 15.0,
+     "Overtime BOH": 8.0,
+     "Member Experience": 30.0,
+     "R&P Outbound": 7.5
+    }
    },
-   {
-    "opsSpec": 37.5,
-    "mcMea": 15.0,
-    "flp": 0.0,
-    "techA": 0.0,
-    "techB": 7.5,
-    "techC": 15.0,
-    "other": 15.0
+   "2026-11-15": {
+    "byBucket": {
+     "opsSpec": 37.5,
+     "mcMea": 15.0,
+     "flp": 0.0,
+     "techA": 0.0,
+     "techB": 7.5,
+     "techC": 15.0,
+     "other": 15.0
+    },
+    "byType": {
+     "Ops Specialist": 37.5,
+     "Parts and Service": 7.5,
+     "Ops Tech C": 15.0,
+     "Ops Tech B": 7.5,
+     "Member Experience": 15.0,
+     "FOH Manager": 7.5
+    }
    },
-   {
-    "opsSpec": 37.5,
-    "mcMea": 15.0,
-    "flp": 0.0,
-    "techA": 0.0,
-    "techB": 7.5,
-    "techC": 15.0,
-    "other": 22.5
+   "2026-11-16": {
+    "byBucket": {
+     "opsSpec": 37.5,
+     "mcMea": 15.0,
+     "flp": 0.0,
+     "techA": 0.0,
+     "techB": 7.5,
+     "techC": 15.0,
+     "other": 22.5
+    },
+    "byType": {
+     "Ops Specialist": 37.5,
+     "Parts and Service": 7.5,
+     "Ops Tech C": 15.0,
+     "Ops Tech B": 7.5,
+     "Member Experience": 15.0,
+     "FOH Manager": 7.5,
+     "R&P Outbound": 7.5
+    }
    },
-   {
-    "opsSpec": 37.5,
-    "mcMea": 22.5,
-    "flp": 0.0,
-    "techA": 7.5,
-    "techB": 7.5,
-    "techC": 22.5,
-    "other": 30.0
+   "2026-11-17": {
+    "byBucket": {
+     "opsSpec": 37.5,
+     "mcMea": 22.5,
+     "flp": 0.0,
+     "techA": 7.5,
+     "techB": 7.5,
+     "techC": 22.5,
+     "other": 30.0
+    },
+    "byType": {
+     "Ops Specialist": 37.5,
+     "Parts and Service": 7.5,
+     "Service Manager": 7.5,
+     "Ops Tech A": 7.5,
+     "Ops Tech C": 22.5,
+     "Ops Tech B": 7.5,
+     "Member Experience": 22.5,
+     "FOH Manager": 7.5,
+     "R&P Outbound": 7.5
+    }
    },
-   {
-    "opsSpec": 37.5,
-    "mcMea": 15.0,
-    "flp": 0.0,
-    "techA": 7.5,
-    "techB": 7.5,
-    "techC": 15.0,
-    "other": 30.0
+   "2026-11-18": {
+    "byBucket": {
+     "opsSpec": 37.5,
+     "mcMea": 15.0,
+     "flp": 0.0,
+     "techA": 7.5,
+     "techB": 7.5,
+     "techC": 15.0,
+     "other": 30.0
+    },
+    "byType": {
+     "Ops Specialist": 37.5,
+     "Parts and Service": 7.5,
+     "Service Manager": 7.5,
+     "Ops Tech A": 7.5,
+     "Ops Tech C": 15.0,
+     "Ops Tech B": 7.5,
+     "Member Experience": 15.0,
+     "FOH Manager": 7.5,
+     "R&P Outbound": 7.5
+    }
    },
-   {
-    "opsSpec": 45.0,
-    "mcMea": 22.5,
-    "flp": 0.0,
-    "techA": 7.5,
-    "techB": 7.5,
-    "techC": 15.0,
-    "other": 22.5
+   "2026-11-19": {
+    "byBucket": {
+     "opsSpec": 45.0,
+     "mcMea": 22.5,
+     "flp": 0.0,
+     "techA": 7.5,
+     "techB": 7.5,
+     "techC": 15.0,
+     "other": 22.5
+    },
+    "byType": {
+     "Ops Specialist": 45.0,
+     "Parts and Service": 7.5,
+     "Service Manager": 7.5,
+     "Ops Tech A": 7.5,
+     "Ops Tech C": 15.0,
+     "Ops Tech B": 7.5,
+     "Member Experience": 22.5,
+     "FOH Manager": 7.5
+    }
    },
-   {
-    "opsSpec": 45.0,
-    "mcMea": 30.0,
-    "flp": 0.0,
-    "techA": 7.5,
-    "techB": 0.0,
-    "techC": 22.5,
-    "other": 15.0
+   "2026-11-20": {
+    "byBucket": {
+     "opsSpec": 45.0,
+     "mcMea": 30.0,
+     "flp": 0.0,
+     "techA": 7.5,
+     "techB": 0.0,
+     "techC": 22.5,
+     "other": 15.0
+    },
+    "byType": {
+     "Ops Specialist": 45.0,
+     "Service Manager": 7.5,
+     "Ops Tech A": 7.5,
+     "Ops Tech C": 22.5,
+     "Member Experience": 30.0,
+     "R&P Outbound": 7.5
+    }
    }
-  ],
-  "Morrow": [
-   {
-    "opsSpec": 24.0,
-    "mcMea": 16.0,
-    "flp": 0.0,
-    "techA": 0.0,
-    "techB": 8.0,
-    "techC": 8.0,
-    "other": 32.0
+  },
+  "Morrow": {
+   "2026-11-14": {
+    "byBucket": {
+     "opsSpec": 24.0,
+     "mcMea": 16.0,
+     "flp": 0.0,
+     "techA": 0.0,
+     "techB": 8.0,
+     "techC": 8.0,
+     "other": 32.0
+    },
+    "byType": {
+     "Ops Specialist": 24.0,
+     "Ops Tech B": 8.0,
+     "Ops Tech C": 8.0,
+     "Leave [Paid]": 24.0,
+     "Member Experience": 16.0,
+     "FOH Manager": 8.0
+    }
    },
-   {
-    "opsSpec": 8.0,
-    "mcMea": 16.0,
-    "flp": 0.0,
-    "techA": 8.0,
-    "techB": 0.0,
-    "techC": 16.0,
-    "other": 0.0
+   "2026-11-15": {
+    "byBucket": {
+     "opsSpec": 8.0,
+     "mcMea": 16.0,
+     "flp": 0.0,
+     "techA": 8.0,
+     "techB": 0.0,
+     "techC": 16.0,
+     "other": 0.0
+    },
+    "byType": {
+     "Ops Specialist": 8.0,
+     "Ops Tech C": 16.0,
+     "Ops Tech A": 8.0,
+     "Member Experience": 16.0
+    }
    },
-   {
-    "opsSpec": 8.0,
-    "mcMea": 17.25,
-    "flp": 0.0,
-    "techA": 8.0,
-    "techB": 0.0,
-    "techC": 16.0,
-    "other": 0.0
+   "2026-11-16": {
+    "byBucket": {
+     "opsSpec": 8.0,
+     "mcMea": 17.25,
+     "flp": 0.0,
+     "techA": 8.0,
+     "techB": 0.0,
+     "techC": 16.0,
+     "other": 0.0
+    },
+    "byType": {
+     "Ops Specialist": 8.0,
+     "Ops Tech C": 16.0,
+     "Ops Tech A": 8.0,
+     "Member Experience": 16.0,
+     "Overtime FOH": 1.25
+    }
    },
-   {
-    "opsSpec": 32.0,
-    "mcMea": 32.0,
-    "flp": 0.0,
-    "techA": 8.0,
-    "techB": 8.0,
-    "techC": 32.0,
-    "other": 8.0
+   "2026-11-17": {
+    "byBucket": {
+     "opsSpec": 32.0,
+     "mcMea": 32.0,
+     "flp": 0.0,
+     "techA": 8.0,
+     "techB": 8.0,
+     "techC": 32.0,
+     "other": 8.0
+    },
+    "byType": {
+     "Ops Specialist": 32.0,
+     "Ops Tech B": 8.0,
+     "Ops Tech C": 32.0,
+     "Ops Tech A": 8.0,
+     "MEA Case Management": 8.0,
+     "Member Experience": 24.0,
+     "FOH Manager": 8.0
+    }
    },
-   {
-    "opsSpec": 32.0,
-    "mcMea": 32.0,
-    "flp": 0.0,
-    "techA": 8.0,
-    "techB": 8.0,
-    "techC": 32.0,
-    "other": 8.0
+   "2026-11-18": {
+    "byBucket": {
+     "opsSpec": 32.0,
+     "mcMea": 32.0,
+     "flp": 0.0,
+     "techA": 8.0,
+     "techB": 8.0,
+     "techC": 32.0,
+     "other": 8.0
+    },
+    "byType": {
+     "Ops Specialist": 32.0,
+     "Ops Tech B": 8.0,
+     "Ops Tech C": 32.0,
+     "Ops Tech A": 8.0,
+     "Member Experience": 32.0,
+     "FOH Manager": 8.0
+    }
    },
-   {
-    "opsSpec": 32.0,
-    "mcMea": 32.0,
-    "flp": 0.0,
-    "techA": 8.0,
-    "techB": 8.0,
-    "techC": 32.0,
-    "other": 8.0
+   "2026-11-19": {
+    "byBucket": {
+     "opsSpec": 32.0,
+     "mcMea": 32.0,
+     "flp": 0.0,
+     "techA": 8.0,
+     "techB": 8.0,
+     "techC": 32.0,
+     "other": 8.0
+    },
+    "byType": {
+     "Ops Specialist": 32.0,
+     "Ops Tech B": 8.0,
+     "Ops Tech C": 32.0,
+     "Ops Tech A": 8.0,
+     "Member Experience": 32.0,
+     "FOH Manager": 8.0
+    }
    },
-   {
-    "opsSpec": 24.0,
-    "mcMea": 16.0,
-    "flp": 0.0,
-    "techA": 0.0,
-    "techB": 8.0,
-    "techC": 16.0,
-    "other": 8.0
+   "2026-11-20": {
+    "byBucket": {
+     "opsSpec": 24.0,
+     "mcMea": 16.0,
+     "flp": 0.0,
+     "techA": 0.0,
+     "techB": 8.0,
+     "techC": 16.0,
+     "other": 8.0
+    },
+    "byType": {
+     "Ops Specialist": 24.0,
+     "Ops Tech B": 8.0,
+     "Ops Tech C": 16.0,
+     "Member Experience": 16.0,
+     "FOH Manager": 8.0
+    }
    }
-  ],
-  "El Monte": [
-   {
-    "opsSpec": 52.5,
-    "mcMea": 30.0,
-    "flp": 0.0,
-    "techA": 0.0,
-    "techB": 0.0,
-    "techC": 15.0,
-    "other": 8.0
+  },
+  "El Monte": {
+   "2026-11-14": {
+    "byBucket": {
+     "opsSpec": 52.5,
+     "mcMea": 30.0,
+     "flp": 0.0,
+     "techA": 0.0,
+     "techB": 0.0,
+     "techC": 15.0,
+     "other": 8.0
+    },
+    "byType": {
+     "Ops Specialist": 52.5,
+     "Ops Tech C": 15.0,
+     "Member Experience": 30.0,
+     "FOH Manager": 8.0
+    }
    },
-   {
-    "opsSpec": 37.5,
-    "mcMea": 30.0,
-    "flp": 0.0,
-    "techA": 0.0,
-    "techB": 0.0,
-    "techC": 7.5,
-    "other": 0.0
+   "2026-11-15": {
+    "byBucket": {
+     "opsSpec": 37.5,
+     "mcMea": 30.0,
+     "flp": 0.0,
+     "techA": 0.0,
+     "techB": 0.0,
+     "techC": 7.5,
+     "other": 0.0
+    },
+    "byType": {
+     "Ops Specialist": 37.5,
+     "Ops Tech C": 7.5,
+     "Member Experience": 30.0
+    }
    },
-   {
-    "opsSpec": 30.25,
-    "mcMea": 22.5,
-    "flp": 0.0,
-    "techA": 7.5,
-    "techB": 0.0,
-    "techC": 7.5,
-    "other": 8.0
+   "2026-11-16": {
+    "byBucket": {
+     "opsSpec": 30.25,
+     "mcMea": 22.5,
+     "flp": 0.0,
+     "techA": 7.5,
+     "techB": 0.0,
+     "techC": 7.5,
+     "other": 8.0
+    },
+    "byType": {
+     "Ops Specialist": 30.25,
+     "Service Manager": 8.0,
+     "Ops Tech C": 7.5,
+     "Ops Tech A": 7.5,
+     "Member Experience": 22.5
+    }
    },
-   {
-    "opsSpec": 30.0,
-    "mcMea": 15.0,
-    "flp": 0.0,
-    "techA": 7.5,
-    "techB": 0.0,
-    "techC": 22.5,
-    "other": 16.0
+   "2026-11-17": {
+    "byBucket": {
+     "opsSpec": 30.0,
+     "mcMea": 15.0,
+     "flp": 0.0,
+     "techA": 7.5,
+     "techB": 0.0,
+     "techC": 22.5,
+     "other": 16.0
+    },
+    "byType": {
+     "Ops Specialist": 30.0,
+     "Service Manager": 8.0,
+     "Ops Tech C": 22.5,
+     "Ops Tech A": 7.5,
+     "Member Experience": 15.0,
+     "FOH Manager": 8.0
+    }
    },
-   {
-    "opsSpec": 30.0,
-    "mcMea": 15.0,
-    "flp": 0.0,
-    "techA": 7.5,
-    "techB": 0.0,
-    "techC": 22.5,
-    "other": 16.0
+   "2026-11-18": {
+    "byBucket": {
+     "opsSpec": 30.0,
+     "mcMea": 15.0,
+     "flp": 0.0,
+     "techA": 7.5,
+     "techB": 0.0,
+     "techC": 22.5,
+     "other": 16.0
+    },
+    "byType": {
+     "Ops Specialist": 30.0,
+     "Service Manager": 8.0,
+     "Ops Tech C": 22.5,
+     "Ops Tech A": 7.5,
+     "Member Experience": 15.0,
+     "FOH Manager": 8.0
+    }
    },
-   {
-    "opsSpec": 37.5,
-    "mcMea": 15.0,
-    "flp": 0.0,
-    "techA": 7.5,
-    "techB": 0.0,
-    "techC": 22.5,
-    "other": 16.0
+   "2026-11-19": {
+    "byBucket": {
+     "opsSpec": 37.5,
+     "mcMea": 15.0,
+     "flp": 0.0,
+     "techA": 7.5,
+     "techB": 0.0,
+     "techC": 22.5,
+     "other": 16.0
+    },
+    "byType": {
+     "Ops Specialist": 37.5,
+     "Service Manager": 8.0,
+     "Ops Tech C": 22.5,
+     "Ops Tech A": 7.5,
+     "Member Experience": 15.0,
+     "FOH Manager": 8.0
+    }
    },
-   {
-    "opsSpec": 45.0,
-    "mcMea": 22.5,
-    "flp": 0.0,
-    "techA": 7.5,
-    "techB": 0.0,
-    "techC": 15.0,
-    "other": 16.0
+   "2026-11-20": {
+    "byBucket": {
+     "opsSpec": 45.0,
+     "mcMea": 22.5,
+     "flp": 0.0,
+     "techA": 7.5,
+     "techB": 0.0,
+     "techC": 15.0,
+     "other": 16.0
+    },
+    "byType": {
+     "Ops Specialist": 45.0,
+     "Service Manager": 8.0,
+     "Ops Tech C": 15.0,
+     "Ops Tech A": 7.5,
+     "Member Experience": 22.5,
+     "FOH Manager": 8.0
+    }
    }
-  ],
-  "Dallas": [
-   {
-    "opsSpec": 16.0,
-    "mcMea": 16.0,
-    "flp": 0.0,
-    "techA": 0.0,
-    "techB": 0.0,
-    "techC": 8.0,
-    "other": 0.0
+  },
+  "Richmond": {
+   "2026-11-14": {
+    "byBucket": {
+     "opsSpec": 16.0,
+     "mcMea": 17.0,
+     "flp": 0.0,
+     "techA": 0.0,
+     "techB": 0.0,
+     "techC": 8.0,
+     "other": 16.0
+    },
+    "byType": {
+     "On Flex Coordinator": 8.5,
+     "Ops Specialist": 16.0,
+     "Parts and Service": 7.5,
+     "Ops Tech C": 8.0,
+     "Member Experience": 17.0
+    }
    },
-   {
-    "opsSpec": 8.0,
-    "mcMea": 8.0,
-    "flp": 0.0,
-    "techA": 0.0,
-    "techB": 0.0,
-    "techC": 8.0,
-    "other": 8.0
+   "2026-11-15": {
+    "byBucket": {
+     "opsSpec": 24.0,
+     "mcMea": 16.75,
+     "flp": 0.0,
+     "techA": 0.0,
+     "techB": 0.0,
+     "techC": 8.0,
+     "other": 16.0
+    },
+    "byType": {
+     "Ops Specialist": 24.0,
+     "On Flex Coordinator": 8.5,
+     "Parts and Service": 7.5,
+     "Ops Tech C": 8.0,
+     "Member Experience": 16.75
+    }
    },
-   {
-    "opsSpec": 16.0,
-    "mcMea": 8.0,
-    "flp": 0.0,
-    "techA": 8.0,
-    "techB": 0.0,
-    "techC": 8.0,
-    "other": 8.0
+   "2026-11-16": {
+    "byBucket": {
+     "opsSpec": 16.0,
+     "mcMea": 16.0,
+     "flp": 0.0,
+     "techA": 8.0,
+     "techB": 0.0,
+     "techC": 8.5,
+     "other": 7.5
+    },
+    "byType": {
+     "Ops Specialist": 16.0,
+     "Parts and Service": 7.5,
+     "Ops Tech C": 8.5,
+     "Ops Tech A": 8.0,
+     "Member Experience": 16.0
+    }
    },
-   {
-    "opsSpec": 24.0,
-    "mcMea": 8.0,
-    "flp": 0.0,
-    "techA": 8.0,
-    "techB": 0.0,
-    "techC": 16.0,
-    "other": 8.0
+   "2026-11-17": {
+    "byBucket": {
+     "opsSpec": 32.0,
+     "mcMea": 15.5,
+     "flp": 0.0,
+     "techA": 8.0,
+     "techB": 0.0,
+     "techC": 17.0,
+     "other": 7.5
+    },
+    "byType": {
+     "Ops Specialist": 32.0,
+     "Parts and Service": 7.5,
+     "Ops Tech C": 17.0,
+     "Ops Tech A": 8.0,
+     "Member Experience": 15.5
+    }
    },
-   {
-    "opsSpec": 24.0,
-    "mcMea": 8.0,
-    "flp": 0.0,
-    "techA": 8.0,
-    "techB": 0.0,
-    "techC": 16.0,
-    "other": 8.0
+   "2026-11-18": {
+    "byBucket": {
+     "opsSpec": 24.0,
+     "mcMea": 16.0,
+     "flp": 0.0,
+     "techA": 8.0,
+     "techB": 0.0,
+     "techC": 17.0,
+     "other": 16.0
+    },
+    "byType": {
+     "Ops Specialist": 24.0,
+     "On Flex Coordinator": 8.5,
+     "Parts and Service": 7.5,
+     "Ops Tech C": 17.0,
+     "Ops Tech A": 8.0,
+     "Member Experience": 16.0
+    }
    },
-   {
-    "opsSpec": 16.0,
-    "mcMea": 16.0,
-    "flp": 0.0,
-    "techA": 8.0,
-    "techB": 0.0,
-    "techC": 16.0,
-    "other": 8.0
+   "2026-11-19": {
+    "byBucket": {
+     "opsSpec": 32.0,
+     "mcMea": 24.0,
+     "flp": 0.0,
+     "techA": 8.0,
+     "techB": 0.0,
+     "techC": 17.0,
+     "other": 8.5
+    },
+    "byType": {
+     "Ops Specialist": 32.0,
+     "On Flex Coordinator": 8.5,
+     "Ops Tech C": 17.0,
+     "Ops Tech A": 8.0,
+     "Member Experience": 24.0
+    }
    },
-   {
-    "opsSpec": 16.0,
-    "mcMea": 16.0,
-    "flp": 0.0,
-    "techA": 8.0,
-    "techB": 0.0,
-    "techC": 8.0,
-    "other": 0.0
+   "2026-11-20": {
+    "byBucket": {
+     "opsSpec": 16.0,
+     "mcMea": 16.0,
+     "flp": 0.0,
+     "techA": 8.0,
+     "techB": 0.0,
+     "techC": 8.5,
+     "other": 8.5
+    },
+    "byType": {
+     "On Flex Coordinator": 8.5,
+     "Ops Specialist": 16.0,
+     "Ops Tech A": 8.0,
+     "Ops Tech C": 8.5,
+     "Member Experience": 16.0
+    }
    }
-  ],
-  "Richmond": [
-   {
-    "opsSpec": 16.0,
-    "mcMea": 17.0,
-    "flp": 0.0,
-    "techA": 0.0,
-    "techB": 0.0,
-    "techC": 8.0,
-    "other": 16.0
+  },
+  "Dallas": {
+   "2026-11-14": {
+    "byBucket": {
+     "opsSpec": 16.0,
+     "mcMea": 16.0,
+     "flp": 0.0,
+     "techA": 0.0,
+     "techB": 0.0,
+     "techC": 8.0,
+     "other": 0.0
+    },
+    "byType": {
+     "Ops Specialist": 16.0,
+     "Ops Tech C": 8.0,
+     "Member Experience": 16.0
+    }
    },
-   {
-    "opsSpec": 24.0,
-    "mcMea": 16.75,
-    "flp": 0.0,
-    "techA": 0.0,
-    "techB": 0.0,
-    "techC": 8.0,
-    "other": 16.0
+   "2026-11-15": {
+    "byBucket": {
+     "opsSpec": 8.0,
+     "mcMea": 8.0,
+     "flp": 0.0,
+     "techA": 0.0,
+     "techB": 0.0,
+     "techC": 8.0,
+     "other": 8.0
+    },
+    "byType": {
+     "Ops Specialist": 8.0,
+     "Ops Tech C": 8.0,
+     "Member Experience": 8.0,
+     "FOH Manager": 8.0
+    }
    },
-   {
-    "opsSpec": 16.0,
-    "mcMea": 16.0,
-    "flp": 0.0,
-    "techA": 8.0,
-    "techB": 0.0,
-    "techC": 8.5,
-    "other": 7.5
+   "2026-11-16": {
+    "byBucket": {
+     "opsSpec": 16.0,
+     "mcMea": 8.0,
+     "flp": 0.0,
+     "techA": 8.0,
+     "techB": 0.0,
+     "techC": 8.0,
+     "other": 8.0
+    },
+    "byType": {
+     "Ops Specialist": 16.0,
+     "Ops Tech C": 8.0,
+     "Ops Tech A": 8.0,
+     "Member Experience": 8.0,
+     "FOH Manager": 8.0
+    }
    },
-   {
-    "opsSpec": 32.0,
-    "mcMea": 15.5,
-    "flp": 0.0,
-    "techA": 8.0,
-    "techB": 0.0,
-    "techC": 17.0,
-    "other": 7.5
+   "2026-11-17": {
+    "byBucket": {
+     "opsSpec": 24.0,
+     "mcMea": 8.0,
+     "flp": 0.0,
+     "techA": 8.0,
+     "techB": 0.0,
+     "techC": 16.0,
+     "other": 8.0
+    },
+    "byType": {
+     "Ops Specialist": 24.0,
+     "Ops Tech C": 16.0,
+     "Ops Tech A": 8.0,
+     "Member Experience": 8.0,
+     "FOH Manager": 8.0
+    }
    },
-   {
-    "opsSpec": 24.0,
-    "mcMea": 16.0,
-    "flp": 0.0,
-    "techA": 8.0,
-    "techB": 0.0,
-    "techC": 17.0,
-    "other": 16.0
+   "2026-11-18": {
+    "byBucket": {
+     "opsSpec": 24.0,
+     "mcMea": 8.0,
+     "flp": 0.0,
+     "techA": 8.0,
+     "techB": 0.0,
+     "techC": 16.0,
+     "other": 8.0
+    },
+    "byType": {
+     "Ops Specialist": 24.0,
+     "Ops Tech C": 16.0,
+     "Ops Tech A": 8.0,
+     "Member Experience": 8.0,
+     "FOH Manager": 8.0
+    }
    },
-   {
-    "opsSpec": 32.0,
-    "mcMea": 24.0,
-    "flp": 0.0,
-    "techA": 8.0,
-    "techB": 0.0,
-    "techC": 17.0,
-    "other": 8.5
+   "2026-11-19": {
+    "byBucket": {
+     "opsSpec": 16.0,
+     "mcMea": 16.0,
+     "flp": 0.0,
+     "techA": 8.0,
+     "techB": 0.0,
+     "techC": 16.0,
+     "other": 8.0
+    },
+    "byType": {
+     "Ops Specialist": 16.0,
+     "Ops Tech C": 16.0,
+     "Ops Tech A": 8.0,
+     "Member Experience": 16.0,
+     "FOH Manager": 8.0
+    }
    },
-   {
-    "opsSpec": 16.0,
-    "mcMea": 16.0,
-    "flp": 0.0,
-    "techA": 8.0,
-    "techB": 0.0,
-    "techC": 8.5,
-    "other": 8.5
+   "2026-11-20": {
+    "byBucket": {
+     "opsSpec": 16.0,
+     "mcMea": 16.0,
+     "flp": 0.0,
+     "techA": 8.0,
+     "techB": 0.0,
+     "techC": 8.0,
+     "other": 0.0
+    },
+    "byType": {
+     "Ops Specialist": 16.0,
+     "Ops Tech C": 8.0,
+     "Ops Tech A": 8.0,
+     "Member Experience": 16.0
+    }
    }
-  ],
-  "West Nashville": [
-   {
-    "opsSpec": 0.0,
-    "mcMea": 0.0,
-    "flp": 0.0,
-    "techA": 0.0,
-    "techB": 0.0,
-    "techC": 0.0,
-    "other": 0.0
+  },
+  "West Nashville": {
+   "2026-11-14": {
+    "byBucket": {
+     "opsSpec": 0.0,
+     "mcMea": 0.0,
+     "flp": 0.0,
+     "techA": 0.0,
+     "techB": 0.0,
+     "techC": 0.0,
+     "other": 0.0
+    },
+    "byType": {}
    },
-   {
-    "opsSpec": 7.5,
-    "mcMea": 7.5,
-    "flp": 0.0,
-    "techA": 0.0,
-    "techB": 7.5,
-    "techC": 0.0,
-    "other": 8.0
+   "2026-11-15": {
+    "byBucket": {
+     "opsSpec": 7.5,
+     "mcMea": 7.5,
+     "flp": 0.0,
+     "techA": 0.0,
+     "techB": 7.5,
+     "techC": 0.0,
+     "other": 8.0
+    },
+    "byType": {
+     "BOH Coordinator": 8.0,
+     "Ops Specialist": 7.5,
+     "Ops Tech B": 7.5,
+     "Member Experience": 7.5
+    }
    },
-   {
-    "opsSpec": 7.5,
-    "mcMea": 7.5,
-    "flp": 0.0,
-    "techA": 0.0,
-    "techB": 7.5,
-    "techC": 0.0,
-    "other": 8.0
+   "2026-11-16": {
+    "byBucket": {
+     "opsSpec": 7.5,
+     "mcMea": 7.5,
+     "flp": 0.0,
+     "techA": 0.0,
+     "techB": 7.5,
+     "techC": 0.0,
+     "other": 8.0
+    },
+    "byType": {
+     "BOH Coordinator": 8.0,
+     "Ops Specialist": 7.5,
+     "Ops Tech B": 7.5,
+     "Member Experience": 7.5
+    }
    },
-   {
-    "opsSpec": 15.0,
-    "mcMea": 21.5,
-    "flp": 0.0,
-    "techA": 0.0,
-    "techB": 7.5,
-    "techC": 7.5,
-    "other": 8.0
+   "2026-11-17": {
+    "byBucket": {
+     "opsSpec": 15.0,
+     "mcMea": 21.5,
+     "flp": 0.0,
+     "techA": 0.0,
+     "techB": 7.5,
+     "techC": 7.5,
+     "other": 8.0
+    },
+    "byType": {
+     "BOH Coordinator": 8.0,
+     "Ops Specialist": 15.0,
+     "Ops Tech B": 7.5,
+     "Ops Tech C": 7.5,
+     "Member Experience": 21.5
+    }
    },
-   {
-    "opsSpec": 15.0,
-    "mcMea": 21.0,
-    "flp": 0.0,
-    "techA": 0.0,
-    "techB": 7.5,
-    "techC": 7.5,
-    "other": 9.5
+   "2026-11-18": {
+    "byBucket": {
+     "opsSpec": 15.0,
+     "mcMea": 21.0,
+     "flp": 0.0,
+     "techA": 0.0,
+     "techB": 7.5,
+     "techC": 7.5,
+     "other": 9.5
+    },
+    "byType": {
+     "BOH Coordinator": 8.0,
+     "Ops Specialist": 15.0,
+     "Ops Tech B": 7.5,
+     "Ops Tech C": 7.5,
+     "Member Experience": 21.0,
+     "Coaching (Ops)": 1.5
+    }
    },
-   {
-    "opsSpec": 14.0,
-    "mcMea": 22.5,
-    "flp": 0.0,
-    "techA": 0.0,
-    "techB": 7.5,
-    "techC": 7.5,
-    "other": 9.0
+   "2026-11-19": {
+    "byBucket": {
+     "opsSpec": 14.0,
+     "mcMea": 22.5,
+     "flp": 0.0,
+     "techA": 0.0,
+     "techB": 7.5,
+     "techC": 7.5,
+     "other": 9.0
+    },
+    "byType": {
+     "BOH Coordinator": 8.0,
+     "Ops Specialist": 14.0,
+     "Coaching (Ops)": 1.0,
+     "Ops Tech B": 7.5,
+     "Ops Tech C": 7.5,
+     "Member Experience": 22.5
+    }
    },
-   {
-    "opsSpec": 7.5,
-    "mcMea": 15.0,
-    "flp": 0.0,
-    "techA": 0.0,
-    "techB": 0.0,
-    "techC": 7.5,
-    "other": 0.0
+   "2026-11-20": {
+    "byBucket": {
+     "opsSpec": 7.5,
+     "mcMea": 15.0,
+     "flp": 0.0,
+     "techA": 0.0,
+     "techB": 0.0,
+     "techC": 7.5,
+     "other": 0.0
+    },
+    "byType": {
+     "Ops Specialist": 7.5,
+     "Ops Tech C": 7.5,
+     "Member Experience": 15.0
+    }
    }
-  ]
- },
- "staffingByType": {
-  "New England": [
-   {
-    "BOH Coordinator": 25.5,
-    "Ops Specialist": 64.0,
-    "Parts and Service": 8.0,
-    "Ops Tech C": 32.0,
-    "Ops Tech B": 16.0,
-    "Member Experience": 74.5,
-    "FOH Coordinator": 8.0
-   },
-   {
-    "MEA Case Management": 7.0,
-    "BOH Coordinator": 17.0,
-    "Ops Specialist": 48.0,
-    "Parts and Service": 8.0,
-    "Ops Tech B": 24.0,
-    "Ops Tech A": 8.0,
-    "Ops Tech C": 40.0,
-    "Member Experience": 58.0,
-    "Overtime FOH": 6.0,
-    "FOH Coordinator": 8.0
-   },
-   {
-    "MEA Case Management": 7.5,
-    "BOH Coordinator": 17.0,
-    "Ops Specialist": 72.0,
-    "Parts and Service": 16.0,
-    "Ops Tech B": 32.0,
-    "Ops Tech A": 16.0,
-    "Ops Tech C": 46.0,
-    "Overtime FOH": 2.0,
-    "Member Experience": 40.0,
-    "FOH Coordinator": 8.0
-   },
-   {
-    "MEA Case Management": 7.5,
-    "Ops Specialist": 64.0,
-    "BOH Coordinator": 17.0,
-    "Parts and Service": 24.0,
-    "Ops Tech B": 40.0,
-    "Ops Tech A": 24.0,
-    "Ops Tech C": 32.0,
-    "Member Experience": 48.0,
-    "Overtime FOH": 9.5,
-    "FOH Coordinator": 8.0
-   },
-   {
-    "BOH Coordinator": 17.0,
-    "Ops Specialist": 64.0,
-    "Parts and Service": 24.0,
-    "Ops Tech B": 40.0,
-    "Ops Tech A": 24.0,
-    "Ops Tech C": 30.0,
-    "Member Experience": 48.0,
-    "Overtime FOH": 9.0
-   },
-   {
-    "MEA Case Management": 7.5,
-    "BOH Coordinator": 34.0,
-    "Ops Specialist": 88.0,
-    "Parts and Service": 24.0,
-    "Ops Tech B": 40.0,
-    "Ops Tech A": 24.0,
-    "Ops Tech C": 40.0,
-    "Member Experience": 56.0
-   },
-   {
-    "MEA Case Management": 8.0,
-    "BOH Coordinator": 34.0,
-    "Ops Specialist": 72.0,
-    "Parts and Service": 16.0,
-    "Ops Tech C": 32.0,
-    "Ops Tech B": 24.0,
-    "Ops Tech A": 16.0,
-    "Member Experience": 48.5,
-    "FOH Coordinator": 8.0
-   }
-  ],
-  "Stone Mountain": [
-   {
-    "BOH Coordinator": 8.5,
-    "Ops Specialist": 56.0,
-    "Training (Ops)": 8.75,
-    "Parts and Service": 8.0,
-    "Ops Tech B": 24.0,
-    "Ops Tech C": 88.0,
-    "Vehicle Cleaner": 32.0,
-    "FLP": 8.25,
-    "Member Experience": 34.75,
-    "Leave [Paid]": 9.0,
-    "MEA Case Management": 8.0,
-    "FOH Manager": 8.0
-   },
-   {
-    "On Flex Coordinator": 7.5,
-    "BOH Coordinator": 8.5,
-    "Ops Specialist": 56.0,
-    "Parts and Service": 8.0,
-    "Ops Tech B": 16.0,
-    "Ops Tech C": 48.0,
-    "Vehicle Cleaner": 32.0,
-    "FLP": 8.25,
-    "Member Experience": 45.25
-   },
-   {
-    "BOH Coordinator": 16.25,
-    "On Flex Coordinator": 7.5,
-    "Ops Specialist": 56.0,
-    "Parts and Service": 8.0,
-    "Ops Tech B": 32.0,
-    "Ops Tech C": 104.0,
-    "BOH Manager": 9.0,
-    "Ops Tech A": 32.0,
-    "Vehicle Cleaner": 24.0,
-    "Member Experience": 44.0,
-    "FOH Manager": 8.0
-   },
-   {
-    "BOH Coordinator": 24.5,
-    "On Flex Coordinator": 9.0,
-    "Ops Specialist": 112.0,
-    "Training (Ops)": 8.75,
-    "Parts and Service": 16.0,
-    "Ops Tech B": 40.0,
-    "BOH Manager": 9.0,
-    "Ops Tech C": 88.0,
-    "Ops Tech A": 32.0,
-    "Vehicle Cleaner": 24.0,
-    "Member Experience": 60.0,
-    "MEA Case Management": 8.0,
-    "FOH Manager": 8.0
-   },
-   {
-    "BOH Coordinator": 24.5,
-    "On Flex Coordinator": 7.5,
-    "Ops Specialist": 112.0,
-    "Training (Ops)": 8.75,
-    "Parts and Service": 16.0,
-    "Ops Tech B": 40.0,
-    "Ops Tech C": 88.0,
-    "BOH Manager": 9.0,
-    "Ops Tech A": 32.0,
-    "Vehicle Cleaner": 24.0,
-    "Member Experience": 51.75,
-    "MEA Case Management": 8.0,
-    "FOH Manager": 7.25
-   },
-   {
-    "BOH Coordinator": 24.5,
-    "On Flex Coordinator": 7.5,
-    "Ops Specialist": 112.0,
-    "Training (Ops)": 8.75,
-    "Parts and Service": 16.0,
-    "BOH Manager": 9.0,
-    "Ops Tech C": 64.0,
-    "Ops Tech B": 24.0,
-    "Ops Tech A": 32.0,
-    "Vehicle Cleaner": 32.0,
-    "Member Experience": 42.75,
-    "MEA Case Management": 8.0
-   },
-   {
-    "BOH Coordinator": 16.25,
-    "Ops Specialist": 56.0,
-    "Training (Ops)": 8.75,
-    "Parts and Service": 8.0,
-    "Ops Tech B": 24.0,
-    "Ops Tech C": 112.0,
-    "BOH Manager": 9.0,
-    "Ops Tech A": 32.0,
-    "Vehicle Cleaner": 32.0,
-    "Member Experience": 43.5,
-    "MEA Case Management": 8.0,
-    "FOH Manager": 8.0
-   }
-  ],
-  "Larchmont": [
-   {
-    "Ops Specialist": 24.0,
-    "Parts and Service": 7.0,
-    "Ops Tech C": 7.5,
-    "Member Experience": 35.0,
-    "MEA Case Management": 1.0,
-    "FOH Manager": 9.5
-   },
-   {
-    "BOH Coordinator": 8.0,
-    "Ops Specialist": 15.5,
-    "Parts and Service": 7.0,
-    "Member Experience": 28.0,
-    "MEA Case Management": 1.0
-   },
-   {
-    "On Flex Coordinator": 8.5,
-    "BOH Coordinator": 9.0,
-    "Ops Specialist": 41.0,
-    "Parts and Service": 7.0,
-    "Ops Tech A": 9.5,
-    "Ops Tech C": 8.5,
-    "Ops Tech B": 8.5,
-    "Member Experience": 28.5
-   },
-   {
-    "On Flex Coordinator": 8.5,
-    "BOH Coordinator": 9.0,
-    "Ops Specialist": 33.0,
-    "Ops Tech A": 9.5,
-    "Ops Tech C": 17.0,
-    "Ops Tech B": 8.5,
-    "Member Experience": 28.5,
-    "FOH Manager": 9.5
-   },
-   {
-    "On Flex Coordinator": 8.5,
-    "BOH Coordinator": 9.0,
-    "Ops Specialist": 34.0,
-    "Ops Tech A": 9.5,
-    "Ops Tech C": 17.0,
-    "Ops Tech B": 8.5,
-    "Member Experience": 28.5,
-    "MEA Case Management": 1.0,
-    "FOH Manager": 9.5
-   },
-   {
-    "On Flex Coordinator": 8.5,
-    "BOH Coordinator": 9.0,
-    "Ops Specialist": 33.5,
-    "Parts and Service": 8.0,
-    "Ops Tech A": 9.5,
-    "Ops Tech C": 17.0,
-    "Ops Tech B": 8.5,
-    "Member Experience": 28.5,
-    "MEA Case Management": 1.0,
-    "FOH Manager": 9.5
-   },
-   {
-    "On Flex Coordinator": 8.5,
-    "Ops Specialist": 25.0,
-    "Parts and Service": 8.0,
-    "Ops Tech A": 9.5,
-    "Ops Tech C": 16.0,
-    "Ops Tech B": 8.5,
-    "Member Experience": 35.5,
-    "MEA Case Management": 1.0,
-    "FOH Manager": 9.5
-   }
-  ],
-  "South Charlotte": [
-   {
-    "BOH Coordinator": 8.0,
-    "Ops Specialist": 22.5,
-    "Parts and Service": 7.5,
-    "Service Manager": 8.0,
-    "Ops Tech B": 15.0,
-    "Ops Tech C": 7.5,
-    "Member Experience": 22.5,
-    "FOH Coordinator": 7.5
-   },
-   {
-    "Ops Specialist": 22.5,
-    "Service Manager": 8.0,
-    "Ops Tech B": 7.5,
-    "Ops Tech A": 7.5,
-    "Ops Tech C": 7.5,
-    "Member Experience": 22.5,
-    "FOH Coordinator": 7.5
-   },
-   {
-    "Ops Specialist": 22.5,
-    "Service Manager": 8.0,
-    "Ops Tech B": 7.5,
-    "Ops Tech A": 7.5,
-    "Ops Tech C": 7.5,
-    "Member Experience": 21.0
-   },
-   {
-    "BOH Coordinator": 8.0,
-    "Ops Specialist": 22.5,
-    "Parts and Service": 7.5,
-    "Ops Tech A": 6.5,
-    "Ops Tech C": 7.5,
-    "Ops Tech B": 7.5,
-    "Member Experience": 22.5
-   },
-   {
-    "BOH Coordinator": 8.0,
-    "Ops Specialist": 15.0,
-    "Parts and Service": 7.5,
-    "Ops Tech A": 7.5,
-    "Ops Tech C": 7.5,
-    "Ops Tech B": 7.5,
-    "Member Experience": 22.5,
-    "FOH Coordinator": 7.5
-   },
-   {
-    "BOH Coordinator": 8.0,
-    "Ops Specialist": 22.5,
-    "Parts and Service": 7.5,
-    "Service Manager": 8.0,
-    "Ops Tech B": 15.0,
-    "Ops Tech A": 7.5,
-    "Member Experience": 23.5,
-    "FOH Coordinator": 7.5
-   },
-   {
-    "BOH Coordinator": 8.0,
-    "Ops Specialist": 22.5,
-    "Parts and Service": 7.5,
-    "Service Manager": 8.0,
-    "Ops Tech B": 15.0,
-    "Member Experience": 15.0,
-    "FOH Coordinator": 7.5
-   }
-  ],
-  "Marietta": [
-   {
-    "BOH Coordinator": 8.5,
-    "Ops Specialist": 24.0,
-    "Parts and Service": 8.0,
-    "Ops Tech A": 9.0,
-    "Ops Tech C": 17.0,
-    "Member Experience": 15.5,
-    "MEA Case Management": 3.0
-   },
-   {
-    "Ops Specialist": 16.0,
-    "Ops Tech C": 33.5,
-    "Ops Tech A": 8.0,
-    "Member Experience": 15.5,
-    "MEA Case Management": 3.0
-   },
-   {
-    "BOH Coordinator": 25.0,
-    "Ops Specialist": 16.0,
-    "Ops Tech C": 25.0,
-    "Ops Tech A": 8.0,
-    "Ops Tech B": 8.0,
-    "Member Experience": 15.5,
-    "MEA Case Management": 3.0
-   },
-   {
-    "BOH Coordinator": 33.5,
-    "Ops Specialist": 40.0,
-    "Ops Tech C": 33.5,
-    "Parts and Service": 8.0,
-    "Ops Tech A": 16.0,
-    "Ops Tech B": 8.0,
-    "Member Experience": 10.5,
-    "MEA Case Management": 7.0
-   },
-   {
-    "BOH Coordinator": 33.5,
-    "Ops Specialist": 40.0,
-    "Ops Tech C": 16.5,
-    "Parts and Service": 8.0,
-    "Ops Tech B": 16.0,
-    "Ops Tech A": 16.0,
-    "Member Experience": 10.5,
-    "MEA Case Management": 7.0
-   },
-   {
-    "BOH Coordinator": 33.5,
-    "Ops Specialist": 39.5,
-    "Ops Tech C": 25.0,
-    "Parts and Service": 8.0,
-    "Ops Tech B": 15.5,
-    "Ops Tech A": 16.0,
-    "Member Experience": 20.5,
-    "MEA Case Management": 7.0
-   },
-   {
-    "BOH Coordinator": 33.5,
-    "Ops Specialist": 24.0,
-    "Parts and Service": 8.0,
-    "Ops Tech B": 15.5,
-    "Ops Tech A": 8.0,
-    "Ops Tech C": 17.0,
-    "Member Experience": 15.5,
-    "MEA Case Management": 3.0
-   }
-  ],
-  "San Jose": [
-   {
-    "Ops Specialist": 52.5,
-    "Service Manager": 7.5,
-    "Ops Tech C": 15.0,
-    "Overtime BOH": 8.0,
-    "Member Experience": 30.0,
-    "R&P Outbound": 7.5
-   },
-   {
-    "Ops Specialist": 37.5,
-    "Parts and Service": 7.5,
-    "Ops Tech C": 15.0,
-    "Ops Tech B": 7.5,
-    "Member Experience": 15.0,
-    "FOH Manager": 7.5
-   },
-   {
-    "Ops Specialist": 37.5,
-    "Parts and Service": 7.5,
-    "Ops Tech C": 15.0,
-    "Ops Tech B": 7.5,
-    "Member Experience": 15.0,
-    "FOH Manager": 7.5,
-    "R&P Outbound": 7.5
-   },
-   {
-    "Ops Specialist": 37.5,
-    "Parts and Service": 7.5,
-    "Service Manager": 7.5,
-    "Ops Tech A": 7.5,
-    "Ops Tech C": 22.5,
-    "Ops Tech B": 7.5,
-    "Member Experience": 22.5,
-    "FOH Manager": 7.5,
-    "R&P Outbound": 7.5
-   },
-   {
-    "Ops Specialist": 37.5,
-    "Parts and Service": 7.5,
-    "Service Manager": 7.5,
-    "Ops Tech A": 7.5,
-    "Ops Tech C": 15.0,
-    "Ops Tech B": 7.5,
-    "Member Experience": 15.0,
-    "FOH Manager": 7.5,
-    "R&P Outbound": 7.5
-   },
-   {
-    "Ops Specialist": 45.0,
-    "Parts and Service": 7.5,
-    "Service Manager": 7.5,
-    "Ops Tech A": 7.5,
-    "Ops Tech C": 15.0,
-    "Ops Tech B": 7.5,
-    "Member Experience": 22.5,
-    "FOH Manager": 7.5
-   },
-   {
-    "Ops Specialist": 45.0,
-    "Service Manager": 7.5,
-    "Ops Tech A": 7.5,
-    "Ops Tech C": 22.5,
-    "Member Experience": 30.0,
-    "R&P Outbound": 7.5
-   }
-  ],
-  "Morrow": [
-   {
-    "Ops Specialist": 24.0,
-    "Ops Tech B": 8.0,
-    "Ops Tech C": 8.0,
-    "Leave [Paid]": 24.0,
-    "Member Experience": 16.0,
-    "FOH Manager": 8.0
-   },
-   {
-    "Ops Specialist": 8.0,
-    "Ops Tech C": 16.0,
-    "Ops Tech A": 8.0,
-    "Member Experience": 16.0
-   },
-   {
-    "Ops Specialist": 8.0,
-    "Ops Tech C": 16.0,
-    "Ops Tech A": 8.0,
-    "Member Experience": 16.0,
-    "Overtime FOH": 1.25
-   },
-   {
-    "Ops Specialist": 32.0,
-    "Ops Tech B": 8.0,
-    "Ops Tech C": 32.0,
-    "Ops Tech A": 8.0,
-    "MEA Case Management": 8.0,
-    "Member Experience": 24.0,
-    "FOH Manager": 8.0
-   },
-   {
-    "Ops Specialist": 32.0,
-    "Ops Tech B": 8.0,
-    "Ops Tech C": 32.0,
-    "Ops Tech A": 8.0,
-    "Member Experience": 32.0,
-    "FOH Manager": 8.0
-   },
-   {
-    "Ops Specialist": 32.0,
-    "Ops Tech B": 8.0,
-    "Ops Tech C": 32.0,
-    "Ops Tech A": 8.0,
-    "Member Experience": 32.0,
-    "FOH Manager": 8.0
-   },
-   {
-    "Ops Specialist": 24.0,
-    "Ops Tech B": 8.0,
-    "Ops Tech C": 16.0,
-    "Member Experience": 16.0,
-    "FOH Manager": 8.0
-   }
-  ],
-  "El Monte": [
-   {
-    "Ops Specialist": 52.5,
-    "Ops Tech C": 15.0,
-    "Member Experience": 30.0,
-    "FOH Manager": 8.0
-   },
-   {
-    "Ops Specialist": 37.5,
-    "Ops Tech C": 7.5,
-    "Member Experience": 30.0
-   },
-   {
-    "Ops Specialist": 30.25,
-    "Service Manager": 8.0,
-    "Ops Tech C": 7.5,
-    "Ops Tech A": 7.5,
-    "Member Experience": 22.5
-   },
-   {
-    "Ops Specialist": 30.0,
-    "Service Manager": 8.0,
-    "Ops Tech C": 22.5,
-    "Ops Tech A": 7.5,
-    "Member Experience": 15.0,
-    "FOH Manager": 8.0
-   },
-   {
-    "Ops Specialist": 30.0,
-    "Service Manager": 8.0,
-    "Ops Tech C": 22.5,
-    "Ops Tech A": 7.5,
-    "Member Experience": 15.0,
-    "FOH Manager": 8.0
-   },
-   {
-    "Ops Specialist": 37.5,
-    "Service Manager": 8.0,
-    "Ops Tech C": 22.5,
-    "Ops Tech A": 7.5,
-    "Member Experience": 15.0,
-    "FOH Manager": 8.0
-   },
-   {
-    "Ops Specialist": 45.0,
-    "Service Manager": 8.0,
-    "Ops Tech C": 15.0,
-    "Ops Tech A": 7.5,
-    "Member Experience": 22.5,
-    "FOH Manager": 8.0
-   }
-  ],
-  "Dallas": [
-   {
-    "Ops Specialist": 16.0,
-    "Ops Tech C": 8.0,
-    "Member Experience": 16.0
-   },
-   {
-    "Ops Specialist": 8.0,
-    "Ops Tech C": 8.0,
-    "Member Experience": 8.0,
-    "FOH Manager": 8.0
-   },
-   {
-    "Ops Specialist": 16.0,
-    "Ops Tech C": 8.0,
-    "Ops Tech A": 8.0,
-    "Member Experience": 8.0,
-    "FOH Manager": 8.0
-   },
-   {
-    "Ops Specialist": 24.0,
-    "Ops Tech C": 16.0,
-    "Ops Tech A": 8.0,
-    "Member Experience": 8.0,
-    "FOH Manager": 8.0
-   },
-   {
-    "Ops Specialist": 24.0,
-    "Ops Tech C": 16.0,
-    "Ops Tech A": 8.0,
-    "Member Experience": 8.0,
-    "FOH Manager": 8.0
-   },
-   {
-    "Ops Specialist": 16.0,
-    "Ops Tech C": 16.0,
-    "Ops Tech A": 8.0,
-    "Member Experience": 16.0,
-    "FOH Manager": 8.0
-   },
-   {
-    "Ops Specialist": 16.0,
-    "Ops Tech C": 8.0,
-    "Ops Tech A": 8.0,
-    "Member Experience": 16.0
-   }
-  ],
-  "Richmond": [
-   {
-    "On Flex Coordinator": 8.5,
-    "Ops Specialist": 16.0,
-    "Parts and Service": 7.5,
-    "Ops Tech C": 8.0,
-    "Member Experience": 17.0
-   },
-   {
-    "Ops Specialist": 24.0,
-    "On Flex Coordinator": 8.5,
-    "Parts and Service": 7.5,
-    "Ops Tech C": 8.0,
-    "Member Experience": 16.75
-   },
-   {
-    "Ops Specialist": 16.0,
-    "Parts and Service": 7.5,
-    "Ops Tech C": 8.5,
-    "Ops Tech A": 8.0,
-    "Member Experience": 16.0
-   },
-   {
-    "Ops Specialist": 32.0,
-    "Parts and Service": 7.5,
-    "Ops Tech C": 17.0,
-    "Ops Tech A": 8.0,
-    "Member Experience": 15.5
-   },
-   {
-    "Ops Specialist": 24.0,
-    "On Flex Coordinator": 8.5,
-    "Parts and Service": 7.5,
-    "Ops Tech C": 17.0,
-    "Ops Tech A": 8.0,
-    "Member Experience": 16.0
-   },
-   {
-    "Ops Specialist": 32.0,
-    "On Flex Coordinator": 8.5,
-    "Ops Tech C": 17.0,
-    "Ops Tech A": 8.0,
-    "Member Experience": 24.0
-   },
-   {
-    "On Flex Coordinator": 8.5,
-    "Ops Specialist": 16.0,
-    "Ops Tech A": 8.0,
-    "Ops Tech C": 8.5,
-    "Member Experience": 16.0
-   }
-  ],
-  "West Nashville": [
-   {},
-   {
-    "BOH Coordinator": 8.0,
-    "Ops Specialist": 7.5,
-    "Ops Tech B": 7.5,
-    "Member Experience": 7.5
-   },
-   {
-    "BOH Coordinator": 8.0,
-    "Ops Specialist": 7.5,
-    "Ops Tech B": 7.5,
-    "Member Experience": 7.5
-   },
-   {
-    "BOH Coordinator": 8.0,
-    "Ops Specialist": 15.0,
-    "Ops Tech B": 7.5,
-    "Ops Tech C": 7.5,
-    "Member Experience": 21.5
-   },
-   {
-    "BOH Coordinator": 8.0,
-    "Ops Specialist": 15.0,
-    "Ops Tech B": 7.5,
-    "Ops Tech C": 7.5,
-    "Member Experience": 21.0,
-    "Coaching (Ops)": 1.5
-   },
-   {
-    "BOH Coordinator": 8.0,
-    "Ops Specialist": 14.0,
-    "Coaching (Ops)": 1.0,
-    "Ops Tech B": 7.5,
-    "Ops Tech C": 7.5,
-    "Member Experience": 22.5
-   },
-   {
-    "Ops Specialist": 7.5,
-    "Ops Tech C": 7.5,
-    "Member Experience": 15.0
-   }
-  ]
+  }
  },
  "timeOff": {
-  "New England": [
-   33.0,
-   192.0,
-   0.0,
-   0.0,
-   0.0,
-   24.0,
-   24.0
-  ],
-  "Stone Mountain": [
-   0.0,
-   0.0,
-   9.25,
-   9.25,
-   0.0,
-   0.0,
-   0.0
-  ],
-  "Larchmont": [
-   24.0,
-   8.5,
-   24.0,
-   8.5,
-   8.5,
-   8.5,
-   8.5
-  ],
-  "South Charlotte": [
-   0.0,
-   0.0,
-   0.0,
-   0.0,
-   0.0,
-   0.0,
-   0.0
-  ],
-  "Marietta": [
-   8.5,
-   8.5,
-   0.0,
-   0.0,
-   0.0,
-   0.0,
-   0.0
-  ],
-  "San Jose": [
-   27.0,
-   17.5,
-   9.0,
-   0.0,
-   0.0,
-   0.0,
-   0.0
-  ],
-  "Morrow": [
-   0.0,
-   0.0,
-   0.0,
-   0.0,
-   0.0,
-   0.0,
-   0.0
-  ],
-  "El Monte": [
-   0.0,
-   9.0,
-   9.0,
-   9.0,
-   9.0,
-   9.0,
-   0.0
-  ],
-  "Dallas": [
-   0.0,
-   0.0,
-   0.0,
-   0.0,
-   0.0,
-   0.0,
-   0.0
-  ],
-  "Richmond": [
-   0.0,
-   0.0,
-   0.0,
-   0.0,
-   0.0,
-   0.0,
-   0.0
-  ],
-  "West Nashville": [
-   0.0,
-   0.0,
-   0.0,
-   0.0,
-   0.0,
-   0.0,
-   0.0
-  ]
+  "New England": {
+   "2026-11-14": 33.0,
+   "2026-11-15": 192.0,
+   "2026-11-16": 0.0,
+   "2026-11-17": 0.0,
+   "2026-11-18": 0.0,
+   "2026-11-19": 24.0,
+   "2026-11-20": 24.0
+  },
+  "Stone Mountain": {
+   "2026-11-14": 0.0,
+   "2026-11-15": 0.0,
+   "2026-11-16": 9.25,
+   "2026-11-17": 9.25,
+   "2026-11-18": 0.0,
+   "2026-11-19": 0.0,
+   "2026-11-20": 0.0
+  },
+  "Larchmont": {
+   "2026-11-14": 24.0,
+   "2026-11-15": 8.5,
+   "2026-11-16": 24.0,
+   "2026-11-17": 8.5,
+   "2026-11-18": 8.5,
+   "2026-11-19": 8.5,
+   "2026-11-20": 8.5
+  },
+  "South Charlotte": {
+   "2026-11-14": 0.0,
+   "2026-11-15": 0.0,
+   "2026-11-16": 0.0,
+   "2026-11-17": 0.0,
+   "2026-11-18": 0.0,
+   "2026-11-19": 0.0,
+   "2026-11-20": 0.0
+  },
+  "Marietta": {
+   "2026-11-14": 8.5,
+   "2026-11-15": 8.5,
+   "2026-11-16": 0.0,
+   "2026-11-17": 0.0,
+   "2026-11-18": 0.0,
+   "2026-11-19": 0.0,
+   "2026-11-20": 0.0
+  },
+  "San Jose": {
+   "2026-11-14": 27.0,
+   "2026-11-15": 17.5,
+   "2026-11-16": 9.0,
+   "2026-11-17": 0.0,
+   "2026-11-18": 0.0,
+   "2026-11-19": 0.0,
+   "2026-11-20": 0.0
+  },
+  "Morrow": {
+   "2026-11-14": 0.0,
+   "2026-11-15": 0.0,
+   "2026-11-16": 0.0,
+   "2026-11-17": 0.0,
+   "2026-11-18": 0.0,
+   "2026-11-19": 0.0,
+   "2026-11-20": 0.0
+  },
+  "El Monte": {
+   "2026-11-14": 0.0,
+   "2026-11-15": 9.0,
+   "2026-11-16": 9.0,
+   "2026-11-17": 9.0,
+   "2026-11-18": 9.0,
+   "2026-11-19": 9.0,
+   "2026-11-20": 0.0
+  },
+  "Richmond": {
+   "2026-11-14": 0.0,
+   "2026-11-15": 0.0,
+   "2026-11-16": 0.0,
+   "2026-11-17": 0.0,
+   "2026-11-18": 0.0,
+   "2026-11-19": 0.0,
+   "2026-11-20": 0.0
+  },
+  "Dallas": {
+   "2026-11-14": 0.0,
+   "2026-11-15": 0.0,
+   "2026-11-16": 0.0,
+   "2026-11-17": 0.0,
+   "2026-11-18": 0.0,
+   "2026-11-19": 0.0,
+   "2026-11-20": 0.0
+  },
+  "West Nashville": {
+   "2026-11-14": 0.0,
+   "2026-11-15": 0.0,
+   "2026-11-16": 0.0,
+   "2026-11-17": 0.0,
+   "2026-11-18": 0.0,
+   "2026-11-19": 0.0,
+   "2026-11-20": 0.0
+  }
  },
  "nonTask": {
-  "New England": [
-   0.0,
-   0.5,
-   0.5,
-   0.5,
-   0.0,
-   0.5,
-   0.0
-  ],
-  "Stone Mountain": [
-   0.0,
-   0.0,
-   0.0,
-   0.0,
-   0.75,
-   0.0,
-   0.0
-  ],
-  "Larchmont": [
-   0.0,
-   0.0,
-   0.0,
-   0.0,
-   0.0,
-   0.0,
-   0.0
-  ],
-  "South Charlotte": [
-   0.0,
-   0.0,
-   0.0,
-   0.0,
-   0.0,
-   0.0,
-   0.0
-  ],
-  "Marietta": [
-   0.0,
-   0.0,
-   0.0,
-   0.0,
-   0.0,
-   0.0,
-   0.0
-  ],
-  "San Jose": [
-   0.0,
-   0.0,
-   0.0,
-   0.0,
-   0.0,
-   0.0,
-   0.0
-  ],
-  "Morrow": [
-   0.0,
-   0.0,
-   0.0,
-   0.0,
-   0.0,
-   0.0,
-   0.0
-  ],
-  "El Monte": [
-   0.0,
-   0.0,
-   0.0,
-   0.0,
-   0.0,
-   0.0,
-   0.0
-  ],
-  "Dallas": [
-   0.0,
-   0.0,
-   0.0,
-   0.0,
-   0.0,
-   0.0,
-   0.0
-  ],
-  "Richmond": [
-   0.0,
-   0.0,
-   0.0,
-   0.0,
-   0.0,
-   0.0,
-   0.0
-  ],
-  "West Nashville": [
-   0.0,
-   0.0,
-   0.0,
-   0.0,
-   0.0,
-   0.0,
-   0.0
-  ]
+  "New England": {
+   "2026-11-14": 0.0,
+   "2026-11-15": 0.5,
+   "2026-11-16": 0.5,
+   "2026-11-17": 0.5,
+   "2026-11-18": 0.0,
+   "2026-11-19": 0.5,
+   "2026-11-20": 0.0
+  },
+  "Stone Mountain": {
+   "2026-11-14": 0.0,
+   "2026-11-15": 0.0,
+   "2026-11-16": 0.0,
+   "2026-11-17": 0.0,
+   "2026-11-18": 0.75,
+   "2026-11-19": 0.0,
+   "2026-11-20": 0.0
+  },
+  "Larchmont": {
+   "2026-11-14": 0.0,
+   "2026-11-15": 0.0,
+   "2026-11-16": 0.0,
+   "2026-11-17": 0.0,
+   "2026-11-18": 0.0,
+   "2026-11-19": 0.0,
+   "2026-11-20": 0.0
+  },
+  "South Charlotte": {
+   "2026-11-14": 0.0,
+   "2026-11-15": 0.0,
+   "2026-11-16": 0.0,
+   "2026-11-17": 0.0,
+   "2026-11-18": 0.0,
+   "2026-11-19": 0.0,
+   "2026-11-20": 0.0
+  },
+  "Marietta": {
+   "2026-11-14": 0.0,
+   "2026-11-15": 0.0,
+   "2026-11-16": 0.0,
+   "2026-11-17": 0.0,
+   "2026-11-18": 0.0,
+   "2026-11-19": 0.0,
+   "2026-11-20": 0.0
+  },
+  "San Jose": {
+   "2026-11-14": 0.0,
+   "2026-11-15": 0.0,
+   "2026-11-16": 0.0,
+   "2026-11-17": 0.0,
+   "2026-11-18": 0.0,
+   "2026-11-19": 0.0,
+   "2026-11-20": 0.0
+  },
+  "Morrow": {
+   "2026-11-14": 0.0,
+   "2026-11-15": 0.0,
+   "2026-11-16": 0.0,
+   "2026-11-17": 0.0,
+   "2026-11-18": 0.0,
+   "2026-11-19": 0.0,
+   "2026-11-20": 0.0
+  },
+  "El Monte": {
+   "2026-11-14": 0.0,
+   "2026-11-15": 0.0,
+   "2026-11-16": 0.0,
+   "2026-11-17": 0.0,
+   "2026-11-18": 0.0,
+   "2026-11-19": 0.0,
+   "2026-11-20": 0.0
+  },
+  "Richmond": {
+   "2026-11-14": 0.0,
+   "2026-11-15": 0.0,
+   "2026-11-16": 0.0,
+   "2026-11-17": 0.0,
+   "2026-11-18": 0.0,
+   "2026-11-19": 0.0,
+   "2026-11-20": 0.0
+  },
+  "Dallas": {
+   "2026-11-14": 0.0,
+   "2026-11-15": 0.0,
+   "2026-11-16": 0.0,
+   "2026-11-17": 0.0,
+   "2026-11-18": 0.0,
+   "2026-11-19": 0.0,
+   "2026-11-20": 0.0
+  },
+  "West Nashville": {
+   "2026-11-14": 0.0,
+   "2026-11-15": 0.0,
+   "2026-11-16": 0.0,
+   "2026-11-17": 0.0,
+   "2026-11-18": 0.0,
+   "2026-11-19": 0.0,
+   "2026-11-20": 0.0
+  }
  },
  "demand": {
   "orders": {
-   "New England": [
-    {
+   "New England": {
+    "2026-11-14": {
      "Pickup": 22,
-     "Swap": 26,
+     "Swap": 27,
      "Delivery": 0,
-     "Return": 12
+     "Return": 13
     },
-    {
+    "2026-11-15": {
      "Pickup": 20,
      "Swap": 9,
      "Delivery": 1,
-     "Return": 4
+     "Return": 7
     },
-    {
-     "Pickup": 10,
-     "Swap": 11,
+    "2026-11-16": {
+     "Pickup": 11,
+     "Swap": 12,
      "Delivery": 0,
      "Return": 8
     },
-    {
+    "2026-11-17": {
      "Pickup": 3,
      "Swap": 7,
      "Delivery": 0,
      "Return": 0
     },
-    {
+    "2026-11-18": {
      "Pickup": 7,
-     "Swap": 8,
+     "Swap": 9,
      "Delivery": 0,
      "Return": 1
     },
-    {
+    "2026-11-19": {
      "Pickup": 3,
      "Swap": 4,
      "Delivery": 1,
      "Return": 1
     },
-    {
+    "2026-11-20": {
      "Pickup": 7,
-     "Swap": 9,
-     "Delivery": 0,
-     "Return": 1
-    }
-   ],
-   "Stone Mountain": [
-    {
-     "Pickup": 21,
      "Swap": 8,
+     "Delivery": 0,
+     "Return": 2
+    }
+   },
+   "Stone Mountain": {
+    "2026-11-14": {
+     "Pickup": 21,
+     "Swap": 5,
      "Delivery": 2,
      "Return": 6
     },
-    {
-     "Pickup": 31,
+    "2026-11-15": {
+     "Pickup": 30,
      "Swap": 17,
      "Delivery": 0,
      "Return": 3
     },
-    {
-     "Pickup": 12,
-     "Swap": 11,
+    "2026-11-16": {
+     "Pickup": 19,
+     "Swap": 15,
      "Delivery": 0,
      "Return": 1
     },
-    {
+    "2026-11-17": {
      "Pickup": 5,
-     "Swap": 8,
+     "Swap": 10,
      "Delivery": 0,
      "Return": 1
     },
-    {
+    "2026-11-18": {
      "Pickup": 1,
      "Swap": 3,
      "Delivery": 0,
      "Return": 0
     },
-    {
+    "2026-11-19": {
      "Pickup": 2,
      "Swap": 1,
      "Delivery": 0,
      "Return": 0
     },
-    {
+    "2026-11-20": {
      "Pickup": 1,
      "Swap": 2,
      "Delivery": 0,
      "Return": 0
     }
-   ],
-   "Larchmont": [
-    {
+   },
+   "Larchmont": {
+    "2026-11-14": {
      "Pickup": 11,
      "Swap": 5,
      "Delivery": 0,
      "Return": 2
     },
-    {
+    "2026-11-15": {
      "Pickup": 15,
      "Swap": 5,
      "Delivery": 0,
      "Return": 2
     },
-    {
+    "2026-11-16": {
      "Pickup": 5,
-     "Swap": 7,
+     "Swap": 6,
      "Delivery": 0,
      "Return": 0
     },
-    {
-     "Pickup": 0,
-     "Swap": 2,
+    "2026-11-17": {
+     "Pickup": 1,
+     "Swap": 3,
      "Delivery": 0,
      "Return": 2
     },
-    {
+    "2026-11-18": {
      "Pickup": 3,
      "Swap": 3,
      "Delivery": 0,
      "Return": 0
     },
-    {
+    "2026-11-19": {
      "Pickup": 2,
      "Swap": 1,
      "Delivery": 0,
      "Return": 0
     },
-    {
+    "2026-11-20": {
      "Pickup": 3,
      "Swap": 1,
      "Delivery": 0,
      "Return": 1
     }
-   ],
-   "South Charlotte": [
-    {
+   },
+   "South Charlotte": {
+    "2026-11-14": {
      "Pickup": 13,
      "Swap": 4,
      "Delivery": 0,
      "Return": 2
     },
-    {
+    "2026-11-15": {
      "Pickup": 11,
      "Swap": 3,
      "Delivery": 1,
      "Return": 0
     },
-    {
+    "2026-11-16": {
      "Pickup": 9,
      "Swap": 3,
      "Delivery": 0,
      "Return": 2
     },
-    {
-     "Pickup": 4,
+    "2026-11-17": {
+     "Pickup": 5,
      "Swap": 2,
      "Delivery": 0,
      "Return": 1
     },
-    {
+    "2026-11-18": {
      "Pickup": 5,
      "Swap": 1,
      "Delivery": 1,
      "Return": 1
     },
-    {
-     "Pickup": 2,
+    "2026-11-19": {
+     "Pickup": 3,
      "Swap": 0,
      "Delivery": 0,
      "Return": 0
     },
-    {
+    "2026-11-20": {
      "Pickup": 2,
      "Swap": 2,
      "Delivery": 0,
      "Return": 0
     }
-   ],
-   "Marietta": [
-    {
+   },
+   "Marietta": {
+    "2026-11-14": {
      "Pickup": 10,
      "Swap": 7,
      "Delivery": 0,
-     "Return": 2
+     "Return": 4
     },
-    {
+    "2026-11-15": {
      "Pickup": 6,
      "Swap": 6,
      "Delivery": 0,
-     "Return": 5
+     "Return": 4
     },
-    {
+    "2026-11-16": {
      "Pickup": 4,
      "Swap": 9,
      "Delivery": 0,
      "Return": 1
     },
-    {
-     "Pickup": 2,
-     "Swap": 1,
+    "2026-11-17": {
+     "Pickup": 3,
+     "Swap": 2,
      "Delivery": 0,
      "Return": 0
     },
-    {
+    "2026-11-18": {
      "Pickup": 3,
      "Swap": 0,
      "Delivery": 0,
      "Return": 2
     },
-    {
+    "2026-11-19": {
      "Pickup": 0,
      "Swap": 0,
      "Delivery": 0,
      "Return": 0
     },
-    {
-     "Pickup": 2,
+    "2026-11-20": {
+     "Pickup": 1,
      "Swap": 0,
      "Delivery": 0,
      "Return": 0
     }
-   ],
-   "San Jose": [
-    {
-     "Pickup": 11,
+   },
+   "San Jose": {
+    "2026-11-14": {
+     "Pickup": 10,
      "Swap": 4,
      "Delivery": 0,
      "Return": 2
     },
-    {
-     "Pickup": 10,
+    "2026-11-15": {
+     "Pickup": 13,
      "Swap": 3,
      "Delivery": 0,
      "Return": 1
     },
-    {
+    "2026-11-16": {
      "Pickup": 3,
      "Swap": 1,
      "Delivery": 0,
      "Return": 1
     },
-    {
+    "2026-11-17": {
      "Pickup": 4,
      "Swap": 1,
      "Delivery": 0,
      "Return": 1
     },
-    {
+    "2026-11-18": {
      "Pickup": 1,
      "Swap": 1,
      "Delivery": 0,
      "Return": 0
     },
-    {
-     "Pickup": 0,
+    "2026-11-19": {
+     "Pickup": 1,
      "Swap": 1,
      "Delivery": 0,
      "Return": 1
     },
-    {
+    "2026-11-20": {
      "Pickup": 3,
      "Swap": 0,
      "Delivery": 0,
      "Return": 0
     }
-   ],
-   "Morrow": [
-    {
+   },
+   "Morrow": {
+    "2026-11-14": {
      "Pickup": 8,
      "Swap": 7,
      "Delivery": 0,
-     "Return": 1
+     "Return": 2
     },
-    {
+    "2026-11-15": {
      "Pickup": 4,
      "Swap": 6,
      "Delivery": 0,
-     "Return": 2
+     "Return": 3
     },
-    {
+    "2026-11-16": {
      "Pickup": 3,
      "Swap": 2,
      "Delivery": 1,
      "Return": 2
     },
-    {
+    "2026-11-17": {
      "Pickup": 2,
      "Swap": 1,
      "Delivery": 0,
-     "Return": 0
+     "Return": 1
     },
-    {
+    "2026-11-18": {
      "Pickup": 0,
      "Swap": 1,
      "Delivery": 0,
      "Return": 0
     },
-    {
+    "2026-11-19": {
      "Pickup": 0,
      "Swap": 0,
      "Delivery": 0,
      "Return": 0
     },
-    {
+    "2026-11-20": {
      "Pickup": 0,
      "Swap": 1,
      "Delivery": 0,
      "Return": 2
     }
-   ],
-   "El Monte": [
-    {
+   },
+   "El Monte": {
+    "2026-11-14": {
      "Pickup": 14,
      "Swap": 1,
      "Delivery": 0,
      "Return": 0
     },
-    {
+    "2026-11-15": {
      "Pickup": 15,
-     "Swap": 2,
+     "Swap": 3,
      "Delivery": 0,
      "Return": 0
     },
-    {
+    "2026-11-16": {
      "Pickup": 7,
      "Swap": 1,
      "Delivery": 0,
      "Return": 0
     },
-    {
+    "2026-11-17": {
      "Pickup": 0,
      "Swap": 1,
      "Delivery": 0,
      "Return": 0
     },
-    {
+    "2026-11-18": {
      "Pickup": 0,
      "Swap": 1,
      "Delivery": 0,
      "Return": 0
     },
-    {
+    "2026-11-19": {
      "Pickup": 0,
      "Swap": 0,
      "Delivery": 0,
      "Return": 0
     },
-    {
+    "2026-11-20": {
      "Pickup": 0,
      "Swap": 0,
      "Delivery": 0,
      "Return": 0
     }
-   ],
-   "Dallas": [
-    {
-     "Pickup": 6,
-     "Swap": 2,
-     "Delivery": 0,
-     "Return": 0
-    },
-    {
-     "Pickup": 11,
-     "Swap": 0,
-     "Delivery": 0,
-     "Return": 0
-    },
-    {
-     "Pickup": 8,
-     "Swap": 3,
-     "Delivery": 0,
-     "Return": 0
-    },
-    {
-     "Pickup": 3,
-     "Swap": 0,
-     "Delivery": 0,
-     "Return": 0
-    },
-    {
-     "Pickup": 3,
-     "Swap": 1,
-     "Delivery": 0,
-     "Return": 1
-    },
-    {
-     "Pickup": 0,
-     "Swap": 0,
-     "Delivery": 0,
-     "Return": 0
-    },
-    {
-     "Pickup": 0,
-     "Swap": 0,
-     "Delivery": 0,
-     "Return": 0
-    }
-   ],
-   "Richmond": [
-    {
+   },
+   "Richmond": {
+    "2026-11-14": {
      "Pickup": 6,
      "Swap": 1,
      "Delivery": 0,
      "Return": 6
     },
-    {
-     "Pickup": 8,
+    "2026-11-15": {
+     "Pickup": 9,
      "Swap": 1,
      "Delivery": 0,
      "Return": 0
     },
-    {
+    "2026-11-16": {
      "Pickup": 2,
      "Swap": 1,
      "Delivery": 0,
      "Return": 0
     },
-    {
+    "2026-11-17": {
      "Pickup": 1,
      "Swap": 1,
      "Delivery": 0,
-     "Return": 1
+     "Return": 2
     },
-    {
+    "2026-11-18": {
      "Pickup": 3,
      "Swap": 1,
      "Delivery": 1,
      "Return": 0
     },
-    {
-     "Pickup": 0,
+    "2026-11-19": {
+     "Pickup": 1,
      "Swap": 0,
      "Delivery": 0,
      "Return": 1
     },
-    {
+    "2026-11-20": {
      "Pickup": 1,
      "Swap": 1,
      "Delivery": 0,
      "Return": 1
     }
-   ],
-   "West Nashville": [
-    {
+   },
+   "Dallas": {
+    "2026-11-14": {
+     "Pickup": 6,
+     "Swap": 2,
+     "Delivery": 0,
+     "Return": 0
+    },
+    "2026-11-15": {
+     "Pickup": 11,
+     "Swap": 0,
+     "Delivery": 0,
+     "Return": 0
+    },
+    "2026-11-16": {
+     "Pickup": 7,
+     "Swap": 3,
+     "Delivery": 0,
+     "Return": 0
+    },
+    "2026-11-17": {
+     "Pickup": 3,
+     "Swap": 0,
+     "Delivery": 0,
+     "Return": 0
+    },
+    "2026-11-18": {
+     "Pickup": 3,
+     "Swap": 1,
+     "Delivery": 0,
+     "Return": 1
+    },
+    "2026-11-19": {
+     "Pickup": 0,
+     "Swap": 1,
+     "Delivery": 0,
+     "Return": 0
+    },
+    "2026-11-20": {
+     "Pickup": 0,
+     "Swap": 0,
+     "Delivery": 0,
+     "Return": 0
+    }
+   },
+   "West Nashville": {
+    "2026-11-14": {
      "Pickup": 1,
      "Swap": 2,
      "Delivery": 0,
      "Return": 0
     },
-    {
+    "2026-11-15": {
      "Pickup": 2,
      "Swap": 3,
      "Delivery": 0,
      "Return": 1
     },
-    {
+    "2026-11-16": {
      "Pickup": 2,
      "Swap": 3,
      "Delivery": 0,
      "Return": 2
     },
-    {
+    "2026-11-17": {
      "Pickup": 0,
      "Swap": 1,
      "Delivery": 0,
      "Return": 0
     },
-    {
+    "2026-11-18": {
      "Pickup": 0,
      "Swap": 0,
      "Delivery": 0,
      "Return": 0
     },
-    {
+    "2026-11-19": {
      "Pickup": 2,
      "Swap": 1,
      "Delivery": 0,
      "Return": 0
     },
-    {
+    "2026-11-20": {
      "Pickup": 1,
      "Swap": 0,
      "Delivery": 0,
      "Return": 0
     }
-   ]
+   }
   },
   "lastWeekActuals": {
    "days": [
@@ -2266,490 +2389,490 @@
     "2026-11-13"
    ],
    "orders": {
-    "New England": [
-     {
+    "New England": {
+     "2026-11-07": {
       "Pickup": 21,
       "Swap": 21,
       "Delivery": 2,
       "Return": 13
      },
-     {
+     "2026-11-08": {
       "Pickup": 29,
       "Swap": 10,
       "Delivery": 3,
       "Return": 8
      },
-     {
+     "2026-11-09": {
       "Pickup": 10,
-      "Swap": 8,
+      "Swap": 7,
       "Delivery": 3,
       "Return": 17
      },
-     {
+     "2026-11-10": {
       "Pickup": 8,
       "Swap": 8,
       "Delivery": 1,
       "Return": 11
      },
-     {
+     "2026-11-11": {
       "Pickup": 16,
-      "Swap": 11,
+      "Swap": 10,
       "Delivery": 0,
       "Return": 11
      },
-     {
+     "2026-11-12": {
       "Pickup": 7,
-      "Swap": 10,
+      "Swap": 9,
       "Delivery": 0,
       "Return": 15
      },
-     {
-      "Pickup": 9,
+     "2026-11-13": {
+      "Pickup": 8,
       "Swap": 10,
       "Delivery": 1,
-      "Return": 12
+      "Return": 11
      }
-    ],
-    "Stone Mountain": [
-     {
+    },
+    "Stone Mountain": {
+     "2026-11-07": {
       "Pickup": 27,
       "Swap": 16,
       "Delivery": 1,
       "Return": 11
      },
-     {
+     "2026-11-08": {
       "Pickup": 27,
       "Swap": 17,
       "Delivery": 2,
       "Return": 7
      },
-     {
+     "2026-11-09": {
       "Pickup": 16,
       "Swap": 20,
       "Delivery": 2,
       "Return": 19
      },
-     {
+     "2026-11-10": {
       "Pickup": 16,
       "Swap": 10,
       "Delivery": 2,
       "Return": 22
      },
-     {
+     "2026-11-11": {
       "Pickup": 8,
       "Swap": 10,
       "Delivery": 1,
       "Return": 13
      },
-     {
+     "2026-11-12": {
       "Pickup": 19,
       "Swap": 14,
       "Delivery": 1,
       "Return": 11
      },
-     {
+     "2026-11-13": {
       "Pickup": 20,
-      "Swap": 16,
+      "Swap": 18,
       "Delivery": 2,
       "Return": 16
      }
-    ],
-    "Larchmont": [
-     {
+    },
+    "Larchmont": {
+     "2026-11-07": {
       "Pickup": 12,
       "Swap": 5,
       "Delivery": 0,
       "Return": 8
      },
-     {
+     "2026-11-08": {
       "Pickup": 24,
       "Swap": 7,
       "Delivery": 0,
       "Return": 5
      },
-     {
+     "2026-11-09": {
       "Pickup": 10,
       "Swap": 2,
       "Delivery": 0,
       "Return": 4
      },
-     {
+     "2026-11-10": {
       "Pickup": 10,
       "Swap": 2,
       "Delivery": 0,
       "Return": 5
      },
-     {
+     "2026-11-11": {
       "Pickup": 9,
       "Swap": 1,
       "Delivery": 0,
       "Return": 3
      },
-     {
+     "2026-11-12": {
       "Pickup": 10,
       "Swap": 3,
       "Delivery": 0,
       "Return": 4
      },
-     {
+     "2026-11-13": {
       "Pickup": 7,
-      "Swap": 4,
+      "Swap": 3,
       "Delivery": 0,
       "Return": 2
      }
-    ],
-    "South Charlotte": [
-     {
+    },
+    "South Charlotte": {
+     "2026-11-07": {
       "Pickup": 11,
       "Swap": 3,
       "Delivery": 0,
       "Return": 9
      },
-     {
+     "2026-11-08": {
       "Pickup": 7,
       "Swap": 2,
       "Delivery": 0,
       "Return": 5
      },
-     {
+     "2026-11-09": {
       "Pickup": 6,
       "Swap": 1,
       "Delivery": 0,
       "Return": 2
      },
-     {
+     "2026-11-10": {
       "Pickup": 6,
       "Swap": 1,
       "Delivery": 0,
       "Return": 4
      },
-     {
+     "2026-11-11": {
       "Pickup": 6,
       "Swap": 2,
       "Delivery": 0,
       "Return": 4
      },
-     {
+     "2026-11-12": {
       "Pickup": 6,
       "Swap": 4,
       "Delivery": 0,
       "Return": 1
      },
-     {
+     "2026-11-13": {
       "Pickup": 4,
       "Swap": 0,
       "Delivery": 0,
-      "Return": 0
+      "Return": 1
      }
-    ],
-    "Marietta": [
-     {
+    },
+    "Marietta": {
+     "2026-11-07": {
       "Pickup": 13,
       "Swap": 8,
       "Delivery": 0,
       "Return": 9
      },
-     {
+     "2026-11-08": {
       "Pickup": 14,
       "Swap": 6,
       "Delivery": 0,
       "Return": 6
      },
-     {
+     "2026-11-09": {
       "Pickup": 11,
       "Swap": 7,
       "Delivery": 0,
       "Return": 2
      },
-     {
+     "2026-11-10": {
       "Pickup": 9,
       "Swap": 1,
       "Delivery": 0,
       "Return": 3
      },
-     {
+     "2026-11-11": {
       "Pickup": 4,
       "Swap": 4,
       "Delivery": 0,
       "Return": 4
      },
-     {
+     "2026-11-12": {
       "Pickup": 5,
       "Swap": 5,
       "Delivery": 1,
       "Return": 11
      },
-     {
+     "2026-11-13": {
       "Pickup": 8,
-      "Swap": 6,
+      "Swap": 7,
       "Delivery": 0,
-      "Return": 10
+      "Return": 11
      }
-    ],
-    "San Jose": [
-     {
+    },
+    "San Jose": {
+     "2026-11-07": {
       "Pickup": 7,
       "Swap": 10,
       "Delivery": 0,
       "Return": 6
      },
-     {
+     "2026-11-08": {
       "Pickup": 11,
       "Swap": 5,
       "Delivery": 0,
       "Return": 5
      },
-     {
+     "2026-11-09": {
       "Pickup": 3,
       "Swap": 5,
       "Delivery": 0,
       "Return": 2
      },
-     {
+     "2026-11-10": {
       "Pickup": 3,
       "Swap": 2,
       "Delivery": 0,
       "Return": 3
      },
-     {
+     "2026-11-11": {
       "Pickup": 12,
       "Swap": 3,
       "Delivery": 0,
       "Return": 7
      },
-     {
+     "2026-11-12": {
       "Pickup": 8,
       "Swap": 2,
       "Delivery": 0,
       "Return": 3
      },
-     {
+     "2026-11-13": {
       "Pickup": 7,
       "Swap": 2,
       "Delivery": 0,
-      "Return": 2
+      "Return": 3
      }
-    ],
-    "Morrow": [
-     {
+    },
+    "Morrow": {
+     "2026-11-07": {
       "Pickup": 5,
       "Swap": 5,
       "Delivery": 0,
       "Return": 10
      },
-     {
+     "2026-11-08": {
       "Pickup": 4,
       "Swap": 5,
       "Delivery": 0,
       "Return": 2
      },
-     {
+     "2026-11-09": {
       "Pickup": 3,
       "Swap": 3,
       "Delivery": 0,
       "Return": 1
      },
-     {
+     "2026-11-10": {
       "Pickup": 3,
       "Swap": 3,
       "Delivery": 0,
       "Return": 5
      },
-     {
+     "2026-11-11": {
       "Pickup": 1,
       "Swap": 6,
       "Delivery": 0,
       "Return": 3
      },
-     {
+     "2026-11-12": {
       "Pickup": 5,
       "Swap": 6,
       "Delivery": 0,
       "Return": 7
      },
-     {
+     "2026-11-13": {
       "Pickup": 3,
       "Swap": 2,
       "Delivery": 0,
-      "Return": 9
+      "Return": 8
      }
-    ],
-    "El Monte": [
-     {
+    },
+    "El Monte": {
+     "2026-11-07": {
       "Pickup": 10,
       "Swap": 1,
       "Delivery": 0,
       "Return": 0
      },
-     {
+     "2026-11-08": {
       "Pickup": 9,
       "Swap": 1,
       "Delivery": 0,
       "Return": 1
      },
-     {
+     "2026-11-09": {
       "Pickup": 9,
       "Swap": 2,
       "Delivery": 0,
       "Return": 0
      },
-     {
+     "2026-11-10": {
       "Pickup": 4,
       "Swap": 1,
       "Delivery": 0,
       "Return": 2
      },
-     {
+     "2026-11-11": {
       "Pickup": 4,
       "Swap": 1,
       "Delivery": 0,
       "Return": 3
      },
-     {
+     "2026-11-12": {
       "Pickup": 4,
       "Swap": 1,
       "Delivery": 0,
       "Return": 2
      },
-     {
+     "2026-11-13": {
       "Pickup": 10,
       "Swap": 1,
       "Delivery": 0,
       "Return": 2
      }
-    ],
-    "Dallas": [
-     {
-      "Pickup": 8,
-      "Swap": 3,
-      "Delivery": 0,
-      "Return": 2
-     },
-     {
-      "Pickup": 7,
-      "Swap": 1,
-      "Delivery": 0,
-      "Return": 1
-     },
-     {
-      "Pickup": 4,
-      "Swap": 2,
-      "Delivery": 0,
-      "Return": 4
-     },
-     {
-      "Pickup": 11,
-      "Swap": 1,
-      "Delivery": 0,
-      "Return": 0
-     },
-     {
-      "Pickup": 4,
-      "Swap": 0,
-      "Delivery": 0,
-      "Return": 1
-     },
-     {
-      "Pickup": 1,
-      "Swap": 0,
-      "Delivery": 0,
-      "Return": 2
-     },
-     {
-      "Pickup": 4,
-      "Swap": 2,
-      "Delivery": 0,
-      "Return": 2
-     }
-    ],
-    "Richmond": [
-     {
+    },
+    "Richmond": {
+     "2026-11-07": {
       "Pickup": 5,
       "Swap": 2,
       "Delivery": 0,
       "Return": 3
      },
-     {
+     "2026-11-08": {
       "Pickup": 7,
       "Swap": 1,
       "Delivery": 0,
       "Return": 4
      },
-     {
+     "2026-11-09": {
       "Pickup": 3,
       "Swap": 4,
       "Delivery": 0,
       "Return": 1
      },
-     {
+     "2026-11-10": {
       "Pickup": 7,
       "Swap": 2,
       "Delivery": 0,
       "Return": 4
      },
-     {
+     "2026-11-11": {
       "Pickup": 4,
       "Swap": 1,
       "Delivery": 2,
       "Return": 4
      },
-     {
+     "2026-11-12": {
       "Pickup": 3,
       "Swap": 2,
       "Delivery": 0,
       "Return": 4
      },
-     {
+     "2026-11-13": {
       "Pickup": 4,
       "Swap": 0,
       "Delivery": 1,
       "Return": 5
      }
-    ],
-    "West Nashville": [
-     {
+    },
+    "Dallas": {
+     "2026-11-07": {
+      "Pickup": 8,
+      "Swap": 3,
+      "Delivery": 0,
+      "Return": 2
+     },
+     "2026-11-08": {
+      "Pickup": 7,
+      "Swap": 1,
+      "Delivery": 0,
+      "Return": 1
+     },
+     "2026-11-09": {
+      "Pickup": 4,
+      "Swap": 2,
+      "Delivery": 0,
+      "Return": 4
+     },
+     "2026-11-10": {
+      "Pickup": 11,
+      "Swap": 1,
+      "Delivery": 0,
+      "Return": 0
+     },
+     "2026-11-11": {
+      "Pickup": 4,
+      "Swap": 0,
+      "Delivery": 0,
+      "Return": 1
+     },
+     "2026-11-12": {
+      "Pickup": 1,
+      "Swap": 0,
+      "Delivery": 0,
+      "Return": 2
+     },
+     "2026-11-13": {
+      "Pickup": 4,
+      "Swap": 1,
+      "Delivery": 0,
+      "Return": 3
+     }
+    },
+    "West Nashville": {
+     "2026-11-07": {
       "Pickup": 3,
       "Swap": 2,
       "Delivery": 0,
       "Return": 4
      },
-     {
+     "2026-11-08": {
       "Pickup": 1,
       "Swap": 0,
       "Delivery": 0,
       "Return": 3
      },
-     {
+     "2026-11-09": {
       "Pickup": 2,
       "Swap": 1,
       "Delivery": 0,
       "Return": 2
      },
-     {
+     "2026-11-10": {
       "Pickup": 6,
       "Swap": 2,
       "Delivery": 0,
       "Return": 7
      },
-     {
+     "2026-11-11": {
       "Pickup": 1,
       "Swap": 0,
       "Delivery": 0,
       "Return": 10
      },
-     {
+     "2026-11-12": {
       "Pickup": 3,
       "Swap": 3,
       "Delivery": 0,
       "Return": 5
      },
-     {
+     "2026-11-13": {
       "Pickup": 2,
       "Swap": 0,
       "Delivery": 3,
       "Return": 4
      }
-    ]
+    }
    }
   },
   "retentionSeed": {
@@ -2760,87 +2883,15 @@
     "Delivery"
    ],
    "bySite": {
-    "New England": {
+    "Dallas": {
      "sourceEvents": {
-      "2026-11-11": 27,
-      "2026-11-12": 17,
-      "2026-11-13": 20
-     },
-     "impliedCalls": {
-      "2026-11-14": 27,
-      "2026-11-15": 17,
-      "2026-11-16": 20
-     }
-    },
-    "Stone Mountain": {
-     "sourceEvents": {
-      "2026-11-11": 19,
-      "2026-11-12": 34,
-      "2026-11-13": 38
-     },
-     "impliedCalls": {
-      "2026-11-14": 19,
-      "2026-11-15": 34,
-      "2026-11-16": 38
-     }
-    },
-    "Larchmont": {
-     "sourceEvents": {
-      "2026-11-11": 10,
-      "2026-11-12": 13,
-      "2026-11-13": 11
-     },
-     "impliedCalls": {
-      "2026-11-14": 10,
-      "2026-11-15": 13,
-      "2026-11-16": 11
-     }
-    },
-    "South Charlotte": {
-     "sourceEvents": {
-      "2026-11-11": 8,
-      "2026-11-12": 10,
-      "2026-11-13": 4
-     },
-     "impliedCalls": {
-      "2026-11-14": 8,
-      "2026-11-15": 10,
-      "2026-11-16": 4
-     }
-    },
-    "Marietta": {
-     "sourceEvents": {
-      "2026-11-11": 8,
-      "2026-11-12": 11,
-      "2026-11-13": 14
-     },
-     "impliedCalls": {
-      "2026-11-14": 8,
-      "2026-11-15": 11,
-      "2026-11-16": 14
-     }
-    },
-    "San Jose": {
-     "sourceEvents": {
-      "2026-11-11": 15,
-      "2026-11-12": 10,
-      "2026-11-13": 9
-     },
-     "impliedCalls": {
-      "2026-11-14": 15,
-      "2026-11-15": 10,
-      "2026-11-16": 9
-     }
-    },
-    "Morrow": {
-     "sourceEvents": {
-      "2026-11-11": 7,
-      "2026-11-12": 11,
+      "2026-11-11": 4,
+      "2026-11-12": 1,
       "2026-11-13": 5
      },
      "impliedCalls": {
-      "2026-11-14": 7,
-      "2026-11-15": 11,
+      "2026-11-14": 4,
+      "2026-11-15": 1,
       "2026-11-16": 5
      }
     },
@@ -2856,16 +2907,52 @@
       "2026-11-16": 11
      }
     },
-    "Dallas": {
+    "Larchmont": {
      "sourceEvents": {
-      "2026-11-11": 4,
-      "2026-11-12": 1,
-      "2026-11-13": 6
+      "2026-11-11": 10,
+      "2026-11-12": 13,
+      "2026-11-13": 10
      },
      "impliedCalls": {
-      "2026-11-14": 4,
-      "2026-11-15": 1,
-      "2026-11-16": 6
+      "2026-11-14": 10,
+      "2026-11-15": 13,
+      "2026-11-16": 10
+     }
+    },
+    "Marietta": {
+     "sourceEvents": {
+      "2026-11-11": 8,
+      "2026-11-12": 11,
+      "2026-11-13": 15
+     },
+     "impliedCalls": {
+      "2026-11-14": 8,
+      "2026-11-15": 11,
+      "2026-11-16": 15
+     }
+    },
+    "Morrow": {
+     "sourceEvents": {
+      "2026-11-11": 7,
+      "2026-11-12": 11,
+      "2026-11-13": 5
+     },
+     "impliedCalls": {
+      "2026-11-14": 7,
+      "2026-11-15": 11,
+      "2026-11-16": 5
+     }
+    },
+    "New England": {
+     "sourceEvents": {
+      "2026-11-11": 26,
+      "2026-11-12": 16,
+      "2026-11-13": 19
+     },
+     "impliedCalls": {
+      "2026-11-14": 26,
+      "2026-11-15": 16,
+      "2026-11-16": 19
      }
     },
     "Richmond": {
@@ -2878,6 +2965,42 @@
       "2026-11-14": 7,
       "2026-11-15": 5,
       "2026-11-16": 5
+     }
+    },
+    "San Jose": {
+     "sourceEvents": {
+      "2026-11-11": 15,
+      "2026-11-12": 10,
+      "2026-11-13": 9
+     },
+     "impliedCalls": {
+      "2026-11-14": 15,
+      "2026-11-15": 10,
+      "2026-11-16": 9
+     }
+    },
+    "South Charlotte": {
+     "sourceEvents": {
+      "2026-11-11": 8,
+      "2026-11-12": 10,
+      "2026-11-13": 4
+     },
+     "impliedCalls": {
+      "2026-11-14": 8,
+      "2026-11-15": 10,
+      "2026-11-16": 4
+     }
+    },
+    "Stone Mountain": {
+     "sourceEvents": {
+      "2026-11-11": 19,
+      "2026-11-12": 34,
+      "2026-11-13": 40
+     },
+     "impliedCalls": {
+      "2026-11-14": 19,
+      "2026-11-15": 34,
+      "2026-11-16": 40
      }
     },
     "West Nashville": {
@@ -2895,8 +3018,8 @@
    }
   },
   "onFlex": {
-   "New England": [
-    {
+   "New England": {
+    "2026-11-14": {
      "activeBookings": 6,
      "activeEstMin": 258,
      "byStatus": {
@@ -2904,7 +3027,7 @@
       "cancelled": 4
      }
     },
-    {
+    "2026-11-15": {
      "activeBookings": 8,
      "activeEstMin": 390,
      "byStatus": {
@@ -2912,15 +3035,15 @@
       "cancelled": 3
      }
     },
-    {
-     "activeBookings": 15,
-     "activeEstMin": 738,
+    "2026-11-16": {
+     "activeBookings": 14,
+     "activeEstMin": 678,
      "byStatus": {
-      "active": 15,
-      "cancelled": 1
+      "active": 14,
+      "cancelled": 2
      }
     },
-    {
+    "2026-11-17": {
      "activeBookings": 12,
      "activeEstMin": 828,
      "byStatus": {
@@ -2928,7 +3051,7 @@
       "cancelled": 5
      }
     },
-    {
+    "2026-11-18": {
      "activeBookings": 13,
      "activeEstMin": 750,
      "byStatus": {
@@ -2936,7 +3059,7 @@
       "cancelled": 3
      }
     },
-    {
+    "2026-11-19": {
      "activeBookings": 12,
      "activeEstMin": 720,
      "byStatus": {
@@ -2944,7 +3067,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-20": {
      "activeBookings": 7,
      "activeEstMin": 378,
      "byStatus": {
@@ -2952,9 +3075,9 @@
       "cancelled": 0
      }
     }
-   ],
-   "Stone Mountain": [
-    {
+   },
+   "Stone Mountain": {
+    "2026-11-14": {
      "activeBookings": 31,
      "activeEstMin": 1569,
      "byStatus": {
@@ -2962,7 +3085,7 @@
       "cancelled": 2
      }
     },
-    {
+    "2026-11-15": {
      "activeBookings": 18,
      "activeEstMin": 1128,
      "byStatus": {
@@ -2970,15 +3093,15 @@
       "cancelled": 3
      }
     },
-    {
-     "activeBookings": 21,
-     "activeEstMin": 1248,
+    "2026-11-16": {
+     "activeBookings": 24,
+     "activeEstMin": 1458,
      "byStatus": {
-      "active": 21,
+      "active": 24,
       "cancelled": 1
      }
     },
-    {
+    "2026-11-17": {
      "activeBookings": 9,
      "activeEstMin": 876,
      "byStatus": {
@@ -2986,7 +3109,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-18": {
      "activeBookings": 5,
      "activeEstMin": 450,
      "byStatus": {
@@ -2994,7 +3117,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-19": {
      "activeBookings": 2,
      "activeEstMin": 60,
      "byStatus": {
@@ -3002,7 +3125,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-20": {
      "activeBookings": 4,
      "activeEstMin": 210,
      "byStatus": {
@@ -3010,9 +3133,9 @@
       "cancelled": 0
      }
     }
-   ],
-   "Larchmont": [
-    {
+   },
+   "Larchmont": {
+    "2026-11-14": {
      "activeBookings": 1,
      "activeEstMin": 30,
      "byStatus": {
@@ -3020,7 +3143,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-15": {
      "activeBookings": 0,
      "activeEstMin": 0,
      "byStatus": {
@@ -3028,7 +3151,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-16": {
      "activeBookings": 4,
      "activeEstMin": 450,
      "byStatus": {
@@ -3036,7 +3159,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-17": {
      "activeBookings": 3,
      "activeEstMin": 390,
      "byStatus": {
@@ -3044,7 +3167,7 @@
       "cancelled": 1
      }
     },
-    {
+    "2026-11-18": {
      "activeBookings": 3,
      "activeEstMin": 390,
      "byStatus": {
@@ -3052,7 +3175,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-19": {
      "activeBookings": 4,
      "activeEstMin": 348,
      "byStatus": {
@@ -3060,7 +3183,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-20": {
      "activeBookings": 2,
      "activeEstMin": 180,
      "byStatus": {
@@ -3068,9 +3191,9 @@
       "cancelled": 0
      }
     }
-   ],
-   "South Charlotte": [
-    {
+   },
+   "South Charlotte": {
+    "2026-11-14": {
      "activeBookings": 7,
      "activeEstMin": 276,
      "byStatus": {
@@ -3078,7 +3201,7 @@
       "cancelled": 1
      }
     },
-    {
+    "2026-11-15": {
      "activeBookings": 8,
      "activeEstMin": 330,
      "byStatus": {
@@ -3086,7 +3209,7 @@
       "cancelled": 1
      }
     },
-    {
+    "2026-11-16": {
      "activeBookings": 7,
      "activeEstMin": 402,
      "byStatus": {
@@ -3094,15 +3217,15 @@
       "cancelled": 0
      }
     },
-    {
-     "activeBookings": 4,
-     "activeEstMin": 288,
+    "2026-11-17": {
+     "activeBookings": 5,
+     "activeEstMin": 318,
      "byStatus": {
-      "active": 4,
+      "active": 5,
       "cancelled": 0
      }
     },
-    {
+    "2026-11-18": {
      "activeBookings": 4,
      "activeEstMin": 108,
      "byStatus": {
@@ -3110,7 +3233,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-19": {
      "activeBookings": 1,
      "activeEstMin": 30,
      "byStatus": {
@@ -3118,7 +3241,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-20": {
      "activeBookings": 1,
      "activeEstMin": 30,
      "byStatus": {
@@ -3126,9 +3249,9 @@
       "cancelled": 0
      }
     }
-   ],
-   "Marietta": [
-    {
+   },
+   "Marietta": {
+    "2026-11-14": {
      "activeBookings": 17,
      "activeEstMin": 852,
      "byStatus": {
@@ -3136,7 +3259,7 @@
       "cancelled": 1
      }
     },
-    {
+    "2026-11-15": {
      "activeBookings": 23,
      "activeEstMin": 1122,
      "byStatus": {
@@ -3144,7 +3267,7 @@
       "cancelled": 2
      }
     },
-    {
+    "2026-11-16": {
      "activeBookings": 17,
      "activeEstMin": 798,
      "byStatus": {
@@ -3152,15 +3275,15 @@
       "cancelled": 2
      }
     },
-    {
-     "activeBookings": 17,
-     "activeEstMin": 828,
+    "2026-11-17": {
+     "activeBookings": 18,
+     "activeEstMin": 906,
      "byStatus": {
-      "active": 17,
+      "active": 18,
       "cancelled": 2
      }
     },
-    {
+    "2026-11-18": {
      "activeBookings": 13,
      "activeEstMin": 780,
      "byStatus": {
@@ -3168,7 +3291,7 @@
       "cancelled": 1
      }
     },
-    {
+    "2026-11-19": {
      "activeBookings": 12,
      "activeEstMin": 768,
      "byStatus": {
@@ -3176,17 +3299,17 @@
       "cancelled": 4
      }
     },
-    {
-     "activeBookings": 17,
-     "activeEstMin": 966,
+    "2026-11-20": {
+     "activeBookings": 18,
+     "activeEstMin": 1026,
      "byStatus": {
-      "active": 17,
+      "active": 18,
       "cancelled": 1
      }
     }
-   ],
-   "San Jose": [
-    {
+   },
+   "San Jose": {
+    "2026-11-14": {
      "activeBookings": 6,
      "activeEstMin": 270,
      "byStatus": {
@@ -3194,7 +3317,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-15": {
      "activeBookings": 3,
      "activeEstMin": 150,
      "byStatus": {
@@ -3202,7 +3325,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-16": {
      "activeBookings": 1,
      "activeEstMin": 0,
      "byStatus": {
@@ -3210,7 +3333,7 @@
       "cancelled": 1
      }
     },
-    {
+    "2026-11-17": {
      "activeBookings": 0,
      "activeEstMin": 0,
      "byStatus": {
@@ -3218,7 +3341,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-18": {
      "activeBookings": 0,
      "activeEstMin": 0,
      "byStatus": {
@@ -3226,7 +3349,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-19": {
      "activeBookings": 0,
      "activeEstMin": 0,
      "byStatus": {
@@ -3234,7 +3357,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-20": {
      "activeBookings": 0,
      "activeEstMin": 0,
      "byStatus": {
@@ -3242,9 +3365,9 @@
       "cancelled": 0
      }
     }
-   ],
-   "Morrow": [
-    {
+   },
+   "Morrow": {
+    "2026-11-14": {
      "activeBookings": 13,
      "activeEstMin": 541,
      "byStatus": {
@@ -3252,7 +3375,7 @@
       "cancelled": 1
      }
     },
-    {
+    "2026-11-15": {
      "activeBookings": 9,
      "activeEstMin": 558,
      "byStatus": {
@@ -3260,7 +3383,7 @@
       "cancelled": 2
      }
     },
-    {
+    "2026-11-16": {
      "activeBookings": 13,
      "activeEstMin": 534,
      "byStatus": {
@@ -3268,7 +3391,7 @@
       "cancelled": 1
      }
     },
-    {
+    "2026-11-17": {
      "activeBookings": 14,
      "activeEstMin": 666,
      "byStatus": {
@@ -3276,7 +3399,7 @@
       "cancelled": 5
      }
     },
-    {
+    "2026-11-18": {
      "activeBookings": 14,
      "activeEstMin": 918,
      "byStatus": {
@@ -3284,7 +3407,7 @@
       "cancelled": 3
      }
     },
-    {
+    "2026-11-19": {
      "activeBookings": 12,
      "activeEstMin": 834,
      "byStatus": {
@@ -3292,7 +3415,7 @@
       "cancelled": 3
      }
     },
-    {
+    "2026-11-20": {
      "activeBookings": 12,
      "activeEstMin": 564,
      "byStatus": {
@@ -3300,9 +3423,9 @@
       "cancelled": 0
      }
     }
-   ],
-   "El Monte": [
-    {
+   },
+   "El Monte": {
+    "2026-11-14": {
      "activeBookings": 0,
      "activeEstMin": 0,
      "byStatus": {
@@ -3310,7 +3433,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-15": {
      "activeBookings": 0,
      "activeEstMin": 0,
      "byStatus": {
@@ -3318,7 +3441,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-16": {
      "activeBookings": 0,
      "activeEstMin": 0,
      "byStatus": {
@@ -3326,7 +3449,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-17": {
      "activeBookings": 0,
      "activeEstMin": 0,
      "byStatus": {
@@ -3334,7 +3457,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-18": {
      "activeBookings": 0,
      "activeEstMin": 0,
      "byStatus": {
@@ -3342,7 +3465,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-19": {
      "activeBookings": 0,
      "activeEstMin": 0,
      "byStatus": {
@@ -3350,7 +3473,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-20": {
      "activeBookings": 0,
      "activeEstMin": 0,
      "byStatus": {
@@ -3358,9 +3481,67 @@
       "cancelled": 0
      }
     }
-   ],
-   "Dallas": [
-    {
+   },
+   "Richmond": {
+    "2026-11-14": {
+     "activeBookings": 0,
+     "activeEstMin": 0,
+     "byStatus": {
+      "active": 0,
+      "cancelled": 0
+     }
+    },
+    "2026-11-15": {
+     "activeBookings": 1,
+     "activeEstMin": 60,
+     "byStatus": {
+      "active": 1,
+      "cancelled": 0
+     }
+    },
+    "2026-11-16": {
+     "activeBookings": 0,
+     "activeEstMin": 0,
+     "byStatus": {
+      "active": 0,
+      "cancelled": 0
+     }
+    },
+    "2026-11-17": {
+     "activeBookings": 0,
+     "activeEstMin": 0,
+     "byStatus": {
+      "active": 0,
+      "cancelled": 0
+     }
+    },
+    "2026-11-18": {
+     "activeBookings": 0,
+     "activeEstMin": 0,
+     "byStatus": {
+      "active": 0,
+      "cancelled": 0
+     }
+    },
+    "2026-11-19": {
+     "activeBookings": 0,
+     "activeEstMin": 0,
+     "byStatus": {
+      "active": 0,
+      "cancelled": 0
+     }
+    },
+    "2026-11-20": {
+     "activeBookings": 0,
+     "activeEstMin": 0,
+     "byStatus": {
+      "active": 0,
+      "cancelled": 0
+     }
+    }
+   },
+   "Dallas": {
+    "2026-11-14": {
      "activeBookings": 1,
      "activeEstMin": 30,
      "byStatus": {
@@ -3368,7 +3549,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-15": {
      "activeBookings": 1,
      "activeEstMin": 18,
      "byStatus": {
@@ -3376,7 +3557,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-16": {
      "activeBookings": 1,
      "activeEstMin": 60,
      "byStatus": {
@@ -3384,7 +3565,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-17": {
      "activeBookings": 0,
      "activeEstMin": 0,
      "byStatus": {
@@ -3392,7 +3573,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-18": {
      "activeBookings": 0,
      "activeEstMin": 0,
      "byStatus": {
@@ -3400,7 +3581,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-19": {
      "activeBookings": 0,
      "activeEstMin": 0,
      "byStatus": {
@@ -3408,7 +3589,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-20": {
      "activeBookings": 0,
      "activeEstMin": 0,
      "byStatus": {
@@ -3416,9 +3597,9 @@
       "cancelled": 0
      }
     }
-   ],
-   "Richmond": [
-    {
+   },
+   "West Nashville": {
+    "2026-11-14": {
      "activeBookings": 0,
      "activeEstMin": 0,
      "byStatus": {
@@ -3426,65 +3607,7 @@
       "cancelled": 0
      }
     },
-    {
-     "activeBookings": 1,
-     "activeEstMin": 60,
-     "byStatus": {
-      "active": 1,
-      "cancelled": 0
-     }
-    },
-    {
-     "activeBookings": 0,
-     "activeEstMin": 0,
-     "byStatus": {
-      "active": 0,
-      "cancelled": 0
-     }
-    },
-    {
-     "activeBookings": 0,
-     "activeEstMin": 0,
-     "byStatus": {
-      "active": 0,
-      "cancelled": 0
-     }
-    },
-    {
-     "activeBookings": 0,
-     "activeEstMin": 0,
-     "byStatus": {
-      "active": 0,
-      "cancelled": 0
-     }
-    },
-    {
-     "activeBookings": 0,
-     "activeEstMin": 0,
-     "byStatus": {
-      "active": 0,
-      "cancelled": 0
-     }
-    },
-    {
-     "activeBookings": 0,
-     "activeEstMin": 0,
-     "byStatus": {
-      "active": 0,
-      "cancelled": 0
-     }
-    }
-   ],
-   "West Nashville": [
-    {
-     "activeBookings": 0,
-     "activeEstMin": 0,
-     "byStatus": {
-      "active": 0,
-      "cancelled": 0
-     }
-    },
-    {
+    "2026-11-15": {
      "activeBookings": 2,
      "activeEstMin": 90,
      "byStatus": {
@@ -3492,7 +3615,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-16": {
      "activeBookings": 2,
      "activeEstMin": 108,
      "byStatus": {
@@ -3500,7 +3623,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-17": {
      "activeBookings": 6,
      "activeEstMin": 228,
      "byStatus": {
@@ -3508,7 +3631,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-18": {
      "activeBookings": 6,
      "activeEstMin": 306,
      "byStatus": {
@@ -3516,7 +3639,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-19": {
      "activeBookings": 6,
      "activeEstMin": 270,
      "byStatus": {
@@ -3524,7 +3647,7 @@
       "cancelled": 1
      }
     },
-    {
+    "2026-11-20": {
      "activeBookings": 0,
      "activeEstMin": 0,
      "byStatus": {
@@ -3532,11 +3655,11 @@
       "cancelled": 0
      }
     }
-   ]
+   }
   },
   "unassignedService": {
-   "New England": [
-    {
+   "New England": {
+    "2026-11-14": {
      "jobs": 8,
      "laborMinutes": 852,
      "completedJobs": 2,
@@ -3548,19 +3671,19 @@
       "cancelled": 0
      }
     },
-    {
-     "jobs": 16,
-     "laborMinutes": 822,
+    "2026-11-15": {
+     "jobs": 17,
+     "laborMinutes": 840,
      "completedJobs": 0,
      "completedMinutes": 0,
      "infleetJobs": 0,
      "byStatus": {
-      "active": 16,
+      "active": 17,
       "completed": 0,
       "cancelled": 0
      }
     },
-    {
+    "2026-11-16": {
      "jobs": 7,
      "laborMinutes": 684,
      "completedJobs": 2,
@@ -3572,7 +3695,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-17": {
      "jobs": 3,
      "laborMinutes": 198,
      "completedJobs": 0,
@@ -3584,7 +3707,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-18": {
      "jobs": 2,
      "laborMinutes": 432,
      "completedJobs": 0,
@@ -3596,7 +3719,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-19": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -3608,7 +3731,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-20": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -3620,57 +3743,57 @@
       "cancelled": 0
      }
     }
-   ],
-   "Stone Mountain": [
-    {
-     "jobs": 5,
-     "laborMinutes": 276,
-     "completedJobs": 12,
-     "completedMinutes": 522,
+   },
+   "Stone Mountain": {
+    "2026-11-14": {
+     "jobs": 6,
+     "laborMinutes": 288,
+     "completedJobs": 13,
+     "completedMinutes": 570,
      "infleetJobs": 0,
      "byStatus": {
-      "active": 5,
-      "completed": 12,
+      "active": 6,
+      "completed": 13,
       "cancelled": 0
      }
     },
-    {
-     "jobs": 12,
-     "laborMinutes": 435,
+    "2026-11-15": {
+     "jobs": 11,
+     "laborMinutes": 405,
      "completedJobs": 2,
      "completedMinutes": 48,
      "infleetJobs": 0,
      "byStatus": {
-      "active": 12,
+      "active": 11,
       "completed": 2,
       "cancelled": 0
      }
     },
-    {
-     "jobs": 7,
-     "laborMinutes": 276,
-     "completedJobs": 7,
-     "completedMinutes": 228,
+    "2026-11-16": {
+     "jobs": 9,
+     "laborMinutes": 336,
+     "completedJobs": 9,
+     "completedMinutes": 288,
      "infleetJobs": 0,
      "byStatus": {
-      "active": 7,
-      "completed": 7,
+      "active": 9,
+      "completed": 9,
       "cancelled": 1
      }
     },
-    {
+    "2026-11-17": {
      "jobs": 10,
-     "laborMinutes": 330,
-     "completedJobs": 4,
-     "completedMinutes": 180,
+     "laborMinutes": 360,
+     "completedJobs": 5,
+     "completedMinutes": 210,
      "infleetJobs": 0,
      "byStatus": {
       "active": 10,
-      "completed": 4,
+      "completed": 5,
       "cancelled": 0
      }
     },
-    {
+    "2026-11-18": {
      "jobs": 6,
      "laborMinutes": 306,
      "completedJobs": 0,
@@ -3682,7 +3805,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-19": {
      "jobs": 1,
      "laborMinutes": 30,
      "completedJobs": 0,
@@ -3694,7 +3817,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-20": {
      "jobs": 2,
      "laborMinutes": 60,
      "completedJobs": 0,
@@ -3706,9 +3829,9 @@
       "cancelled": 0
      }
     }
-   ],
-   "Larchmont": [
-    {
+   },
+   "Larchmont": {
+    "2026-11-14": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -3720,7 +3843,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-15": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -3732,7 +3855,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-16": {
      "jobs": 1,
      "laborMinutes": 120,
      "completedJobs": 0,
@@ -3744,7 +3867,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-17": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -3756,7 +3879,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-18": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -3768,7 +3891,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-19": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -3780,7 +3903,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-20": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 1,
@@ -3792,9 +3915,9 @@
       "cancelled": 0
      }
     }
-   ],
-   "South Charlotte": [
-    {
+   },
+   "South Charlotte": {
+    "2026-11-14": {
      "jobs": 5,
      "laborMinutes": 180,
      "completedJobs": 0,
@@ -3806,7 +3929,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-15": {
      "jobs": 5,
      "laborMinutes": 90,
      "completedJobs": 0,
@@ -3818,7 +3941,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-16": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -3830,7 +3953,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-17": {
      "jobs": 1,
      "laborMinutes": 120,
      "completedJobs": 0,
@@ -3842,7 +3965,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-18": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -3854,7 +3977,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-19": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -3866,7 +3989,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-20": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -3878,9 +4001,9 @@
       "cancelled": 0
      }
     }
-   ],
-   "Marietta": [
-    {
+   },
+   "Marietta": {
+    "2026-11-14": {
      "jobs": 1,
      "laborMinutes": 66,
      "completedJobs": 0,
@@ -3892,7 +4015,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-15": {
      "jobs": 2,
      "laborMinutes": 66,
      "completedJobs": 0,
@@ -3904,7 +4027,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-16": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -3916,7 +4039,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-17": {
      "jobs": 1,
      "laborMinutes": 66,
      "completedJobs": 0,
@@ -3928,19 +4051,19 @@
       "cancelled": 0
      }
     },
-    {
-     "jobs": 1,
-     "laborMinutes": 150,
-     "completedJobs": 0,
-     "completedMinutes": 0,
+    "2026-11-18": {
+     "jobs": 0,
+     "laborMinutes": 0,
+     "completedJobs": 1,
+     "completedMinutes": 150,
      "infleetJobs": 0,
      "byStatus": {
-      "active": 1,
-      "completed": 0,
+      "active": 0,
+      "completed": 1,
       "cancelled": 0
      }
     },
-    {
+    "2026-11-19": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -3952,7 +4075,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-20": {
      "jobs": 2,
      "laborMinutes": 90,
      "completedJobs": 0,
@@ -3964,9 +4087,9 @@
       "cancelled": 0
      }
     }
-   ],
-   "San Jose": [
-    {
+   },
+   "San Jose": {
+    "2026-11-14": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 1,
@@ -3978,7 +4101,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-15": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -3990,7 +4113,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-16": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -4002,7 +4125,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-17": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -4014,7 +4137,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-18": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -4026,7 +4149,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-19": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -4038,7 +4161,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-20": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -4050,9 +4173,21 @@
       "cancelled": 0
      }
     }
-   ],
-   "Morrow": [
-    {
+   },
+   "Morrow": {
+    "2026-11-14": {
+     "jobs": 1,
+     "laborMinutes": 18,
+     "completedJobs": 0,
+     "completedMinutes": 0,
+     "infleetJobs": 0,
+     "byStatus": {
+      "active": 1,
+      "completed": 0,
+      "cancelled": 0
+     }
+    },
+    "2026-11-15": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -4064,7 +4199,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-16": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -4076,7 +4211,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-17": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -4088,7 +4223,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-18": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -4100,7 +4235,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-19": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -4112,19 +4247,7 @@
       "cancelled": 0
      }
     },
-    {
-     "jobs": 0,
-     "laborMinutes": 0,
-     "completedJobs": 0,
-     "completedMinutes": 0,
-     "infleetJobs": 0,
-     "byStatus": {
-      "active": 0,
-      "completed": 0,
-      "cancelled": 0
-     }
-    },
-    {
+    "2026-11-20": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -4136,9 +4259,9 @@
       "cancelled": 0
      }
     }
-   ],
-   "El Monte": [
-    {
+   },
+   "El Monte": {
+    "2026-11-14": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -4150,7 +4273,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-15": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -4162,7 +4285,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-16": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -4174,7 +4297,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-17": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -4186,7 +4309,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-18": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -4198,7 +4321,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-19": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -4210,7 +4333,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-20": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -4222,9 +4345,9 @@
       "cancelled": 0
      }
     }
-   ],
-   "Dallas": [
-    {
+   },
+   "Richmond": {
+    "2026-11-14": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -4236,7 +4359,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-15": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -4248,7 +4371,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-16": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -4260,7 +4383,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-17": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -4272,7 +4395,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-18": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -4284,7 +4407,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-19": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -4296,7 +4419,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-20": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -4308,9 +4431,9 @@
       "cancelled": 0
      }
     }
-   ],
-   "Richmond": [
-    {
+   },
+   "Dallas": {
+    "2026-11-14": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -4322,7 +4445,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-15": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -4334,7 +4457,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-16": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -4346,7 +4469,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-17": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -4358,7 +4481,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-18": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -4370,7 +4493,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-19": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -4382,7 +4505,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-20": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -4394,9 +4517,9 @@
       "cancelled": 0
      }
     }
-   ],
-   "West Nashville": [
-    {
+   },
+   "West Nashville": {
+    "2026-11-14": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -4408,7 +4531,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-15": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -4420,7 +4543,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-16": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -4432,7 +4555,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-17": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -4444,7 +4567,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-18": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -4456,7 +4579,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-19": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -4468,7 +4591,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-20": {
      "jobs": 0,
      "laborMinutes": 0,
      "completedJobs": 0,
@@ -4480,11 +4603,11 @@
       "cancelled": 0
      }
     }
-   ]
+   }
   },
   "assignedService": {
-   "New England": [
-    {
+   "New England": {
+    "2026-11-14": {
      "bookings": 8,
      "remainingMin": 696,
      "bookedMin": 678,
@@ -4493,7 +4616,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-15": {
      "bookings": 15,
      "remainingMin": 1218,
      "bookedMin": 822,
@@ -4502,7 +4625,7 @@
       "cancelled": 6
      }
     },
-    {
+    "2026-11-16": {
      "bookings": 10,
      "remainingMin": 1218,
      "bookedMin": 1218,
@@ -4511,7 +4634,7 @@
       "cancelled": 1
      }
     },
-    {
+    "2026-11-17": {
      "bookings": 11,
      "remainingMin": 930,
      "bookedMin": 894,
@@ -4520,16 +4643,16 @@
       "cancelled": 3
      }
     },
-    {
-     "bookings": 10,
-     "remainingMin": 816,
-     "bookedMin": 780,
+    "2026-11-18": {
+     "bookings": 9,
+     "remainingMin": 684,
+     "bookedMin": 666,
      "byStatus": {
-      "active": 10,
-      "cancelled": 0
+      "active": 9,
+      "cancelled": 1
      }
     },
-    {
+    "2026-11-19": {
      "bookings": 17,
      "remainingMin": 1554,
      "bookedMin": 1518,
@@ -4538,7 +4661,7 @@
       "cancelled": 1
      }
     },
-    {
+    "2026-11-20": {
      "bookings": 13,
      "remainingMin": 750,
      "bookedMin": 732,
@@ -4547,9 +4670,9 @@
       "cancelled": 2
      }
     }
-   ],
-   "Stone Mountain": [
-    {
+   },
+   "Stone Mountain": {
+    "2026-11-14": {
      "bookings": 1,
      "remainingMin": 18,
      "bookedMin": 18,
@@ -4558,7 +4681,7 @@
       "cancelled": 1
      }
     },
-    {
+    "2026-11-15": {
      "bookings": 3,
      "remainingMin": 114,
      "bookedMin": 114,
@@ -4567,7 +4690,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-16": {
      "bookings": 2,
      "remainingMin": 90,
      "bookedMin": 90,
@@ -4576,7 +4699,7 @@
       "cancelled": 2
      }
     },
-    {
+    "2026-11-17": {
      "bookings": 0,
      "remainingMin": 0,
      "bookedMin": 0,
@@ -4585,7 +4708,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-18": {
      "bookings": 1,
      "remainingMin": 30,
      "bookedMin": 30,
@@ -4594,7 +4717,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-19": {
      "bookings": 0,
      "remainingMin": 0,
      "bookedMin": 0,
@@ -4603,7 +4726,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-20": {
      "bookings": 2,
      "remainingMin": 36,
      "bookedMin": 36,
@@ -4612,9 +4735,9 @@
       "cancelled": 1
      }
     }
-   ],
-   "Larchmont": [
-    {
+   },
+   "Larchmont": {
+    "2026-11-14": {
      "bookings": 1,
      "remainingMin": 18,
      "bookedMin": 18,
@@ -4623,7 +4746,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-15": {
      "bookings": 0,
      "remainingMin": 0,
      "bookedMin": 0,
@@ -4632,7 +4755,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-16": {
      "bookings": 2,
      "remainingMin": 48,
      "bookedMin": 48,
@@ -4641,7 +4764,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-17": {
      "bookings": 0,
      "remainingMin": 0,
      "bookedMin": 0,
@@ -4650,7 +4773,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-18": {
      "bookings": 0,
      "remainingMin": 0,
      "bookedMin": 0,
@@ -4659,7 +4782,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-19": {
      "bookings": 1,
      "remainingMin": 18,
      "bookedMin": 18,
@@ -4668,7 +4791,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-20": {
      "bookings": 0,
      "remainingMin": 0,
      "bookedMin": 0,
@@ -4677,9 +4800,9 @@
       "cancelled": 0
      }
     }
-   ],
-   "South Charlotte": [
-    {
+   },
+   "South Charlotte": {
+    "2026-11-14": {
      "bookings": 0,
      "remainingMin": 0,
      "bookedMin": 0,
@@ -4688,7 +4811,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-15": {
      "bookings": 2,
      "remainingMin": 90,
      "bookedMin": 90,
@@ -4697,7 +4820,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-16": {
      "bookings": 2,
      "remainingMin": 48,
      "bookedMin": 48,
@@ -4706,7 +4829,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-17": {
      "bookings": 1,
      "remainingMin": 120,
      "bookedMin": 120,
@@ -4715,7 +4838,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-18": {
      "bookings": 1,
      "remainingMin": 30,
      "bookedMin": 48,
@@ -4724,7 +4847,7 @@
       "cancelled": 1
      }
     },
-    {
+    "2026-11-19": {
      "bookings": 0,
      "remainingMin": 0,
      "bookedMin": 0,
@@ -4733,7 +4856,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-20": {
      "bookings": 0,
      "remainingMin": 0,
      "bookedMin": 0,
@@ -4742,9 +4865,9 @@
       "cancelled": 0
      }
     }
-   ],
-   "Marietta": [
-    {
+   },
+   "Marietta": {
+    "2026-11-14": {
      "bookings": 1,
      "remainingMin": 30,
      "bookedMin": 48,
@@ -4753,7 +4876,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-15": {
      "bookings": 0,
      "remainingMin": 0,
      "bookedMin": 0,
@@ -4762,7 +4885,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-16": {
      "bookings": 1,
      "remainingMin": 30,
      "bookedMin": 30,
@@ -4771,7 +4894,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-17": {
      "bookings": 0,
      "remainingMin": 0,
      "bookedMin": 0,
@@ -4780,7 +4903,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-18": {
      "bookings": 0,
      "remainingMin": 0,
      "bookedMin": 0,
@@ -4789,7 +4912,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-19": {
      "bookings": 0,
      "remainingMin": 0,
      "bookedMin": 0,
@@ -4798,7 +4921,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-20": {
      "bookings": 0,
      "remainingMin": 0,
      "bookedMin": 0,
@@ -4807,9 +4930,9 @@
       "cancelled": 0
      }
     }
-   ],
-   "San Jose": [
-    {
+   },
+   "San Jose": {
+    "2026-11-14": {
      "bookings": 3,
      "remainingMin": 168,
      "bookedMin": 168,
@@ -4818,7 +4941,7 @@
       "cancelled": 2
      }
     },
-    {
+    "2026-11-15": {
      "bookings": 3,
      "remainingMin": 252,
      "bookedMin": 252,
@@ -4827,7 +4950,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-16": {
      "bookings": 1,
      "remainingMin": 30,
      "bookedMin": 30,
@@ -4836,7 +4959,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-17": {
      "bookings": 2,
      "remainingMin": 66,
      "bookedMin": 66,
@@ -4845,7 +4968,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-18": {
      "bookings": 0,
      "remainingMin": 0,
      "bookedMin": 0,
@@ -4854,7 +4977,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-19": {
      "bookings": 2,
      "remainingMin": 60,
      "bookedMin": 60,
@@ -4863,7 +4986,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-20": {
      "bookings": 0,
      "remainingMin": 0,
      "bookedMin": 0,
@@ -4872,9 +4995,9 @@
       "cancelled": 0
      }
     }
-   ],
-   "Morrow": [
-    {
+   },
+   "Morrow": {
+    "2026-11-14": {
      "bookings": 0,
      "remainingMin": 0,
      "bookedMin": 0,
@@ -4883,7 +5006,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-15": {
      "bookings": 0,
      "remainingMin": 0,
      "bookedMin": 0,
@@ -4892,7 +5015,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-16": {
      "bookings": 0,
      "remainingMin": 0,
      "bookedMin": 0,
@@ -4901,7 +5024,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-17": {
      "bookings": 0,
      "remainingMin": 0,
      "bookedMin": 0,
@@ -4910,7 +5033,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-18": {
      "bookings": 0,
      "remainingMin": 0,
      "bookedMin": 0,
@@ -4919,7 +5042,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-19": {
      "bookings": 0,
      "remainingMin": 0,
      "bookedMin": 0,
@@ -4928,7 +5051,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-20": {
      "bookings": 0,
      "remainingMin": 0,
      "bookedMin": 0,
@@ -4937,9 +5060,9 @@
       "cancelled": 0
      }
     }
-   ],
-   "El Monte": [
-    {
+   },
+   "El Monte": {
+    "2026-11-14": {
      "bookings": 0,
      "remainingMin": 0,
      "bookedMin": 0,
@@ -4948,7 +5071,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-15": {
      "bookings": 0,
      "remainingMin": 0,
      "bookedMin": 0,
@@ -4957,7 +5080,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-16": {
      "bookings": 0,
      "remainingMin": 0,
      "bookedMin": 0,
@@ -4966,7 +5089,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-17": {
      "bookings": 0,
      "remainingMin": 0,
      "bookedMin": 0,
@@ -4975,7 +5098,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-18": {
      "bookings": 0,
      "remainingMin": 0,
      "bookedMin": 0,
@@ -4984,7 +5107,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-19": {
      "bookings": 0,
      "remainingMin": 0,
      "bookedMin": 0,
@@ -4993,72 +5116,7 @@
       "cancelled": 0
      }
     },
-    {
-     "bookings": 0,
-     "remainingMin": 0,
-     "bookedMin": 0,
-     "byStatus": {
-      "active": 0,
-      "cancelled": 0
-     }
-    }
-   ],
-   "Dallas": [
-    {
-     "bookings": 0,
-     "remainingMin": 0,
-     "bookedMin": 0,
-     "byStatus": {
-      "active": 0,
-      "cancelled": 0
-     }
-    },
-    {
-     "bookings": 2,
-     "remainingMin": 48,
-     "bookedMin": 48,
-     "byStatus": {
-      "active": 2,
-      "cancelled": 0
-     }
-    },
-    {
-     "bookings": 0,
-     "remainingMin": 0,
-     "bookedMin": 0,
-     "byStatus": {
-      "active": 0,
-      "cancelled": 0
-     }
-    },
-    {
-     "bookings": 0,
-     "remainingMin": 0,
-     "bookedMin": 0,
-     "byStatus": {
-      "active": 0,
-      "cancelled": 0
-     }
-    },
-    {
-     "bookings": 1,
-     "remainingMin": 48,
-     "bookedMin": 48,
-     "byStatus": {
-      "active": 1,
-      "cancelled": 0
-     }
-    },
-    {
-     "bookings": 0,
-     "remainingMin": 0,
-     "bookedMin": 0,
-     "byStatus": {
-      "active": 0,
-      "cancelled": 0
-     }
-    },
-    {
+    "2026-11-20": {
      "bookings": 0,
      "remainingMin": 0,
      "bookedMin": 0,
@@ -5067,9 +5125,9 @@
       "cancelled": 0
      }
     }
-   ],
-   "Richmond": [
-    {
+   },
+   "Richmond": {
+    "2026-11-14": {
      "bookings": 1,
      "remainingMin": 60,
      "bookedMin": 60,
@@ -5078,7 +5136,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-15": {
      "bookings": 1,
      "remainingMin": 30,
      "bookedMin": 30,
@@ -5087,16 +5145,16 @@
       "cancelled": 0
      }
     },
-    {
-     "bookings": 2,
-     "remainingMin": 48,
-     "bookedMin": 48,
+    "2026-11-16": {
+     "bookings": 3,
+     "remainingMin": 78,
+     "bookedMin": 78,
      "byStatus": {
-      "active": 2,
-      "cancelled": 0
+      "active": 3,
+      "cancelled": 1
      }
     },
-    {
+    "2026-11-17": {
      "bookings": 0,
      "remainingMin": 0,
      "bookedMin": 0,
@@ -5105,7 +5163,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-18": {
      "bookings": 1,
      "remainingMin": 30,
      "bookedMin": 90,
@@ -5114,7 +5172,7 @@
       "cancelled": 1
      }
     },
-    {
+    "2026-11-19": {
      "bookings": 0,
      "remainingMin": 0,
      "bookedMin": 0,
@@ -5123,7 +5181,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-20": {
      "bookings": 0,
      "remainingMin": 0,
      "bookedMin": 0,
@@ -5132,9 +5190,9 @@
       "cancelled": 0
      }
     }
-   ],
-   "West Nashville": [
-    {
+   },
+   "Dallas": {
+    "2026-11-14": {
      "bookings": 0,
      "remainingMin": 0,
      "bookedMin": 0,
@@ -5143,7 +5201,16 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-15": {
+     "bookings": 2,
+     "remainingMin": 48,
+     "bookedMin": 48,
+     "byStatus": {
+      "active": 2,
+      "cancelled": 0
+     }
+    },
+    "2026-11-16": {
      "bookings": 0,
      "remainingMin": 0,
      "bookedMin": 0,
@@ -5152,7 +5219,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-17": {
      "bookings": 0,
      "remainingMin": 0,
      "bookedMin": 0,
@@ -5161,7 +5228,16 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-18": {
+     "bookings": 1,
+     "remainingMin": 48,
+     "bookedMin": 48,
+     "byStatus": {
+      "active": 1,
+      "cancelled": 0
+     }
+    },
+    "2026-11-19": {
      "bookings": 0,
      "remainingMin": 0,
      "bookedMin": 0,
@@ -5170,7 +5246,54 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-20": {
+     "bookings": 0,
+     "remainingMin": 0,
+     "bookedMin": 0,
+     "byStatus": {
+      "active": 0,
+      "cancelled": 0
+     }
+    }
+   },
+   "West Nashville": {
+    "2026-11-14": {
+     "bookings": 0,
+     "remainingMin": 0,
+     "bookedMin": 0,
+     "byStatus": {
+      "active": 0,
+      "cancelled": 0
+     }
+    },
+    "2026-11-15": {
+     "bookings": 0,
+     "remainingMin": 0,
+     "bookedMin": 0,
+     "byStatus": {
+      "active": 0,
+      "cancelled": 0
+     }
+    },
+    "2026-11-16": {
+     "bookings": 0,
+     "remainingMin": 0,
+     "bookedMin": 0,
+     "byStatus": {
+      "active": 0,
+      "cancelled": 0
+     }
+    },
+    "2026-11-17": {
+     "bookings": 0,
+     "remainingMin": 0,
+     "bookedMin": 0,
+     "byStatus": {
+      "active": 0,
+      "cancelled": 0
+     }
+    },
+    "2026-11-18": {
      "bookings": 3,
      "remainingMin": 162,
      "bookedMin": 138,
@@ -5179,7 +5302,7 @@
       "cancelled": 0
      }
     },
-    {
+    "2026-11-19": {
      "bookings": 0,
      "remainingMin": 0,
      "bookedMin": 0,
@@ -5188,7 +5311,7 @@
       "cancelled": 1
      }
     },
-    {
+    "2026-11-20": {
      "bookings": 0,
      "remainingMin": 0,
      "bookedMin": 0,
@@ -5197,14 +5320,14 @@
       "cancelled": 0
      }
     }
-   ]
+   }
   },
   "serviceCapacity": {
-   "source": "allocatedMin from flexcar.service_capacities; bookedMin from each bucket's own table (capacity_bookings Order / maintenance_bookings / unassigned_services); service_capacities reserved_minutes carried as ledgerBookedMin only",
-   "note": "allocatedMin is modelled labour minutes available; bookedMin is the authoritative booked figure; ledgerBookedMin is the service_capacities reserved figure, which lags intermittently and is kept only so the divergence stays visible; onFlexService.bookedMin is whole-job estimated minutes while its ledgerBookedMin is remaining minutes, so those two are not expected to agree even when the ledger is healthy; null means no service_capacities row, not zero capacity",
+   "source": "flexcar.service_capacities for allocatedMin; each bucket's own table for bookedMin (capacity_bookings Order / maintenance_bookings / unassigned_services); service_capacities reserved_minutes carried only as ledgerBookedMin",
+   "note": "allocatedMin = modelled minutes set aside; bookedMin = authoritative booked minutes from the bucket's own table; ledgerBookedMin = service_capacities reserved_minutes, which lags intermittently and is kept only so the divergence stays visible; onFlexService.bookedMin is whole-job estimated minutes while its ledgerBookedMin is remaining minutes, so those two are not expected to agree even when the ledger is healthy; null means no service_capacities row, not zero capacity",
    "bySite": {
-    "New England": [
-     {
+    "New England": {
+     "2026-11-14": {
       "totalAllocatedMin": 1728,
       "totalBookedMin": 1806,
       "totalLedgerBookedMin": 1806,
@@ -5229,10 +5352,10 @@
        }
       }
      },
-     {
+     "2026-11-15": {
       "totalAllocatedMin": 3024,
-      "totalBookedMin": 2430,
-      "totalLedgerBookedMin": 2400,
+      "totalBookedMin": 2448,
+      "totalLedgerBookedMin": 2418,
       "byBucket": {
        "orders": {
         "jobs": 15,
@@ -5247,17 +5370,17 @@
         "ledgerBookedMin": 360
        },
        "unassignedService": {
-        "jobs": 16,
+        "jobs": 17,
         "allocatedMin": 1512,
-        "bookedMin": 822,
-        "ledgerBookedMin": 822
+        "bookedMin": 840,
+        "ledgerBookedMin": 840
        }
       }
      },
-     {
+     "2026-11-16": {
       "totalAllocatedMin": 4212,
-      "totalBookedMin": 2640,
-      "totalLedgerBookedMin": 2580,
+      "totalBookedMin": 2580,
+      "totalLedgerBookedMin": 2520,
       "byBucket": {
        "orders": {
         "jobs": 10,
@@ -5266,10 +5389,10 @@
         "ledgerBookedMin": 1218
        },
        "onFlexService": {
-        "jobs": 15,
+        "jobs": 14,
         "allocatedMin": 842,
-        "bookedMin": 738,
-        "ledgerBookedMin": 678
+        "bookedMin": 678,
+        "ledgerBookedMin": 618
        },
        "unassignedService": {
         "jobs": 7,
@@ -5279,7 +5402,7 @@
        }
       }
      },
-     {
+     "2026-11-17": {
       "totalAllocatedMin": 4320,
       "totalBookedMin": 1956,
       "totalLedgerBookedMin": 1956,
@@ -5304,16 +5427,16 @@
        }
       }
      },
-     {
+     "2026-11-18": {
       "totalAllocatedMin": 4212,
-      "totalBookedMin": 1998,
-      "totalLedgerBookedMin": 1998,
+      "totalBookedMin": 1866,
+      "totalLedgerBookedMin": 1866,
       "byBucket": {
        "orders": {
-        "jobs": 10,
+        "jobs": 9,
         "allocatedMin": 1264,
-        "bookedMin": 816,
-        "ledgerBookedMin": 816
+        "bookedMin": 684,
+        "ledgerBookedMin": 684
        },
        "onFlexService": {
         "jobs": 13,
@@ -5329,7 +5452,7 @@
        }
       }
      },
-     {
+     "2026-11-19": {
       "totalAllocatedMin": 4752,
       "totalBookedMin": 2274,
       "totalLedgerBookedMin": 2154,
@@ -5354,7 +5477,7 @@
        }
       }
      },
-     {
+     "2026-11-20": {
       "totalAllocatedMin": 3024,
       "totalBookedMin": 1128,
       "totalLedgerBookedMin": 1068,
@@ -5379,12 +5502,12 @@
        }
       }
      }
-    ],
-    "Stone Mountain": [
-     {
+    },
+    "Stone Mountain": {
+     "2026-11-14": {
       "totalAllocatedMin": 4608,
-      "totalBookedMin": 1863,
-      "totalLedgerBookedMin": 1803,
+      "totalBookedMin": 1875,
+      "totalLedgerBookedMin": 1815,
       "byBucket": {
        "orders": {
         "jobs": 1,
@@ -5399,17 +5522,17 @@
         "ledgerBookedMin": 1509
        },
        "unassignedService": {
-        "jobs": 5,
+        "jobs": 6,
         "allocatedMin": 1014,
-        "bookedMin": 276,
-        "ledgerBookedMin": 276
+        "bookedMin": 288,
+        "ledgerBookedMin": 288
        }
       }
      },
-     {
+     "2026-11-15": {
       "totalAllocatedMin": 2304,
-      "totalBookedMin": 1677,
-      "totalLedgerBookedMin": 1647,
+      "totalBookedMin": 1647,
+      "totalLedgerBookedMin": 1617,
       "byBucket": {
        "orders": {
         "jobs": 3,
@@ -5424,17 +5547,17 @@
         "ledgerBookedMin": 1098
        },
        "unassignedService": {
-        "jobs": 12,
+        "jobs": 11,
         "allocatedMin": 507,
-        "bookedMin": 435,
-        "ledgerBookedMin": 435
+        "bookedMin": 405,
+        "ledgerBookedMin": 405
        }
       }
      },
-     {
+     "2026-11-16": {
       "totalAllocatedMin": 7727,
-      "totalBookedMin": 1614,
-      "totalLedgerBookedMin": 1614,
+      "totalBookedMin": 1884,
+      "totalLedgerBookedMin": 1794,
       "byBucket": {
        "orders": {
         "jobs": 2,
@@ -5443,22 +5566,22 @@
         "ledgerBookedMin": 90
        },
        "onFlexService": {
-        "jobs": 21,
+        "jobs": 24,
         "allocatedMin": 3709,
-        "bookedMin": 1248,
-        "ledgerBookedMin": 1158
+        "bookedMin": 1458,
+        "ledgerBookedMin": 1368
        },
        "unassignedService": {
-        "jobs": 7,
+        "jobs": 9,
         "allocatedMin": 1700,
-        "bookedMin": 276,
-        "ledgerBookedMin": 366
+        "bookedMin": 336,
+        "ledgerBookedMin": 336
        }
       }
      },
-     {
+     "2026-11-17": {
       "totalAllocatedMin": 7344,
-      "totalBookedMin": 1206,
+      "totalBookedMin": 1236,
       "totalLedgerBookedMin": 1236,
       "byBucket": {
        "orders": {
@@ -5476,12 +5599,12 @@
        "unassignedService": {
         "jobs": 10,
         "allocatedMin": 1616,
-        "bookedMin": 330,
+        "bookedMin": 360,
         "ledgerBookedMin": 360
        }
       }
      },
-     {
+     "2026-11-18": {
       "totalAllocatedMin": 7344,
       "totalBookedMin": 786,
       "totalLedgerBookedMin": 786,
@@ -5506,7 +5629,7 @@
        }
       }
      },
-     {
+     "2026-11-19": {
       "totalAllocatedMin": 5424,
       "totalBookedMin": 90,
       "totalLedgerBookedMin": 90,
@@ -5531,7 +5654,7 @@
        }
       }
      },
-     {
+     "2026-11-20": {
       "totalAllocatedMin": 7727,
       "totalBookedMin": 306,
       "totalLedgerBookedMin": 306,
@@ -5556,9 +5679,9 @@
        }
       }
      }
-    ],
-    "Larchmont": [
-     {
+    },
+    "Larchmont": {
+     "2026-11-14": {
       "totalAllocatedMin": 87,
       "totalBookedMin": 48,
       "totalLedgerBookedMin": 48,
@@ -5583,7 +5706,7 @@
        }
       }
      },
-     {
+     "2026-11-15": {
       "totalAllocatedMin": 0,
       "totalBookedMin": 0,
       "totalLedgerBookedMin": 0,
@@ -5608,7 +5731,7 @@
        }
       }
      },
-     {
+     "2026-11-16": {
       "totalAllocatedMin": 1206,
       "totalBookedMin": 618,
       "totalLedgerBookedMin": 618,
@@ -5633,7 +5756,7 @@
        }
       }
      },
-     {
+     "2026-11-17": {
       "totalAllocatedMin": 1705,
       "totalBookedMin": 390,
       "totalLedgerBookedMin": 390,
@@ -5658,7 +5781,7 @@
        }
       }
      },
-     {
+     "2026-11-18": {
       "totalAllocatedMin": 1705,
       "totalBookedMin": 390,
       "totalLedgerBookedMin": 330,
@@ -5683,7 +5806,7 @@
        }
       }
      },
-     {
+     "2026-11-19": {
       "totalAllocatedMin": 1705,
       "totalBookedMin": 366,
       "totalLedgerBookedMin": 366,
@@ -5708,7 +5831,7 @@
        }
       }
      },
-     {
+     "2026-11-20": {
       "totalAllocatedMin": 1646,
       "totalBookedMin": 180,
       "totalLedgerBookedMin": 180,
@@ -5733,9 +5856,9 @@
        }
       }
      }
-    ],
-    "South Charlotte": [
-     {
+    },
+    "South Charlotte": {
+     "2026-11-14": {
       "totalAllocatedMin": 840,
       "totalBookedMin": 456,
       "totalLedgerBookedMin": 456,
@@ -5760,7 +5883,7 @@
        }
       }
      },
-     {
+     "2026-11-15": {
       "totalAllocatedMin": 840,
       "totalBookedMin": 510,
       "totalLedgerBookedMin": 510,
@@ -5785,7 +5908,7 @@
        }
       }
      },
-     {
+     "2026-11-16": {
       "totalAllocatedMin": 840,
       "totalBookedMin": 450,
       "totalLedgerBookedMin": 450,
@@ -5810,10 +5933,10 @@
        }
       }
      },
-     {
+     "2026-11-17": {
       "totalAllocatedMin": 792,
-      "totalBookedMin": 528,
-      "totalLedgerBookedMin": 468,
+      "totalBookedMin": 558,
+      "totalLedgerBookedMin": 498,
       "byBucket": {
        "orders": {
         "jobs": 1,
@@ -5822,10 +5945,10 @@
         "ledgerBookedMin": 120
        },
        "onFlexService": {
-        "jobs": 4,
+        "jobs": 5,
         "allocatedMin": 380,
-        "bookedMin": 288,
-        "ledgerBookedMin": 228
+        "bookedMin": 318,
+        "ledgerBookedMin": 258
        },
        "unassignedService": {
         "jobs": 1,
@@ -5835,7 +5958,7 @@
        }
       }
      },
-     {
+     "2026-11-18": {
       "totalAllocatedMin": 840,
       "totalBookedMin": 138,
       "totalLedgerBookedMin": 138,
@@ -5860,7 +5983,7 @@
        }
       }
      },
-     {
+     "2026-11-19": {
       "totalAllocatedMin": 840,
       "totalBookedMin": 30,
       "totalLedgerBookedMin": 30,
@@ -5885,7 +6008,7 @@
        }
       }
      },
-     {
+     "2026-11-20": {
       "totalAllocatedMin": 480,
       "totalBookedMin": 30,
       "totalLedgerBookedMin": 30,
@@ -5910,9 +6033,9 @@
        }
       }
      }
-    ],
-    "Marietta": [
-     {
+    },
+    "Marietta": {
+     "2026-11-14": {
       "totalAllocatedMin": 1082,
       "totalBookedMin": 948,
       "totalLedgerBookedMin": 918,
@@ -5937,7 +6060,7 @@
        }
       }
      },
-     {
+     "2026-11-15": {
       "totalAllocatedMin": 1482,
       "totalBookedMin": 1188,
       "totalLedgerBookedMin": 1188,
@@ -5962,7 +6085,7 @@
        }
       }
      },
-     {
+     "2026-11-16": {
       "totalAllocatedMin": 1454,
       "totalBookedMin": 828,
       "totalLedgerBookedMin": 828,
@@ -5987,10 +6110,10 @@
        }
       }
      },
-     {
+     "2026-11-17": {
       "totalAllocatedMin": 2394,
-      "totalBookedMin": 894,
-      "totalLedgerBookedMin": 894,
+      "totalBookedMin": 972,
+      "totalLedgerBookedMin": 972,
       "byBucket": {
        "orders": {
         "jobs": 0,
@@ -5999,10 +6122,10 @@
         "ledgerBookedMin": 0
        },
        "onFlexService": {
-        "jobs": 17,
+        "jobs": 18,
         "allocatedMin": 1508,
-        "bookedMin": 828,
-        "ledgerBookedMin": 828
+        "bookedMin": 906,
+        "ledgerBookedMin": 906
        },
        "unassignedService": {
         "jobs": 1,
@@ -6012,10 +6135,10 @@
        }
       }
      },
-     {
+     "2026-11-18": {
       "totalAllocatedMin": 1881,
-      "totalBookedMin": 930,
-      "totalLedgerBookedMin": 900,
+      "totalBookedMin": 780,
+      "totalLedgerBookedMin": 750,
       "byBucket": {
        "orders": {
         "jobs": 0,
@@ -6030,14 +6153,14 @@
         "ledgerBookedMin": 750
        },
        "unassignedService": {
-        "jobs": 1,
+        "jobs": 0,
         "allocatedMin": 414,
-        "bookedMin": 150,
-        "ledgerBookedMin": 150
+        "bookedMin": 0,
+        "ledgerBookedMin": 0
        }
       }
      },
-     {
+     "2026-11-19": {
       "totalAllocatedMin": 2337,
       "totalBookedMin": 768,
       "totalLedgerBookedMin": 708,
@@ -6062,10 +6185,10 @@
        }
       }
      },
-     {
+     "2026-11-20": {
       "totalAllocatedMin": 1909,
-      "totalBookedMin": 1056,
-      "totalLedgerBookedMin": 1056,
+      "totalBookedMin": 1116,
+      "totalLedgerBookedMin": 1116,
       "byBucket": {
        "orders": {
         "jobs": 0,
@@ -6074,10 +6197,10 @@
         "ledgerBookedMin": 0
        },
        "onFlexService": {
-        "jobs": 17,
+        "jobs": 18,
         "allocatedMin": 1203,
-        "bookedMin": 966,
-        "ledgerBookedMin": 966
+        "bookedMin": 1026,
+        "ledgerBookedMin": 1026
        },
        "unassignedService": {
         "jobs": 2,
@@ -6087,9 +6210,9 @@
        }
       }
      }
-    ],
-    "San Jose": [
-     {
+    },
+    "San Jose": {
+     "2026-11-14": {
       "totalAllocatedMin": 1026,
       "totalBookedMin": 438,
       "totalLedgerBookedMin": 438,
@@ -6114,7 +6237,7 @@
        }
       }
      },
-     {
+     "2026-11-15": {
       "totalAllocatedMin": 1000,
       "totalBookedMin": 402,
       "totalLedgerBookedMin": 402,
@@ -6139,7 +6262,7 @@
        }
       }
      },
-     {
+     "2026-11-16": {
       "totalAllocatedMin": 1000,
       "totalBookedMin": 30,
       "totalLedgerBookedMin": 30,
@@ -6164,7 +6287,7 @@
        }
       }
      },
-     {
+     "2026-11-17": {
       "totalAllocatedMin": 1809,
       "totalBookedMin": 66,
       "totalLedgerBookedMin": 66,
@@ -6189,7 +6312,7 @@
        }
       }
      },
-     {
+     "2026-11-18": {
       "totalAllocatedMin": 1404,
       "totalBookedMin": 0,
       "totalLedgerBookedMin": 0,
@@ -6214,7 +6337,7 @@
        }
       }
      },
-     {
+     "2026-11-19": {
       "totalAllocatedMin": 1404,
       "totalBookedMin": 60,
       "totalLedgerBookedMin": 60,
@@ -6239,7 +6362,7 @@
        }
       }
      },
-     {
+     "2026-11-20": {
       "totalAllocatedMin": 1404,
       "totalBookedMin": 0,
       "totalLedgerBookedMin": 0,
@@ -6264,12 +6387,12 @@
        }
       }
      }
-    ],
-    "Morrow": [
-     {
+    },
+    "Morrow": {
+     "2026-11-14": {
       "totalAllocatedMin": 576,
-      "totalBookedMin": 541,
-      "totalLedgerBookedMin": 541,
+      "totalBookedMin": 559,
+      "totalLedgerBookedMin": 559,
       "byBucket": {
        "orders": {
         "jobs": 0,
@@ -6284,14 +6407,14 @@
         "ledgerBookedMin": 541
        },
        "unassignedService": {
-        "jobs": 0,
+        "jobs": 1,
         "allocatedMin": 127,
-        "bookedMin": 0,
-        "ledgerBookedMin": 0
+        "bookedMin": 18,
+        "ledgerBookedMin": 18
        }
       }
      },
-     {
+     "2026-11-15": {
       "totalAllocatedMin": 960,
       "totalBookedMin": 558,
       "totalLedgerBookedMin": 558,
@@ -6316,7 +6439,7 @@
        }
       }
      },
-     {
+     "2026-11-16": {
       "totalAllocatedMin": 913,
       "totalBookedMin": 534,
       "totalLedgerBookedMin": 534,
@@ -6341,10 +6464,10 @@
        }
       }
      },
-     {
+     "2026-11-17": {
       "totalAllocatedMin": 2064,
       "totalBookedMin": 666,
-      "totalLedgerBookedMin": 744,
+      "totalLedgerBookedMin": 666,
       "byBucket": {
        "orders": {
         "jobs": 0,
@@ -6362,11 +6485,11 @@
         "jobs": 0,
         "allocatedMin": 454,
         "bookedMin": 0,
-        "ledgerBookedMin": 78
+        "ledgerBookedMin": 0
        }
       }
      },
-     {
+     "2026-11-18": {
       "totalAllocatedMin": 2064,
       "totalBookedMin": 918,
       "totalLedgerBookedMin": 888,
@@ -6391,7 +6514,7 @@
        }
       }
      },
-     {
+     "2026-11-19": {
       "totalAllocatedMin": 2064,
       "totalBookedMin": 834,
       "totalLedgerBookedMin": 834,
@@ -6416,7 +6539,7 @@
        }
       }
      },
-     {
+     "2026-11-20": {
       "totalAllocatedMin": 913,
       "totalBookedMin": 564,
       "totalLedgerBookedMin": 564,
@@ -6441,18 +6564,195 @@
        }
       }
      }
-    ],
-    "El Monte": [
-     null,
-     null,
-     null,
-     null,
-     null,
-     null,
-     null
-    ],
-    "Dallas": [
-     {
+    },
+    "El Monte": {
+     "2026-11-14": null,
+     "2026-11-15": null,
+     "2026-11-16": null,
+     "2026-11-17": null,
+     "2026-11-18": null,
+     "2026-11-19": null,
+     "2026-11-20": null
+    },
+    "Richmond": {
+     "2026-11-14": {
+      "totalAllocatedMin": 270,
+      "totalBookedMin": 60,
+      "totalLedgerBookedMin": 60,
+      "byBucket": {
+       "orders": {
+        "jobs": 1,
+        "allocatedMin": 81,
+        "bookedMin": 60,
+        "ledgerBookedMin": 60
+       },
+       "onFlexService": {
+        "jobs": 0,
+        "allocatedMin": 130,
+        "bookedMin": 0,
+        "ledgerBookedMin": 0
+       },
+       "unassignedService": {
+        "jobs": 0,
+        "allocatedMin": 59,
+        "bookedMin": 0,
+        "ledgerBookedMin": 0
+       }
+      }
+     },
+     "2026-11-15": {
+      "totalAllocatedMin": 270,
+      "totalBookedMin": 90,
+      "totalLedgerBookedMin": 90,
+      "byBucket": {
+       "orders": {
+        "jobs": 1,
+        "allocatedMin": 81,
+        "bookedMin": 30,
+        "ledgerBookedMin": 30
+       },
+       "onFlexService": {
+        "jobs": 1,
+        "allocatedMin": 130,
+        "bookedMin": 60,
+        "ledgerBookedMin": 60
+       },
+       "unassignedService": {
+        "jobs": 0,
+        "allocatedMin": 59,
+        "bookedMin": 0,
+        "ledgerBookedMin": 0
+       }
+      }
+     },
+     "2026-11-16": {
+      "totalAllocatedMin": 729,
+      "totalBookedMin": 78,
+      "totalLedgerBookedMin": 78,
+      "byBucket": {
+       "orders": {
+        "jobs": 3,
+        "allocatedMin": 219,
+        "bookedMin": 78,
+        "ledgerBookedMin": 78
+       },
+       "onFlexService": {
+        "jobs": 0,
+        "allocatedMin": 350,
+        "bookedMin": 0,
+        "ledgerBookedMin": 0
+       },
+       "unassignedService": {
+        "jobs": 0,
+        "allocatedMin": 160,
+        "bookedMin": 0,
+        "ledgerBookedMin": 0
+       }
+      }
+     },
+     "2026-11-17": {
+      "totalAllocatedMin": 1187,
+      "totalBookedMin": 0,
+      "totalLedgerBookedMin": 0,
+      "byBucket": {
+       "orders": {
+        "jobs": 0,
+        "allocatedMin": 356,
+        "bookedMin": 0,
+        "ledgerBookedMin": 0
+       },
+       "onFlexService": {
+        "jobs": 0,
+        "allocatedMin": 570,
+        "bookedMin": 0,
+        "ledgerBookedMin": 0
+       },
+       "unassignedService": {
+        "jobs": 0,
+        "allocatedMin": 261,
+        "bookedMin": 0,
+        "ledgerBookedMin": 0
+       }
+      }
+     },
+     "2026-11-18": {
+      "totalAllocatedMin": 1187,
+      "totalBookedMin": 30,
+      "totalLedgerBookedMin": 30,
+      "byBucket": {
+       "orders": {
+        "jobs": 1,
+        "allocatedMin": 356,
+        "bookedMin": 30,
+        "ledgerBookedMin": 30
+       },
+       "onFlexService": {
+        "jobs": 0,
+        "allocatedMin": 570,
+        "bookedMin": 0,
+        "ledgerBookedMin": 0
+       },
+       "unassignedService": {
+        "jobs": 0,
+        "allocatedMin": 261,
+        "bookedMin": 0,
+        "ledgerBookedMin": 0
+       }
+      }
+     },
+     "2026-11-19": {
+      "totalAllocatedMin": 1187,
+      "totalBookedMin": 0,
+      "totalLedgerBookedMin": 0,
+      "byBucket": {
+       "orders": {
+        "jobs": 0,
+        "allocatedMin": 356,
+        "bookedMin": 0,
+        "ledgerBookedMin": 0
+       },
+       "onFlexService": {
+        "jobs": 0,
+        "allocatedMin": 570,
+        "bookedMin": 0,
+        "ledgerBookedMin": 0
+       },
+       "unassignedService": {
+        "jobs": 0,
+        "allocatedMin": 261,
+        "bookedMin": 0,
+        "ledgerBookedMin": 0
+       }
+      }
+     },
+     "2026-11-20": {
+      "totalAllocatedMin": 729,
+      "totalBookedMin": 0,
+      "totalLedgerBookedMin": 0,
+      "byBucket": {
+       "orders": {
+        "jobs": 0,
+        "allocatedMin": 219,
+        "bookedMin": 0,
+        "ledgerBookedMin": 0
+       },
+       "onFlexService": {
+        "jobs": 0,
+        "allocatedMin": 350,
+        "bookedMin": 0,
+        "ledgerBookedMin": 0
+       },
+       "unassignedService": {
+        "jobs": 0,
+        "allocatedMin": 160,
+        "bookedMin": 0,
+        "ledgerBookedMin": 0
+       }
+      }
+     }
+    },
+    "Dallas": {
+     "2026-11-14": {
       "totalAllocatedMin": 412,
       "totalBookedMin": 30,
       "totalLedgerBookedMin": 30,
@@ -6477,7 +6777,7 @@
        }
       }
      },
-     {
+     "2026-11-15": {
       "totalAllocatedMin": 412,
       "totalBookedMin": 66,
       "totalLedgerBookedMin": 66,
@@ -6502,7 +6802,7 @@
        }
       }
      },
-     {
+     "2026-11-16": {
       "totalAllocatedMin": 882,
       "totalBookedMin": 60,
       "totalLedgerBookedMin": 60,
@@ -6527,7 +6827,7 @@
        }
       }
      },
-     {
+     "2026-11-17": {
       "totalAllocatedMin": 1353,
       "totalBookedMin": 0,
       "totalLedgerBookedMin": 0,
@@ -6552,7 +6852,7 @@
        }
       }
      },
-     {
+     "2026-11-18": {
       "totalAllocatedMin": 1353,
       "totalBookedMin": 48,
       "totalLedgerBookedMin": 48,
@@ -6577,7 +6877,7 @@
        }
       }
      },
-     {
+     "2026-11-19": {
       "totalAllocatedMin": 1353,
       "totalBookedMin": 0,
       "totalLedgerBookedMin": 0,
@@ -6602,7 +6902,7 @@
        }
       }
      },
-     {
+     "2026-11-20": {
       "totalAllocatedMin": 882,
       "totalBookedMin": 0,
       "totalLedgerBookedMin": 0,
@@ -6627,186 +6927,9 @@
        }
       }
      }
-    ],
-    "Richmond": [
-     {
-      "totalAllocatedMin": 270,
-      "totalBookedMin": 60,
-      "totalLedgerBookedMin": 60,
-      "byBucket": {
-       "orders": {
-        "jobs": 1,
-        "allocatedMin": 81,
-        "bookedMin": 60,
-        "ledgerBookedMin": 60
-       },
-       "onFlexService": {
-        "jobs": 0,
-        "allocatedMin": 130,
-        "bookedMin": 0,
-        "ledgerBookedMin": 0
-       },
-       "unassignedService": {
-        "jobs": 0,
-        "allocatedMin": 59,
-        "bookedMin": 0,
-        "ledgerBookedMin": 0
-       }
-      }
-     },
-     {
-      "totalAllocatedMin": 270,
-      "totalBookedMin": 90,
-      "totalLedgerBookedMin": 90,
-      "byBucket": {
-       "orders": {
-        "jobs": 1,
-        "allocatedMin": 81,
-        "bookedMin": 30,
-        "ledgerBookedMin": 30
-       },
-       "onFlexService": {
-        "jobs": 1,
-        "allocatedMin": 130,
-        "bookedMin": 60,
-        "ledgerBookedMin": 60
-       },
-       "unassignedService": {
-        "jobs": 0,
-        "allocatedMin": 59,
-        "bookedMin": 0,
-        "ledgerBookedMin": 0
-       }
-      }
-     },
-     {
-      "totalAllocatedMin": 729,
-      "totalBookedMin": 48,
-      "totalLedgerBookedMin": 48,
-      "byBucket": {
-       "orders": {
-        "jobs": 2,
-        "allocatedMin": 219,
-        "bookedMin": 48,
-        "ledgerBookedMin": 48
-       },
-       "onFlexService": {
-        "jobs": 0,
-        "allocatedMin": 350,
-        "bookedMin": 0,
-        "ledgerBookedMin": 0
-       },
-       "unassignedService": {
-        "jobs": 0,
-        "allocatedMin": 160,
-        "bookedMin": 0,
-        "ledgerBookedMin": 0
-       }
-      }
-     },
-     {
-      "totalAllocatedMin": 1187,
-      "totalBookedMin": 0,
-      "totalLedgerBookedMin": 0,
-      "byBucket": {
-       "orders": {
-        "jobs": 0,
-        "allocatedMin": 356,
-        "bookedMin": 0,
-        "ledgerBookedMin": 0
-       },
-       "onFlexService": {
-        "jobs": 0,
-        "allocatedMin": 570,
-        "bookedMin": 0,
-        "ledgerBookedMin": 0
-       },
-       "unassignedService": {
-        "jobs": 0,
-        "allocatedMin": 261,
-        "bookedMin": 0,
-        "ledgerBookedMin": 0
-       }
-      }
-     },
-     {
-      "totalAllocatedMin": 1187,
-      "totalBookedMin": 30,
-      "totalLedgerBookedMin": 30,
-      "byBucket": {
-       "orders": {
-        "jobs": 1,
-        "allocatedMin": 356,
-        "bookedMin": 30,
-        "ledgerBookedMin": 30
-       },
-       "onFlexService": {
-        "jobs": 0,
-        "allocatedMin": 570,
-        "bookedMin": 0,
-        "ledgerBookedMin": 0
-       },
-       "unassignedService": {
-        "jobs": 0,
-        "allocatedMin": 261,
-        "bookedMin": 0,
-        "ledgerBookedMin": 0
-       }
-      }
-     },
-     {
-      "totalAllocatedMin": 1187,
-      "totalBookedMin": 0,
-      "totalLedgerBookedMin": 0,
-      "byBucket": {
-       "orders": {
-        "jobs": 0,
-        "allocatedMin": 356,
-        "bookedMin": 0,
-        "ledgerBookedMin": 0
-       },
-       "onFlexService": {
-        "jobs": 0,
-        "allocatedMin": 570,
-        "bookedMin": 0,
-        "ledgerBookedMin": 0
-       },
-       "unassignedService": {
-        "jobs": 0,
-        "allocatedMin": 261,
-        "bookedMin": 0,
-        "ledgerBookedMin": 0
-       }
-      }
-     },
-     {
-      "totalAllocatedMin": 729,
-      "totalBookedMin": 0,
-      "totalLedgerBookedMin": 0,
-      "byBucket": {
-       "orders": {
-        "jobs": 0,
-        "allocatedMin": 219,
-        "bookedMin": 0,
-        "ledgerBookedMin": 0
-       },
-       "onFlexService": {
-        "jobs": 0,
-        "allocatedMin": 350,
-        "bookedMin": 0,
-        "ledgerBookedMin": 0
-       },
-       "unassignedService": {
-        "jobs": 0,
-        "allocatedMin": 160,
-        "bookedMin": 0,
-        "ledgerBookedMin": 0
-       }
-      }
-     }
-    ],
-    "West Nashville": [
-     {
+    },
+    "West Nashville": {
+     "2026-11-14": {
       "totalAllocatedMin": 0,
       "totalBookedMin": 0,
       "totalLedgerBookedMin": 0,
@@ -6831,7 +6954,7 @@
        }
       }
      },
-     {
+     "2026-11-15": {
       "totalAllocatedMin": 217,
       "totalBookedMin": 90,
       "totalLedgerBookedMin": 90,
@@ -6856,7 +6979,7 @@
        }
       }
      },
-     {
+     "2026-11-16": {
       "totalAllocatedMin": 217,
       "totalBookedMin": 108,
       "totalLedgerBookedMin": 108,
@@ -6881,7 +7004,7 @@
        }
       }
      },
-     {
+     "2026-11-17": {
       "totalAllocatedMin": 576,
       "totalBookedMin": 228,
       "totalLedgerBookedMin": 228,
@@ -6906,7 +7029,7 @@
        }
       }
      },
-     {
+     "2026-11-18": {
       "totalAllocatedMin": 576,
       "totalBookedMin": 468,
       "totalLedgerBookedMin": 438,
@@ -6931,7 +7054,7 @@
        }
       }
      },
-     {
+     "2026-11-19": {
       "totalAllocatedMin": 576,
       "totalBookedMin": 270,
       "totalLedgerBookedMin": 210,
@@ -6956,7 +7079,7 @@
        }
       }
      },
-     {
+     "2026-11-20": {
       "totalAllocatedMin": 217,
       "totalBookedMin": 0,
       "totalLedgerBookedMin": 0,
@@ -6981,22 +7104,22 @@
        }
       }
      }
-    ]
+    }
    }
   }
  },
  "config": {
   "repossessions": {
    "New England": 3.1556,
-   "Stone Mountain": 4.2489,
+   "Stone Mountain": 4.2488,
    "Larchmont": 0.7889,
    "South Charlotte": 1.1333,
-   "Marietta": 2.1639,
+   "Marietta": 2.1751,
    "San Jose": 0.5778,
-   "Morrow": 1.4539,
+   "Morrow": 1.4538,
    "El Monte": 0.2333,
-   "Dallas": 0.5778,
    "Richmond": 0.4,
+   "Dallas": 0.5778,
    "West Nashville": 0.9222
   },
   "infleets": {
@@ -7012,39 +7135,6 @@
     "LA": 250,
     "IAH": 250
    },
-   "excluded_markets": {
-    "IAH": 250
-   },
-   "site_shares": {
-    "ATL": {
-     "Stone Mountain": 0.7,
-     "Morrow": 0.15,
-     "Marietta": 0.15
-    },
-    "BOS": {
-     "New England": 1.0
-    },
-    "NY": {
-     "Larchmont": 1.0
-    },
-    "BNA": {
-     "West Nashville": 1.0
-    },
-    "CLT": {
-     "South Charlotte": 1.0
-    },
-    "SJC": {
-     "San Jose": 0.8,
-     "Richmond": 0.2
-    },
-    "DFW": {
-     "Dallas": 1.0
-    },
-    "LA": {
-     "El Monte": 1.0
-    }
-   },
-   "days_in_month": 30,
    "perSite": {
     "Dallas": 10.0,
     "El Monte": 8.3333,
@@ -7057,100 +7147,103 @@
     "South Charlotte": 3.3333,
     "Stone Mountain": 10.5,
     "West Nashville": 1.0
+   },
+   "excluded": {
+    "IAH": 250
    }
   },
   "orderCapacity": {
    "source": "flexcar.lots (daily_order_capacity, daily_delivery_capacity, max_service_capacity_per_day)",
-   "note": "static per-lot admin settings, not a per-day series; daily_order_capacity is the admin UI's \"Daily Pickup & Swap Capacity\" (a pickup+swap ceiling, not an all-order ceiling); null means not configured rather than a ceiling of zero",
+   "note": "static per-lot admin settings, not a per-day series: the same ceiling applies to every day of the window until the lot is edited; daily_order_capacity is the admin UI's 'Daily Pickup & Swap Capacity', not an all-order ceiling; null means not configured, which is not a ceiling of zero",
    "bySite": {
     "New England": {
-     "pickupSwap": 91,
-     "delivery": 5,
-     "service": 20,
      "lots": [
       "Auburn - 525 Washington St",
       "Chestnut Hill - 199 Boylston St"
-     ]
+     ],
+     "pickupSwap": 91,
+     "delivery": 5,
+     "service": 20
     },
     "Stone Mountain": {
-     "pickupSwap": 57,
-     "delivery": 15,
-     "service": 100,
      "lots": [
       "Stone Mountain - 4400 Stone Mountain Hwy."
-     ]
+     ],
+     "pickupSwap": 57,
+     "delivery": 15,
+     "service": 100
     },
     "Larchmont": {
-     "pickupSwap": 61,
-     "delivery": 2,
-     "service": 4,
      "lots": [
       "Larchmont - 2500 Boston Post Road"
-     ]
+     ],
+     "pickupSwap": 61,
+     "delivery": 2,
+     "service": 4
     },
     "South Charlotte": {
-     "pickupSwap": 37,
-     "delivery": 15,
-     "service": 11,
      "lots": [
       "South Charlotte - 8525 South Blvd."
-     ]
+     ],
+     "pickupSwap": 37,
+     "delivery": 15,
+     "service": 11
     },
     "Marietta": {
-     "pickupSwap": 49,
-     "delivery": 2,
-     "service": 25,
      "lots": [
       "Marietta - 1431 Cobb Pkwy SE"
-     ]
+     ],
+     "pickupSwap": 49,
+     "delivery": 2,
+     "service": 25
     },
     "San Jose": {
-     "pickupSwap": 40,
-     "delivery": null,
-     "service": 10,
      "lots": [
       "San Jose - 2198 Tully Road"
-     ]
+     ],
+     "pickupSwap": 40,
+     "delivery": null,
+     "service": 10
     },
     "Morrow": {
-     "pickupSwap": 44,
-     "delivery": 1,
-     "service": 18,
      "lots": [
       "Morrow - 1425 Southlake Pkwy"
-     ]
+     ],
+     "pickupSwap": 44,
+     "delivery": 1,
+     "service": 18
     },
     "El Monte": {
-     "pickupSwap": 20,
-     "delivery": null,
-     "service": null,
      "lots": [
       "El Monte - 11705 Valley Blvd."
-     ]
-    },
-    "Dallas": {
-     "pickupSwap": 22,
-     "delivery": 0,
-     "service": 3,
-     "lots": [
-      "Dallas - 39550 Lyndon B Johnson Fwy"
-     ]
+     ],
+     "pickupSwap": 20,
+     "delivery": null,
+     "service": null
     },
     "Richmond": {
-     "pickupSwap": 19,
-     "delivery": 2,
-     "service": 5,
      "lots": [
       "Richmond - 3230 Auto Plaza Suite A"
-     ]
+     ],
+     "pickupSwap": 19,
+     "delivery": 2,
+     "service": 5
+    },
+    "Dallas": {
+     "lots": [
+      "Dallas - 39550 Lyndon B Johnson Fwy"
+     ],
+     "pickupSwap": 22,
+     "delivery": 0,
+     "service": 3
     },
     "West Nashville": {
-     "pickupSwap": 13,
-     "delivery": 14,
-     "service": 7,
      "lots": [
       "West Nashville - 7008 Westbelt Dr"
-     ]
+     ],
+     "pickupSwap": 13,
+     "delivery": 14,
+     "service": 7
     }
    },
    "byLot": {
